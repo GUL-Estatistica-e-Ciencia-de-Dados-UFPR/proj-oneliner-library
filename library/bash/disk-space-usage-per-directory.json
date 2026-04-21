@@ -83,9 +83,7 @@
     "Sparse files may report misleading sizes on some filesystems"
   ],
   "see_also": [
-    "du-sort-largest-directories",
-    "find-largest-storage-users",
-    "find-large-files-recursive"
+    "du-sort-largest-directories"
   ],
   "status": "reviewed"
 }

@@ -1,14 +1,17 @@
 # GULECD-UFPR Oneliner Library  
+
 ## Example Entry Documentation
 
 This document provides a **fully annotated example** of a valid oneliner entry using a JSONC-style format (JSON with comments).
 
-> IMPORTANT:  
-> - This format is for documentation purposes only  
+> IMPORTANT:
+> - This format is for documentation purposes only
 > - Actual submissions **must be strict JSON** (no comments)
 
 ---
+
 ### Required Fields
+
 - `id`
 - `title`
 - `language`
@@ -20,6 +23,7 @@ This document provides a **fully annotated example** of a valid oneliner entry u
 - `safety`
 
 ### Optional Fields
+
 - `explanation`
 - `created_at`
 - `updated_at`
@@ -35,12 +39,11 @@ This document provides a **fully annotated example** of a valid oneliner entry u
 - `status`
 
 ### Contribution Notes
+
 - Use lowercase kebab-case for `id` and `tags`
 - Keep commands concise and reproducible
 - Always classify safety correctly
 - Prefer clarity over cleverness
-
-
 
 ---
 
