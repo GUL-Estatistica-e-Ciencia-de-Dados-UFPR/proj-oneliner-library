@@ -1,7 +1,7 @@
 # GOLL - The GULECD-UFPR Oneliner Library
 
 Official repository for **GOLL**, the **Oneliner Library Project** by  
-**GULECD-UFPR (Linux and Free Software Users Group for - Statistics and Data Science at UFPR)**.
+**GULECD-UFPR (Linux and Free Software Users Group - Statistics and Data Science at UFPR)**.
 
 ---
 
@@ -141,14 +141,14 @@ Go to `docs/` and copy a template:
 Or use examples from the repository:
 
 ```bash
-cp examples/minimal-example.json oneliners/<language-or-tool>/<your-id>.json
+cp docs/minimal-example.json oneliners/<language-or-tool>/<your-id>.json
 ```
 (Contains only required fields)
 
 or
 
 ```bash
-cp examples/full-example.json oneliners/<language-or-tool>/<your-id>.json
+cp docs/full-example.json oneliners/<language-or-tool>/<your-id>.json
 ```
 (Contains all fields)
 
