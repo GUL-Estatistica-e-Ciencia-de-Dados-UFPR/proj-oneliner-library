@@ -141,14 +141,14 @@ Go to `docs/` and copy a template:
 Or use examples from the repository:
 
 ```bash
-cp docs/minimal-example.json oneliners/<language-or-tool>/<your-id>.json
+cp docs/minimal-example.json library/<language-or-tool>/<your-id>.json
 ```
 (Contains only required fields)
 
 or
 
 ```bash
-cp docs/full-example.json oneliners/<language-or-tool>/<your-id>.json
+cp docs/full-example.json library/<language-or-tool>/<your-id>.json
 ```
 (Contains all fields)
 
@@ -171,15 +171,15 @@ cp docs/full-example.json oneliners/<language-or-tool>/<your-id>.json
 Store your file in the appropriate language/tool directory:
 
 ```
-oneliners/<language-or-tool>/<your-id>.json
+library/<language-or-tool>/<your-id>.json
 ```
 If your language/tool doesn't exist, create a new directory.
 
 Examples:
 
 ```
-oneliners/bash/find-large-files.json
-oneliners/git/reset-hard-origin.json
+library/bash/find-large-files.json
+library/git/reset-hard-origin.json
 ```
 
 
