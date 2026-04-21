@@ -1,0 +1,91 @@
+{
+  "id": "disk-space-usage-per-directory",
+  "title": "Display disk space usage for all directories with hierarchical breakdown",
+  "language": "bash",
+  "category": "disk-usage",
+  "command": "du -h --max-depth=2 . | sort -hr",
+  "description": "Shows disk space usage for directories up to 2 levels deep in the current directory tree, sorted by size in descending order with human-readable format, providing a hierarchical breakdown of disk consumption.",
+  "explanation": "The command uses 'du -h' to calculate disk usage in human-readable format. The '--max-depth=2' flag limits output to directories up to 2 levels deep from the current directory, avoiding excessive detail while still showing the hierarchy. The '.' specifies the starting directory. The output is piped to 'sort -hr' to sort in descending order by human-readable sizes, making it easy to identify which directories consume the most space at each level.",
+  "tags": [
+    "du",
+    "disk-usage",
+    "directories",
+    "storage",
+    "hierarchical",
+    "sort",
+    "system-administration"
+  ],
+  "author": "marcos",
+  "created_at": "2026-04-21",
+  "updated_at": "2026-04-21",
+  "safety": "safe",
+  "shell": "bash",
+  "platforms": [
+    "linux",
+    "gnu-linux",
+    "freebsd",
+    "openbsd",
+    "netbsd"
+  ],
+  "dependencies": [
+    "coreutils"
+  ],
+  "arguments": [
+    {
+      "name": "PATH",
+      "description": "Root directory to analyze (default: current directory)",
+      "required": false,
+      "default": "."
+    },
+    {
+      "name": "DEPTH",
+      "description": "Maximum directory depth to traverse (default: 2)",
+      "required": false,
+      "default": "2"
+    }
+  ],
+  "examples": [
+    {
+      "command": "du -h --max-depth=2 . | sort -hr",
+      "description": "Show disk usage up to 2 levels deep from current directory"
+    },
+    {
+      "command": "du -h --max-depth=1 . | sort -hr",
+      "description": "Show only immediate subdirectories (1 level deep)"
+    },
+    {
+      "command": "du -h --max-depth=3 /home | sort -hr",
+      "description": "Show disk usage in /home up to 3 levels deep"
+    },
+    {
+      "command": "du -h --max-depth=2 . | sort -hr | head -20",
+      "description": "Show top 20 directories by size (2 levels deep)"
+    },
+    {
+      "command": "du -ah --max-depth=2 . | sort -hr | head -15",
+      "description": "Include files in the listing, show top 15 items"
+    }
+  ],
+  "output": "1.2T\t.\n847G\t./data\n512G\t./data/cache\n256G\t./data/backups\n244G\t./media\n128G\t./media/videos\n116G\t./media/archives\n156G\t./documents\n96G\t./documents/projects\n60G\t./documents/reports",
+  "notes": [
+    "The --max-depth flag controls recursion depth: 0 shows only the starting directory, 1 shows immediate children, etc.",
+    "The -h flag makes output human-readable (K, M, G, T); use -B 1M for sizes in fixed block units",
+    "The -s flag is not needed here as du summarizes by default",
+    "Hidden directories (those starting with .) are included automatically",
+    "Each line shows cumulative size for that directory and all its contents",
+    "Symbolic links are not followed by default; add -L to follow symlinks",
+    "On filesystems with many nested directories, increasing --max-depth may significantly increase runtime"
+  ],
+  "warnings": [
+    "Results may be incomplete if you lack read permissions on some directories",
+    "On network filesystems (NFS, SMB), this command can be slow due to network latency",
+    "Very deep directory hierarchies combined with high --max-depth values may cause excessive output",
+    "Sparse files may report misleading sizes on some filesystems"
+  ],
+  "see_also": [
+    "du-sort-largest-directories",
+    "find-largest-storage-users",
+    "find-large-files-recursive"
+  ],
+  "status": "reviewed"
+}
