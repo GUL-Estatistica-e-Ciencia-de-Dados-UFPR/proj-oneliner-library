@@ -1,0 +1,14 @@
+{
+  "id": "find-large-files",
+  "title": "Find large files",
+  "language": "find",
+  "category": "filesystem",
+  "command": "find . -type f -size +100M",
+  "description": "Finds files larger than 100 MB.",
+  "tags": [
+    "find",
+    "filesystem"
+  ],
+  "author": "Tiririca da Silva",
+  "safety": "safe"
+}

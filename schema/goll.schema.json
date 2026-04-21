@@ -1,0 +1,329 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "git@github.com:GUL-Estatistica-e-Ciencia-de-Dados-UFPR/proj-oneliner-library.git/schema/oneliner-entry.schema.json",
+  "title": "GULECD-UFPR Oneliner Entry",
+  "description": "Schema for a single oneliner entry in the GULECD-UFPR oneliner library.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "language",
+    "category",
+    "command",
+    "description",
+    "tags",
+    "author",
+    "safety"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique machine-readable identifier for the oneliner.",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "minLength": 3,
+      "maxLength": 80
+    },
+    "title": {
+      "type": "string",
+      "description": "Short human-readable title.",
+      "minLength": 3,
+      "maxLength": 120
+    },
+    "language": {
+      "type": "string",
+      "description": "Main language, interpreter, command family, or tool family of the oneliner. This field is intentionally open-ended to avoid schema-edit friction.",
+      "pattern": "^[a-z0-9][a-z0-9+._-]{1,63}$",
+      "minLength": 2,
+      "maxLength": 64,
+      "examples": [
+        "bash",
+        "python",
+        "git",
+        "jq",
+        "sed",
+        "awk",
+        "find",
+        "ripgrep",
+        "ffmpeg",
+        "docker",
+        "podman",
+        "sqlite3",
+        "openssl",
+        "tmux",
+        "make"
+      ]
+    },
+    "category": {
+      "type": "string",
+      "description": "Functional category for navigation and grouping. This field is intentionally not restricted to a fixed enum.",
+      "pattern": "^[a-z][a-z0-9-]{2,63}$",
+      "minLength": 3,
+      "maxLength": 64,
+      "examples": [
+        "filesystem",
+        "text-processing",
+        "networking",
+        "version-control",
+        "system-administration",
+        "package-management",
+        "containers",
+        "data-processing",
+        "media-processing",
+        "search",
+        "process-management",
+        "automation",
+        "security",
+        "development",
+        "monitoring",
+        "logging",
+        "backup",
+        "compression",
+        "archiving",
+        "disk-usage",
+        "permissions",
+        "shell-scripting",
+        "build-systems",
+        "virtualization",
+        "boot",
+        "services",
+        "kernel",
+        "hardware",
+        "benchmarking",
+        "diagnostics",
+        "debugging",
+        "cryptography",
+        "scientific-computing",
+        "database",
+        "web",
+        "parsing",
+        "misc"
+      ]
+    },
+    "command": {
+      "type": "string",
+      "description": "The one-liner command itself.",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "description": {
+      "type": "string",
+      "description": "Short explanation of what the oneliner does.",
+      "minLength": 10,
+      "maxLength": 1000
+    },
+    "explanation": {
+      "type": "string",
+      "description": "Optional longer explanation of how it works.",
+      "minLength": 1,
+      "maxLength": 5000
+    },
+    "tags": {
+      "type": "array",
+      "description": "Search and filtering tags.",
+      "minItems": 1,
+      "maxItems": 15,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+        "minLength": 2,
+        "maxLength": 40
+      }
+    },
+    "author": {
+      "type": "string",
+      "description": "Author or contributor name or handle.",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "created_at": {
+      "type": "string",
+      "description": "Creation date in ISO 8601 full-date format.",
+      "format": "date"
+    },
+    "updated_at": {
+      "type": "string",
+      "description": "Last update date in ISO 8601 full-date format.",
+      "format": "date"
+    },
+    "safety": {
+      "type": "string",
+      "description": "Risk classification of the command.",
+      "enum": [
+        "safe",
+        "caution",
+        "dangerous"
+      ]
+    },
+    "shell": {
+      "type": "string",
+      "description": "Shell or execution environment expected for the command, when applicable.",
+      "enum": [
+        "bash",
+        "sh",
+        "dash",
+        "ash",
+        "zsh",
+        "ksh",
+        "mksh",
+        "yash",
+        "fish",
+        "csh",
+        "tcsh",
+        "busybox-sh",
+        "posix",
+        "nushell",
+        "xonsh",
+        "elvish",
+        "oil",
+        "not-applicable"
+      ]
+    },
+    "platforms": {
+      "type": "array",
+      "description": "Supported operating systems or environments within the free and open source operating systems ecosystem.",
+      "minItems": 1,
+      "maxItems": 10,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "linux",
+          "gnu-linux",
+          "android",
+          "freebsd",
+          "openbsd",
+          "netbsd",
+          "dragonflybsd",
+          "illumos",
+          "haiku",
+          "cross-platform"
+        ]
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "External commands, interpreters, or tools required.",
+      "maxItems": 20,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 80
+      }
+    },
+    "arguments": {
+      "type": "array",
+      "description": "Description of placeholders or arguments used in the command.",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "description"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "default": {
+            "type": ["string", "number", "boolean", "null"]
+          }
+        }
+      }
+    },
+    "examples": {
+      "type": "array",
+      "description": "Concrete usage examples.",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["command", "description"],
+        "properties": {
+          "command": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        }
+      }
+    },
+    "output": {
+      "type": "string",
+      "description": "Optional example or description of expected output.",
+      "minLength": 1,
+      "maxLength": 3000
+    },
+    "notes": {
+      "type": "array",
+      "description": "Optional implementation or usage notes.",
+      "maxItems": 20,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1000
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "description": "Optional warnings, especially for risky commands.",
+      "maxItems": 20,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1000
+      }
+    },
+    "see_also": {
+      "type": "array",
+      "description": "Related oneliner IDs.",
+      "maxItems": 20,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+        "minLength": 3,
+        "maxLength": 80
+      }
+    },
+    "status": {
+      "type": "string",
+      "description": "Editorial or maintenance status of the entry.",
+      "enum": [
+        "draft",
+        "reviewed",
+        "deprecated"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "safety": {
+            "const": "dangerous"
+          }
+        },
+        "required": ["safety"]
+      },
+      "then": {
+        "required": ["warnings"]
+      }
+    }
+  ]
+}
