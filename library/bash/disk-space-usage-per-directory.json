@@ -83,7 +83,7 @@
     "Sparse files may report misleading sizes on some filesystems"
   ],
   "see_also": [
-    "du-sort-largest-directories"
+    "disk-space-sort-largest-directories"
   ],
   "status": "reviewed"
 }

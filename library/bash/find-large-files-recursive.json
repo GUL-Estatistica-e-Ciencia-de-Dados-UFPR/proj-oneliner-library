@@ -79,7 +79,7 @@
   ],
   "see_also": [
     "find-largest-storage-users",
-    "du-sort-largest-directories"
+    "disk-space-sort-largest-directories"
   ],
   "status": "reviewed"
 }

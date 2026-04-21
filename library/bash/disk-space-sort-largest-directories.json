@@ -1,5 +1,5 @@
 {
-  "id": "du-sort-largest-directories",
+  "id": "disk-space-sort-largest-directories",
   "title": "Sort directories by disk usage and display the largest ones",
   "language": "bash",
   "category": "disk-usage",

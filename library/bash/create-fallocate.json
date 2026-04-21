@@ -1,0 +1,71 @@
+{
+  "id": "create-large-file-fallocate",
+  "title": "Create a large file of a specific size quickly",
+  "language": "bash",
+  "category": "filesystem",
+  "command": "fallocate -l 1G test_file",
+  "description": "Quickly creates a file of a specific size (e.g., 1 GB) using fallocate, which is much faster than dd because it allocates blocks without writing actual data.",
+  "explanation": "The 'fallocate' command communicates directly with the filesystem to preallocate disk space for a file. Unlike 'dd', which must write every byte to disk, 'fallocate' simply marks the space as allocated in the filesystem's metadata. This is extremely efficient for creating large test files, swap files, or preallocating space for databases. The length (-l) can be specified in bytes or using suffixes like K, M, G, T, P, E.",
+  "tags": [
+    "fallocate",
+    "filesystem",
+    "storage",
+    "disk-usage",
+    "allocation",
+    "testing"
+  ],
+  "author": "Marcos de Carvalho",
+  "created_at": "2026-04-21",
+  "updated_at": "2026-04-21",
+  "safety": "caution",
+  "shell": "bash",
+  "platforms": [
+    "linux"
+  ],
+  "dependencies": [
+    "util-linux"
+  ],
+  "arguments": [
+    {
+      "name": "SIZE",
+      "description": "The size of the file to create (e.g., 10M, 1G, 500M).",
+      "required": false,
+      "default": "1G"
+    },
+    {
+      "name": "FILENAME",
+      "description": "The name of the file to be created.",
+      "required": false,
+      "default": "test_file"
+    }
+  ],
+  "examples": [
+    {
+      "command": "fallocate -l 100M dummy_file",
+      "description": "Create a 100 MB file named dummy_file"
+    },
+    {
+      "command": "fallocate -l 1G large_test_file",
+      "description": "Create a 1 GB file for testing"
+    },
+    {
+      "command": "fallocate -l 10G /swapfile",
+      "description": "Preallocate 10 GB for a swap file (requires subsequent mkswap and swapon)"
+    }
+  ],
+  "output": "(No output on success)",
+  "notes": [
+    "Not all filesystems support fallocate. It is well-supported on ext4, xfs, btrfs, and ocfs2.",
+    "If the filesystem doesn't support fallocate, you can use 'truncate -s SIZE FILENAME' as a fallback, though it creates a sparse file.",
+    "For older systems or filesystems, 'dd if=/dev/zero of=FILENAME bs=1M count=SIZE_IN_MB' is the most compatible but much slower method."
+  ],
+  "warnings": [
+    "This command will overwrite the specified file if it already exists.",
+    "On some filesystems, the allocated space may contain 'stale' data from previously deleted files, though modern Linux filesystems (ext4, xfs) zero-fill or mark it as uninitialized for security.",
+    "Ensure you have enough free disk space before running this command."
+  ],
+  "see_also": [
+    "find-large-files-recursive",
+    "disk-space-usage-per-directory"
+  ],
+  "status": "reviewed"
