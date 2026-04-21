@@ -1,4 +1,4 @@
-# GULECD-UFPR Oneliner Library
+# GOLL - The GULECD-UFPR Oneliner Library
 
 Official repository for **GOLL**, the **Oneliner Library Project** by  
 **GULECD-UFPR (Linux and Free Software Users Group for - Statistics and Data Science at UFPR)**.

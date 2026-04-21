@@ -1,0 +1,85 @@
+{
+  "id": "find-large-files-recursive",
+  "title": "Find large files recursively in a directory tree",
+  "language": "bash",
+  "category": "filesystem",
+  "command": "find . -type f -size +100M -exec ls -lh {} + | awk '{print $5, $9}' | sort -hr",
+  "description": "Recursively finds all regular files larger than 100 MB in the directory tree, displays them with human-readable sizes, and sorts by size in descending order.",
+  "explanation": "The command uses 'find' to recursively traverse the directory tree, filter for regular files (-type f), and select those exceeding 100 MB (-size +100M). The '-exec ls -lh {} +' displays detailed information for each file in a batch operation, which is more efficient than using '\\;'. The output is piped to 'awk' to extract the file size and path, then 'sort -hr' sorts the results by human-readable sizes in descending order, showing the largest files first.",
+  "tags": [
+    "find",
+    "filesystem",
+    "disk-usage",
+    "large-files",
+    "recursive",
+    "storage"
+  ],
+  "author": "marcos",
+  "created_at": "2026-04-21",
+  "updated_at": "2026-04-21",
+  "safety": "safe",
+  "shell": "bash",
+  "platforms": [
+    "linux",
+    "gnu-linux",
+    "freebsd",
+    "openbsd",
+    "netbsd"
+  ],
+  "dependencies": [
+    "findutils",
+    "coreutils"
+  ],
+  "arguments": [
+    {
+      "name": "PATH",
+      "description": "Root directory to start the recursive search (default: current directory)",
+      "required": false,
+      "default": "."
+    },
+    {
+      "name": "SIZE",
+      "description": "Minimum file size threshold (default: 100M, supports K, M, G suffixes)",
+      "required": false,
+      "default": "100M"
+    }
+  ],
+  "examples": [
+    {
+      "command": "find . -type f -size +100M -exec ls -lh {} + | awk '{print $5, $9}' | sort -hr",
+      "description": "Find files larger than 100 MB in current directory and subdirectories"
+    },
+    {
+      "command": "find /var -type f -size +500M -exec ls -lh {} + | awk '{print $5, $9}' | sort -hr",
+      "description": "Find large files in /var directory"
+    },
+    {
+      "command": "find . -type f -size +1G -exec ls -lh {} + | awk '{print $5, $9}' | sort -hr",
+      "description": "Find files larger than 1 GB"
+    },
+    {
+      "command": "find . -type f -size +50M -exec ls -lh {} + | awk '{print $5, $9}' | sort -hr | head -20",
+      "description": "Show top 20 largest files over 50 MB"
+    }
+  ],
+  "output": "1.5G ./videos/archive.tar.gz\n987M ./backups/database.sql.bz2\n756M ./datasets/training-data.bin\n543M ./cache/node_modules.tar\n387M ./downloads/ubuntu-22.04-iso\n256M ./logs/app-2026.log\n198M ./tmp/large-temp-file",
+  "notes": [
+    "The -size option supports various units: c (bytes), k (kilobytes), M (megabytes), G (gigabytes), and b (512-byte blocks)",
+    "By default, -size rounds up (e.g., +100M matches files larger than 100 MiB)",
+    "Use -size -100M to find files smaller than 100 MB",
+    "The command may take considerable time on large directory trees",
+    "Using '{}  +' instead of '{}  \\;' is more efficient as it batches the command executions",
+    "Results may be incomplete in directories where you lack read permissions"
+  ],
+  "warnings": [
+    "On network filesystems (NFS, SMB), this command may be significantly slower",
+    "Does not follow symbolic links by default; add -L flag if needed",
+    "Very large directory trees may cause the command to run for extended periods",
+    "Some filesystems may not report accurate sizes for sparse files"
+  ],
+  "see_also": [
+    "find-largest-storage-users",
+    "du-sort-largest-directories"
+  ],
+  "status": "reviewed"
+}

@@ -1,0 +1,89 @@
+{
+  "id": "du-sort-largest-directories",
+  "title": "Sort directories by disk usage and display the largest ones",
+  "language": "bash",
+  "category": "disk-usage",
+  "command": "du -sh */ | sort -hr | head -10",
+  "description": "Displays the top 10 directories with the largest disk usage in the current directory, sorted in descending order by size in human-readable format.",
+  "explanation": "The command uses 'du -sh' to calculate the total disk usage for each directory in human-readable format. The '*/' glob pattern matches only directories (not files). The output is piped to 'sort -hr' to sort in descending order using human-readable number comparison, with the largest directories appearing first. Finally, 'head -10' limits output to the top 10 directories.",
+  "tags": [
+    "du",
+    "disk-usage",
+    "directories",
+    "storage",
+    "sort",
+    "system-administration"
+  ],
+  "author": "marcos",
+  "created_at": "2026-04-21",
+  "updated_at": "2026-04-21",
+  "safety": "safe",
+  "shell": "bash",
+  "platforms": [
+    "linux",
+    "gnu-linux",
+    "freebsd",
+    "openbsd",
+    "netbsd"
+  ],
+  "dependencies": [
+    "coreutils"
+  ],
+  "arguments": [
+    {
+      "name": "PATH",
+      "description": "Directory path to analyze (default: current directory)",
+      "required": false,
+      "default": "."
+    },
+    {
+      "name": "COUNT",
+      "description": "Number of largest directories to display (default: 10)",
+      "required": false,
+      "default": "10"
+    }
+  ],
+  "examples": [
+    {
+      "command": "du -sh */ | sort -hr | head -10",
+      "description": "Show top 10 largest subdirectories in current directory"
+    },
+    {
+      "command": "du -sh */ | sort -hr",
+      "description": "Show all subdirectories sorted by size without limit"
+    },
+    {
+      "command": "du -sh */ | sort -hr | head -5",
+      "description": "Show top 5 largest subdirectories"
+    },
+    {
+      "command": "du -sh ./* | sort -hr | head -10",
+      "description": "Include hidden files and directories (those starting with dot)"
+    },
+    {
+      "command": "cd /var && du -sh */ | sort -hr | head -10",
+      "description": "Find largest subdirectories in /var"
+    }
+  ],
+  "output": "847G\tcache/\n512G\tdata/\n256G\tbackups/\n128G\tlogs/\n96G\tdocuments/\n64G\tdownloads/\n32G\tpictures/\n16G\tvideos/\n8.5G\tarchives/\n2.1G\ttemp/",
+  "notes": [
+    "The '*/' pattern matches only directories; use '*' to include files as well",
+    "The -h flag makes output human-readable (K, M, G, T); use -B for a specific block size",
+    "The -s flag summarizes each directory's total size instead of listing contents recursively",
+    "Hidden directories (starting with .) are excluded; use './*' or '*' (with shopt) to include them",
+    "On systems with many subdirectories, results are calculated quickly since du only traverses each directory once",
+    "Symbolic links are not followed by default; add -L flag to follow symlinks",
+    "Results may vary if some directories are mounted on different filesystems or are inaccessible due to permissions"
+  ],
+  "warnings": [
+    "Results may be incomplete or misleading if you lack read permissions on some directories",
+    "On network filesystems (NFS, SMB), the command may be slower due to network latency",
+    "If dealing with millions of directories, the command can consume considerable memory and time",
+    "Sparse files may cause inaccurate size reporting on some filesystems"
+  ],
+  "see_also": [
+    "find-largest-storage-users",
+    "find-large-files-recursive"
+  ],
+  "status": "reviewed"
+}

@@ -1,0 +1,82 @@
+{
+  "id": "find-10-largest-storage-users",
+  "title": "Find users with largest storage usage",
+  "language": "bash",
+  "category": "disk-usage",
+  "command": "du -sh /home/* 2>/dev/null | sort -hr | head -10",
+  "description": "Displays the top 10 users on the system by storage consumption in their home directories, sorted in descending order by disk usage.",
+  "explanation": "The command uses 'du -sh' to calculate the total disk usage in human-readable format for each home directory. The '2>/dev/null' suppresses permission denied errors for inaccessible directories. The output is piped to 'sort -hr' to sort in descending order (largest first) using human-readable number comparison. Finally, 'head -10' limits the output to the top 10 users.",
+  "tags": [
+    "disk-usage",
+    "storage",
+    "users",
+    "system-administration",
+    "du",
+    "sort"
+  ],
+  "author": "Marcos de Carvalho",
+  "created_at": "2026-04-21",
+  "updated_at": "2026-04-21",
+  "safety": "safe",
+  "shell": "bash",
+  "platforms": [
+    "linux",
+    "gnu-linux",
+    "freebsd"
+  ],
+  "dependencies": [
+    "coreutils",
+    "findutils"
+  ],
+  "arguments": [
+    {
+      "name": "PATH",
+      "description": "Home directory path to analyze (default: /home)",
+      "required": false,
+      "default": "/home"
+    },
+    {
+      "name": "COUNT",
+      "description": "Number of top users to display (default: 10)",
+      "required": false,
+      "default": "10"
+    }
+  ],
+  "examples": [
+    {
+      "command": "du -sh /home/* 2>/dev/null | sort -hr | head -10",
+      "description": "Show top 10 users by storage usage in /home"
+    },
+    {
+      "command": "du -sh /home/* 2>/dev/null | sort -hr",
+      "description": "Show all users sorted by storage usage without limit"
+    },
+    {
+      "command": "du -sh /home/* 2>/dev/null | sort -hr | head -5",
+      "description": "Show top 5 users by storage usage"
+    },
+    {
+      "command": "du -sh /root /home/* 2>/dev/null | sort -hr | head -10",
+      "description": "Include root's home directory in the analysis"
+    }
+  ],
+  "output": "450G\t/home/alice\n320G\t/home/bob\n215G\t/home/charlie\n156G\t/home/diana\n98G\t/home/eve\n67G\t/home/frank\n45G\t/home/grace\n32G\t/home/henry\n28G\t/home/iris\n19G\t/home/jack",
+  "notes": [
+    "The command suppresses permission errors with '2>/dev/null', allowing users to see results without elevated privileges",
+    "Human-readable format (-h) displays sizes in K, M, G, etc., making interpretation easier",
+    "Sort with -h flag properly handles human-readable numbers (not lexicographic sorting)",
+    "Symbolic links in /home are counted separately if they point outside /home",
+    "Hidden files and directories within user homes are included in the totals",
+    "Results may vary if some home directories are mounted on different filesystems"
+  ],
+  "warnings": [
+    "Results may be incomplete if you lack read permissions on certain home directories",
+    "On systems with many users, this command may take considerable time to complete",
+    "NFS-mounted or slow storage may cause noticeable delays"
+  ],
+  "see_also": [
+    "find-large-files-recursive",
+    "disk-space-usage-per-directory"
+  ],
+  "status": "reviewed"
+}
