@@ -1,0 +1,57 @@
+{
+  "id": "system-memory-report-top10",
+  "title": "System memory report with top 10 consuming processes",
+  "language": "bash",
+  "category": "monitoring",
+  "command": "echo -e \"Memory Report:\\n$(free -h)\\n\\nTop 10 Memory Consuming Processes (%MEM):\\n$(ps -eo pid,comm,%mem --sort=-%mem | head -n 11)\"",
+  "description": "Displays system memory usage in human-readable format and lists the top 10 memory-consuming processes by percentage of memory used.",
+  "explanation": "The command uses 'free -h' to show memory statistics in human-readable units (e.g., MB, GB). It then uses 'ps' to list all processes sorted by memory usage (%MEM) in descending order, showing the top 10 (including header). The output is formatted with clear section headers and spacing for readability.",
+  "tags": [
+    "memory",
+    "system-monitoring",
+    "top-processes",
+    "ram",
+    "ps",
+    "free"
+  ],
+  "author": "Kilo Assistant",
+  "created_at": "2026-04-22",
+  "updated_at": "2026-04-22",
+  "safety": "safe",
+  "shell": "bash",
+  "platforms": [
+    "linux",
+    "gnu-linux",
+    "freebsd",
+    "openbsd",
+    "netbsd"
+  ],
+  "dependencies": [
+    "bash",
+    "coreutils",
+    "procps-ng"
+  ],
+  "arguments": [],
+  "examples": [
+    {
+      "command": "echo -e \"Memory Report:\\n$(free -h)\\n\\nTop 10 Memory Consuming Processes (%MEM):\\n$(ps -eo pid,comm,%mem --sort=-%mem | head -n 11)\"",
+      "description": "Run the memory report oneliner directly in the shell"
+    },
+    {
+      "command": "alias memreport='echo -e \"Memory Report:\\n$(free -h)\\n\\nTop 10 Memory Consuming Processes (%MEM):\\n$(ps -eo pid,comm,%mem --sort=-%mem | head -n 11)\"' && memreport",
+      "description": "Define as an alias and then execute it"
+    }
+  ],
+  "output": "Memory Report:\n              total        used        free      shared  buff/cache   available\nMem:           7.7G        2.3G        3.1G        256M        2.3G        5.0G\nSwap:          2.0G          0B        2.0G\n\nTop 10 Memory Consuming Processes (%MEM):\n  PID COMMAND         %MEM\n 1234 firefox         15.2\n 5678 chrome          12.8\n 9012 code             8.5\n 3456 thunderbird      6.2\n 7890 slack            4.1\n 1122 python3          3.8\n 3344 java             3.5\n 5566 docker           2.9\n 7788 Xorg             2.5\n 9900 gnome-shell      2.2",
+  "notes": [
+    "The %MEM column shows the percentage of available physical memory used by the process.",
+    "The header line (PID COMMAND %MEM) is included in the top 10 output.",
+    "For a more detailed view including memory in MB, use 'ps -eo pid,comm,rss --sort=-rss' and convert RSS from KB to MB."
+  ],
+  "warnings": [],
+  "see_also": [
+    "disk-usage-summary",
+    "cpu-top-processes"
+  ],
+  "status": "reviewed"
+}
