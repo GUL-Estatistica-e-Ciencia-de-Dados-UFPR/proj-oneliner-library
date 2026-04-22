@@ -1,0 +1,333 @@
+#!/usr/bin/env python3
+"""
+Convert JSON oneliner entries to LaTeX files.
+Traverses the library directory and converts each JSON file to a LaTeX source file,
+preserving the directory structure under conversions/library/.
+"""
+
+import json
+import os
+import sys
+from pathlib import Path
+
+
+def escape_latex(text):
+    """
+    Escape special LaTeX characters in a string.
+    """
+    if text is None:
+        return ""
+    # Replace backslashes first to avoid double escaping
+    text = text.replace("\\", "\\textbackslash{}")
+    # Characters that need escaping in LaTeX
+    special_chars = {
+        "&": "\\&",
+        "%": "\\%",
+        "$": "\\$",
+        "#": "\\#",
+        "_": "\\_",
+        "{": "\\{",
+        "}": "\\}",
+        "~": "\\textasciitilde{}",
+        "^": "\\textasciicircum{}",
+    }
+    for char, replacement in special_chars.items():
+        text = text.replace(char, replacement)
+    return text
+
+
+def format_list(items):
+    """
+    Format a list of strings as a comma-separated string, escaped for LaTeX.
+    """
+    if not items:
+        return "None"
+    return ", ".join(escape_latex(item) for item in items)
+
+
+def format_object_list(items, key1, key2=None):
+    """
+    Format a list of objects, extracting key1 and optionally key2.
+    """
+    if not items:
+        return "None"
+    if key2 is None:
+        return ", ".join(escape_latex(item[key1]) for item in items if key1 in item)
+    else:
+        return ", ".join(
+            f"{escape_latex(item[key1])}: {escape_latex(item[key2])}"
+            for item in items
+            if key1 in item and key2 in item
+        )
+
+
+def format_examples(examples):
+    """
+    Format examples as an enumerated list in LaTeX.
+    """
+    if not examples:
+        return "None"
+    result = "\\begin{enumerate}\n"
+    for ex in examples:
+        cmd = escape_latex(ex.get("command", ""))
+        desc = escape_latex(ex.get("description", ""))
+        result += f"  \\item \\texttt{{{cmd}}} - {desc}\n"
+    result += "\\end{enumerate}"
+    return result
+
+
+def format_string_array(array):
+    """
+    Format an array of strings as an itemized list in LaTeX.
+    """
+    if not array:
+        return "None"
+    result = "\\begin{itemize}\n"
+    for item in array:
+        result += f"  \\item {escape_latex(item)}\n"
+    result += "\\end{itemize}"
+    return result
+
+
+def json_to_latex(data):
+    """
+    Convert a JSON oneliner entry to a LaTeX string.
+    """
+    # Extract fields with defaults for optional ones
+    title = data.get("title", "Untitled")
+    language = data.get("language", "unknown")
+    category = data.get("category", "uncategorized")
+    command = data.get("command", "")
+    description = data.get("description", "No description provided.")
+    explanation = data.get("explanation", "No detailed explanation provided.")
+    tags = data.get("tags", [])
+    author = data.get("author", "Unknown")
+    created_at = data.get("created_at", "2026-01-01")
+    updated_at = data.get("updated_at", created_at)
+    safety = data.get("safety", "safe")
+    shell = data.get("shell", "not-applicable")
+    platforms = data.get("platforms", [])
+    dependencies = data.get("dependencies", [])
+    arguments = data.get("arguments", [])
+    examples = data.get("examples", [])
+    output = data.get("output", "No example output provided.")
+    notes = data.get("notes", [])
+    warnings = data.get("warnings", [])
+    see_also = data.get("see_also", [])
+    status = data.get("status", "draft")
+
+    latex = (
+        r"""\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+}
+
+\title{"""
+        + escape_latex(title)
+        + r"""}
+\author{"""
+        + escape_latex(author)
+        + r"""}
+\date{"""
+        + escape_latex(created_at)
+        + r"""}
+"""
+    )
+
+    latex += (
+        r"""
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+"""
+        + escape_latex(description)
+        + r"""
+\end{abstract}
+
+\section*{Language}
+"""
+        + escape_latex(language)
+        + r"""
+
+\section*{Category}
+"""
+        + escape_latex(category)
+        + r"""
+
+\section*{Command}
+\begin{lstlisting}
+"""
+        + escape_latex(command)
+        + r"""
+\end{lstlisting}
+
+\section*{Explanation}
+"""
+        + escape_latex(explanation)
+        + r"""
+
+\section*{Tags}
+"""
+        + format_list(tags)
+        + r"""
+
+\section*{Dependencies}
+"""
+        + format_list(dependencies)
+        + r"""
+
+\section*{Arguments}
+"""
+    )
+    if arguments:
+        latex += "\\begin{enumerate}\n"
+        for arg in arguments:
+            name = escape_latex(arg.get("name", ""))
+            desc = escape_latex(arg.get("description", ""))
+            required = "Required" if arg.get("required", False) else "Optional"
+            default = arg.get("default", "None")
+            if default is not None:
+                default_str = escape_latex(str(default))
+            else:
+                default_str = "None"
+            latex += f"  \\item \\textbf{{{name}}} ({required}): {desc}"
+            if default_str != "None":
+                latex += f" \\\\ Default: {default_str}"
+            latex += "\n"
+        latex += "\\end{enumerate}\n"
+    else:
+        latex += "None\n"
+
+    latex += (
+        r"""
+\section*{Examples}
+"""
+        + format_examples(examples)
+        + r"""
+
+\section*{Output}
+\begin{lstlisting}
+"""
+        + escape_latex(output)
+        + r"""
+\end{lstlisting}
+
+\section*{Notes}
+"""
+        + format_string_array(notes)
+        + r"""
+
+\section*{Warnings}
+"""
+        + format_string_array(warnings)
+        + r"""
+
+\section*{See Also}
+"""
+        + format_string_array(see_also)
+        + r"""
+
+\section*{Status}
+"""
+        + escape_latex(status)
+        + r"""
+
+\section*{Safety}
+"""
+        + escape_latex(safety)
+        + r"""
+
+\section*{Shell}
+"""
+        + escape_latex(shell)
+        + r"""
+
+\section*{Platforms}
+"""
+        + format_list(platforms)
+        + r"""
+
+\section*{Created At}
+"""
+        + escape_latex(created_at)
+        + r"""
+
+\section*{Updated At}
+"""
+        + escape_latex(updated_at)
+        + r"""
+
+\end{document}
+"""
+    )
+    return latex
+
+
+def main():
+    """
+    Main function: traverse library and convert JSON to LaTeX.
+    """
+    repo_root = Path(__file__).parent.parent
+    library_dir = repo_root / "library"
+    conversions_dir = repo_root / "conversions" / "library"
+
+    if not library_dir.exists():
+        print(f"Error: Library directory not found at {library_dir}")
+        sys.exit(1)
+
+    # Create conversions directory if it doesn't exist
+    conversions_dir.mkdir(parents=True, exist_ok=True)
+
+    converted_count = 0
+    error_count = 0
+
+    # Walk through library directory
+    for root, dirs, files in os.walk(library_dir):
+        for file in files:
+            if file.lower().endswith(".json"):
+                json_path = Path(root) / file
+                # Compute relative path from library_dir
+                relative_path = json_path.relative_to(library_dir)
+                # Change extension to .tex
+                tex_path = conversions_dir / relative_path.with_suffix(".tex")
+                # Create parent directories if needed
+                tex_path.parent.mkdir(parents=True, exist_ok=True)
+
+                try:
+                    # Read JSON file
+                    with open(json_path, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+
+                    # Convert to LaTeX
+                    latex_content = json_to_latex(data)
+
+                    # Write LaTeX file
+                    with open(tex_path, "w", encoding="utf-8") as f:
+                        f.write(latex_content)
+
+                    print(f"Converted: {json_path} -> {tex_path}")
+                    converted_count += 1
+                except Exception as e:
+                    print(f"Error processing {json_path}: {e}", file=sys.stderr)
+                    error_count += 1
+
+    print(
+        f"\nConversion complete: {converted_count} files converted, {error_count} errors."
+    )
+    if error_count > 0:
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,118 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+}
+
+\title{Replace string in multiple files using sed}
+\author{Marcos de Carvalho}
+\date{2026-04-21}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Replaces all occurrences of a string with a replacement string in multiple files or file patterns. Pure oneliner that works directly pasted with parameters, or in an alias.
+\end{abstract}
+
+\section*{Language}
+bash
+
+\section*{Category}
+text-processing
+
+\section*{Command}
+\begin{lstlisting}
+bash -c 'old=\$1; new=\$2; shift 2; find "\$@" -type f -exec sed -i "s\#\$old\#\$new\#g" \{\} +' \_
+\end{lstlisting}
+
+\section*{Explanation}
+This oneliner uses a subshell (`bash -c`) to parse positional parameters. The first argument is the string to replace (`\$1`), the second is the replacement (`\$2`), and `shift 2` leaves the remaining arguments as the files or patterns to search in (`\$@`). The `find` command locates all matching files and processes them with `sed` using the `-exec \{\} +` syntax, which efficiently handles multiple files in batches. The `\_` at the end acts as `\$0` (the script name) so `\$1` maps to the first actual argument. This approach handles an arbitrary amount of files and supports wildcard file patterns without hardcoding values into the command itself.
+
+\section*{Tags}
+sed, text-processing, string-replacement, file-editing, search-replace, batch-replace
+
+\section*{Dependencies}
+sed, coreutils
+
+\section*{Arguments}
+\begin{enumerate}
+  \item \textbf{SEARCH} (Required): The string to search for (first parameter passed after the command).
+  \item \textbf{REPLACE} (Required): The replacement string (second parameter passed after the command).
+  \item \textbf{FILES} (Required): One or more file paths or patterns (e.g., file1.txt, *.txt, /path/*.js).
+\end{enumerate}
+
+\section*{Examples}
+\begin{enumerate}
+  \item \texttt{bash -c 'old=\$1; new=\$2; shift 2; find "\$@" -type f -exec sed -i "s\#\$old\#\$new\#g" \{\} +' \_ 'old-domain.com' 'new-domain.com' config.json settings.json} - Paste directly: replace 'old-domain.com' with 'new-domain.com' in config.json and settings.json
+  \item \texttt{bash -c 'old=\$1; new=\$2; shift 2; find "\$@" -type f -exec sed -i "s\#\$old\#\$new\#g" \{\} +' \_ '/var/old/path' '/var/new/path' nginx.conf} - Replace a path containing slashes in a configuration file
+  \item \texttt{bash -c 'old=\$1; new=\$2; shift 2; find "\$@" -type f -exec sed -i "s\#\$old\#\$new\#g" \{\} +' \_ 'old-text' 'new-text' *.txt} - Replace in all .txt files in current directory using a wildcard
+  \item \texttt{alias repl="bash -c 'old=\textbackslash\{\}\$1; new=\textbackslash\{\}\$2; shift 2; find \textbackslash\{\}"\textbackslash\{\}\$@\textbackslash\{\}" -type f -exec sed -i \textbackslash\{\}"s\#\textbackslash\{\}\$old\#\textbackslash\{\}\$new\#g\textbackslash\{\}" \{\} +' \_"} - Create an alias named 'repl' to easily perform string replacements
+  \item \texttt{repl 'deprecated\_method' 'new\_method' src/**/*.py} - Use the alias to replace in all Python files in src directory and subdirectories
+  \item \texttt{repl 'old-api' 'new-api' config/*.json docs/*.md} - Use the alias to replace in multiple file types across different directories
+\end{enumerate}
+
+\section*{Output}
+\begin{lstlisting}
+(No output on success - files are modified in place)
+\end{lstlisting}
+
+\section*{Notes}
+\begin{itemize}
+  \item Pure oneliner: uses bash -c to accept arbitrary parameters after the command string
+  \item Usage: Paste the command and append your search string, replacement string, and file patterns
+  \item Can be easily turned into a powerful alias in your .bashrc or .bash\_profile
+  \item The -i flag modifies files in place; make backups first with cp file.txt file.txt.bak if concerned
+  \item Using \# as delimiter prevents issues when search/replace strings contain forward slashes
+  \item The g flag replaces all occurrences per line; remove it to replace only first occurrence
+  \item The -exec \{\} + syntax bundles multiple files to sed for efficiency
+  \item Files with spaces or special characters are handled correctly by find
+  \item For case-insensitive replacement, modify the command to include the i flag: sed -i "s\#\$old\#\$new\#gi"
+\end{itemize}
+
+\section*{Warnings}
+\begin{itemize}
+  \item The -i flag modifies files directly without confirmation - always test on copies first
+  \item If search string is empty, sed will replace every character with the replacement string
+  \item The command will silently fail to modify files if they lack write permissions
+  \item Very large files or many files may cause performance issues
+  \item Replacement is literal - regex special characters will be treated as patterns (not escaped)
+  \item Be careful with wildcard patterns - they may match more files than intended
+  \item The find command only processes regular files, not directories
+  \item Special characters in search/replace strings must be properly quoted or escaped
+\end{itemize}
+
+\section*{See Also}
+\begin{itemize}
+  \item find-large-files-recursive
+  \item disk-space-usage-per-directory
+\end{itemize}
+
+\section*{Status}
+reviewed
+
+\section*{Safety}
+caution
+
+\section*{Shell}
+bash
+
+\section*{Platforms}
+linux, gnu-linux, freebsd, openbsd, netbsd
+
+\section*{Created At}
+2026-04-21
+
+\section*{Updated At}
+2026-04-21
+
+\end{document}

@@ -1,0 +1,118 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+}
+
+\title{Display disk space usage for all directories with hierarchical breakdown}
+\author{marcos}
+\date{2026-04-21}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Shows disk space usage for directories up to 2 levels deep in the current directory tree, sorted by size in descending order with human-readable format, providing a hierarchical breakdown of disk consumption.
+\end{abstract}
+
+\section*{Language}
+bash
+
+\section*{Category}
+disk-usage
+
+\section*{Command}
+\begin{lstlisting}
+du -h --max-depth=2 . | sort -hr
+\end{lstlisting}
+
+\section*{Explanation}
+The command uses 'du -h' to calculate disk usage in human-readable format. The '--max-depth=2' flag limits output to directories up to 2 levels deep from the current directory, avoiding excessive detail while still showing the hierarchy. The '.' specifies the starting directory. The output is piped to 'sort -hr' to sort in descending order by human-readable sizes, making it easy to identify which directories consume the most space at each level.
+
+\section*{Tags}
+du, disk-usage, directories, storage, hierarchical, sort, system-administration
+
+\section*{Dependencies}
+coreutils
+
+\section*{Arguments}
+\begin{enumerate}
+  \item \textbf{PATH} (Optional): Root directory to analyze (default: current directory) \\ Default: .
+  \item \textbf{DEPTH} (Optional): Maximum directory depth to traverse (default: 2) \\ Default: 2
+\end{enumerate}
+
+\section*{Examples}
+\begin{enumerate}
+  \item \texttt{du -h --max-depth=2 . | sort -hr} - Show disk usage up to 2 levels deep from current directory
+  \item \texttt{du -h --max-depth=1 . | sort -hr} - Show only immediate subdirectories (1 level deep)
+  \item \texttt{du -h --max-depth=3 /home | sort -hr} - Show disk usage in /home up to 3 levels deep
+  \item \texttt{du -h --max-depth=2 . | sort -hr | head -20} - Show top 20 directories by size (2 levels deep)
+  \item \texttt{du -ah --max-depth=2 . | sort -hr | head -15} - Include files in the listing, show top 15 items
+\end{enumerate}
+
+\section*{Output}
+\begin{lstlisting}
+1.2T	.
+847G	./data
+512G	./data/cache
+256G	./data/backups
+244G	./media
+128G	./media/videos
+116G	./media/archives
+156G	./documents
+96G	./documents/projects
+60G	./documents/reports
+\end{lstlisting}
+
+\section*{Notes}
+\begin{itemize}
+  \item The --max-depth flag controls recursion depth: 0 shows only the starting directory, 1 shows immediate children, etc.
+  \item The -h flag makes output human-readable (K, M, G, T); use -B 1M for sizes in fixed block units
+  \item The -s flag is not needed here as du summarizes by default
+  \item Hidden directories (those starting with .) are included automatically
+  \item Each line shows cumulative size for that directory and all its contents
+  \item Symbolic links are not followed by default; add -L to follow symlinks
+  \item On filesystems with many nested directories, increasing --max-depth may significantly increase runtime
+\end{itemize}
+
+\section*{Warnings}
+\begin{itemize}
+  \item Results may be incomplete if you lack read permissions on some directories
+  \item On network filesystems (NFS, SMB), this command can be slow due to network latency
+  \item Very deep directory hierarchies combined with high --max-depth values may cause excessive output
+  \item Sparse files may report misleading sizes on some filesystems
+\end{itemize}
+
+\section*{See Also}
+\begin{itemize}
+  \item disk-space-sort-largest-directories
+\end{itemize}
+
+\section*{Status}
+reviewed
+
+\section*{Safety}
+safe
+
+\section*{Shell}
+bash
+
+\section*{Platforms}
+linux, gnu-linux, freebsd, openbsd, netbsd
+
+\section*{Created At}
+2026-04-21
+
+\section*{Updated At}
+2026-04-21
+
+\end{document}

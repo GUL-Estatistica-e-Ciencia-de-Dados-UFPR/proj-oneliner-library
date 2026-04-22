@@ -1,0 +1,114 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+}
+
+\title{Find large files recursively in a directory tree}
+\author{marcos}
+\date{2026-04-21}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Recursively finds all regular files larger than 100 MB in the directory tree, displays them with human-readable sizes, and sorts by size in descending order.
+\end{abstract}
+
+\section*{Language}
+bash
+
+\section*{Category}
+filesystem
+
+\section*{Command}
+\begin{lstlisting}
+find . -type f -size +100M -exec ls -lh \{\} + | awk '\{print \$5, \$9\}' | sort -hr
+\end{lstlisting}
+
+\section*{Explanation}
+The command uses 'find' to recursively traverse the directory tree, filter for regular files (-type f), and select those exceeding 100 MB (-size +100M). The '-exec ls -lh \{\} +' displays detailed information for each file in a batch operation, which is more efficient than using '\textbackslash\{\};'. The output is piped to 'awk' to extract the file size and path, then 'sort -hr' sorts the results by human-readable sizes in descending order, showing the largest files first.
+
+\section*{Tags}
+find, filesystem, disk-usage, large-files, recursive, storage
+
+\section*{Dependencies}
+findutils, coreutils
+
+\section*{Arguments}
+\begin{enumerate}
+  \item \textbf{PATH} (Optional): Root directory to start the recursive search (default: current directory) \\ Default: .
+  \item \textbf{SIZE} (Optional): Minimum file size threshold (default: 100M, supports K, M, G suffixes) \\ Default: 100M
+\end{enumerate}
+
+\section*{Examples}
+\begin{enumerate}
+  \item \texttt{find . -type f -size +100M -exec ls -lh \{\} + | awk '\{print \$5, \$9\}' | sort -hr} - Find files larger than 100 MB in current directory and subdirectories
+  \item \texttt{find /var -type f -size +500M -exec ls -lh \{\} + | awk '\{print \$5, \$9\}' | sort -hr} - Find large files in /var directory
+  \item \texttt{find . -type f -size +1G -exec ls -lh \{\} + | awk '\{print \$5, \$9\}' | sort -hr} - Find files larger than 1 GB
+  \item \texttt{find . -type f -size +50M -exec ls -lh \{\} + | awk '\{print \$5, \$9\}' | sort -hr | head -20} - Show top 20 largest files over 50 MB
+\end{enumerate}
+
+\section*{Output}
+\begin{lstlisting}
+1.5G ./videos/archive.tar.gz
+987M ./backups/database.sql.bz2
+756M ./datasets/training-data.bin
+543M ./cache/node\_modules.tar
+387M ./downloads/ubuntu-22.04-iso
+256M ./logs/app-2026.log
+198M ./tmp/large-temp-file
+\end{lstlisting}
+
+\section*{Notes}
+\begin{itemize}
+  \item The -size option supports various units: c (bytes), k (kilobytes), M (megabytes), G (gigabytes), and b (512-byte blocks)
+  \item By default, -size rounds up (e.g., +100M matches files larger than 100 MiB)
+  \item Use -size -100M to find files smaller than 100 MB
+  \item The command may take considerable time on large directory trees
+  \item Using '\{\}  +' instead of '\{\}  \textbackslash\{\};' is more efficient as it batches the command executions
+  \item Results may be incomplete in directories where you lack read permissions
+\end{itemize}
+
+\section*{Warnings}
+\begin{itemize}
+  \item On network filesystems (NFS, SMB), this command may be significantly slower
+  \item Does not follow symbolic links by default; add -L flag if needed
+  \item Very large directory trees may cause the command to run for extended periods
+  \item Some filesystems may not report accurate sizes for sparse files
+\end{itemize}
+
+\section*{See Also}
+\begin{itemize}
+  \item find-largest-storage-users
+  \item disk-space-sort-largest-directories
+\end{itemize}
+
+\section*{Status}
+reviewed
+
+\section*{Safety}
+safe
+
+\section*{Shell}
+bash
+
+\section*{Platforms}
+linux, gnu-linux, freebsd, openbsd, netbsd
+
+\section*{Created At}
+2026-04-21
+
+\section*{Updated At}
+2026-04-21
+
+\end{document}

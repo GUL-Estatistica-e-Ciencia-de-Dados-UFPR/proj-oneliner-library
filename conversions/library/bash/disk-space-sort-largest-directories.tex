@@ -1,0 +1,119 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+}
+
+\title{Sort directories by disk usage and display the largest ones}
+\author{Marcos de Carvalho}
+\date{2026-04-21}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Displays the top 10 directories with the largest disk usage in the current directory, sorted in descending order by size in human-readable format.
+\end{abstract}
+
+\section*{Language}
+bash
+
+\section*{Category}
+disk-usage
+
+\section*{Command}
+\begin{lstlisting}
+du -sh */ | sort -hr | head -10
+\end{lstlisting}
+
+\section*{Explanation}
+The command uses 'du -sh' to calculate the total disk usage for each directory in human-readable format. The '*/' glob pattern matches only directories (not files). The output is piped to 'sort -hr' to sort in descending order using human-readable number comparison, with the largest directories appearing first. Finally, 'head -10' limits output to the top 10 directories.
+
+\section*{Tags}
+du, disk-usage, directories, storage, sort, system-administration
+
+\section*{Dependencies}
+coreutils
+
+\section*{Arguments}
+\begin{enumerate}
+  \item \textbf{PATH} (Optional): Directory path to analyze (default: current directory) \\ Default: .
+  \item \textbf{COUNT} (Optional): Number of largest directories to display (default: 10) \\ Default: 10
+\end{enumerate}
+
+\section*{Examples}
+\begin{enumerate}
+  \item \texttt{du -sh */ | sort -hr | head -10} - Show top 10 largest subdirectories in current directory
+  \item \texttt{du -sh */ | sort -hr} - Show all subdirectories sorted by size without limit
+  \item \texttt{du -sh */ | sort -hr | head -5} - Show top 5 largest subdirectories
+  \item \texttt{du -sh ./* | sort -hr | head -10} - Include hidden files and directories (those starting with dot)
+  \item \texttt{cd /var \&\& du -sh */ | sort -hr | head -10} - Find largest subdirectories in /var
+\end{enumerate}
+
+\section*{Output}
+\begin{lstlisting}
+847G	cache/
+512G	data/
+256G	backups/
+128G	logs/
+96G	documents/
+64G	downloads/
+32G	pictures/
+16G	videos/
+8.5G	archives/
+2.1G	temp/
+\end{lstlisting}
+
+\section*{Notes}
+\begin{itemize}
+  \item The '*/' pattern matches only directories; use '*' to include files as well
+  \item The -h flag makes output human-readable (K, M, G, T); use -B for a specific block size
+  \item The -s flag summarizes each directory's total size instead of listing contents recursively
+  \item Hidden directories (starting with .) are excluded; use './*' or '*' (with shopt) to include them
+  \item On systems with many subdirectories, results are calculated quickly since du only traverses each directory once
+  \item Symbolic links are not followed by default; add -L flag to follow symlinks
+  \item Results may vary if some directories are mounted on different filesystems or are inaccessible due to permissions
+\end{itemize}
+
+\section*{Warnings}
+\begin{itemize}
+  \item Results may be incomplete or misleading if you lack read permissions on some directories
+  \item On network filesystems (NFS, SMB), the command may be slower due to network latency
+  \item If dealing with millions of directories, the command can consume considerable memory and time
+  \item Sparse files may cause inaccurate size reporting on some filesystems
+\end{itemize}
+
+\section*{See Also}
+\begin{itemize}
+  \item find-largest-storage-users
+  \item find-large-files-recursive
+\end{itemize}
+
+\section*{Status}
+reviewed
+
+\section*{Safety}
+safe
+
+\section*{Shell}
+bash
+
+\section*{Platforms}
+linux, gnu-linux, freebsd, openbsd, netbsd
+
+\section*{Created At}
+2026-04-21
+
+\section*{Updated At}
+2026-04-21
+
+\end{document}

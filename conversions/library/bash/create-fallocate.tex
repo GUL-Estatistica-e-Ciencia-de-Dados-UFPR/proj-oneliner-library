@@ -1,0 +1,103 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+}
+
+\title{Create a large file of a specific size quickly}
+\author{Marcos de Carvalho}
+\date{2026-04-21}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Quickly creates a file of a specific size (e.g., 1 GB) using fallocate, which is much faster than dd because it allocates blocks without writing actual data.
+\end{abstract}
+
+\section*{Language}
+bash
+
+\section*{Category}
+filesystem
+
+\section*{Command}
+\begin{lstlisting}
+fallocate -l 1G test\_file
+\end{lstlisting}
+
+\section*{Explanation}
+The 'fallocate' command communicates directly with the filesystem to preallocate disk space for a file. Unlike 'dd', which must write every byte to disk, 'fallocate' simply marks the space as allocated in the filesystem's metadata. This is extremely efficient for creating large test files, swap files, or preallocating space for databases. The length (-l) can be specified in bytes or using suffixes like K, M, G, T, P, E.
+
+\section*{Tags}
+fallocate, filesystem, storage, disk-usage, allocation, testing
+
+\section*{Dependencies}
+util-linux
+
+\section*{Arguments}
+\begin{enumerate}
+  \item \textbf{SIZE} (Optional): The size of the file to create (e.g., 10M, 1G, 500M). \\ Default: 1G
+  \item \textbf{FILENAME} (Optional): The name of the file to be created. \\ Default: test\_file
+\end{enumerate}
+
+\section*{Examples}
+\begin{enumerate}
+  \item \texttt{fallocate -l 100M dummy\_file} - Create a 100 MB file named dummy\_file
+  \item \texttt{fallocate -l 1G large\_test\_file} - Create a 1 GB file for testing
+  \item \texttt{fallocate -l 10G /swapfile} - Preallocate 10 GB for a swap file (requires subsequent mkswap and swapon)
+\end{enumerate}
+
+\section*{Output}
+\begin{lstlisting}
+(No output on success)
+\end{lstlisting}
+
+\section*{Notes}
+\begin{itemize}
+  \item Not all filesystems support fallocate. It is well-supported on ext4, xfs, btrfs, and ocfs2.
+  \item If the filesystem doesn't support fallocate, you can use 'truncate -s SIZE FILENAME' as a fallback, though it creates a sparse file.
+  \item For older systems or filesystems, 'dd if=/dev/zero of=FILENAME bs=1M count=SIZE\_IN\_MB' is the most compatible but much slower method.
+\end{itemize}
+
+\section*{Warnings}
+\begin{itemize}
+  \item This command will overwrite the specified file if it already exists.
+  \item On some filesystems, the allocated space may contain 'stale' data from previously deleted files, though modern Linux filesystems (ext4, xfs) zero-fill or mark it as uninitialized for security.
+  \item Ensure you have enough free disk space before running this command.
+\end{itemize}
+
+\section*{See Also}
+\begin{itemize}
+  \item find-large-files-recursive
+  \item disk-space-usage-per-directory
+\end{itemize}
+
+\section*{Status}
+reviewed
+
+\section*{Safety}
+caution
+
+\section*{Shell}
+bash
+
+\section*{Platforms}
+linux
+
+\section*{Created At}
+2026-04-21
+
+\section*{Updated At}
+2026-04-21
+
+\end{document}

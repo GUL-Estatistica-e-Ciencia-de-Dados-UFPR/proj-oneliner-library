@@ -1,0 +1,118 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+}
+
+\title{Comprehensive system/service non-human user report with disk quota, usage, and activity}
+\author{Marcos de Carvalho}
+\date{2026-04-21}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Generates a comprehensive system audit report for all non-human (system/service) users (requires sudo) showing username, disk quota limit, home directory path, actual disk usage, account creation date, file count, last login timestamp, and last executed command. All information is formatted in a readable table with elevated privileges for complete data access.
+\end{abstract}
+
+\section*{Language}
+bash
+
+\section*{Category}
+system-administration
+
+\section*{Command}
+\begin{lstlisting}
+sudo bash -c "printf 'USER\textbackslash\{\}tQUOTA\textbackslash\{\}tHOME\textbackslash\{\}tDISK\_USAGE\textbackslash\{\}tCREATED\textbackslash\{\}tFILES\textbackslash\{\}tLAST\_LOGIN\textbackslash\{\}tLAST\_CMD\textbackslash\{\}n'; getent passwd | awk -F: '\textbackslash\{\}\$3 < 1000 || \textbackslash\{\}\$1 \textasciitilde{} /\textasciicircum{}nobody\$/ \{ print \textbackslash\{\}\$1,\textbackslash\{\}\$6 \}' | while read u h; do q=\textbackslash\{\}\$(quota -u \textbackslash\{\}"\textbackslash\{\}\$u\textbackslash\{\}" 2>/dev/null | tail -1 | awk '\{print \textbackslash\{\}\$2\}'); [ -z \textbackslash\{\}"\textbackslash\{\}\$q\textbackslash\{\}" ] \&\& q=none; d=\textbackslash\{\}\$(du -sh \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}" 2>/dev/null | cut -f1); c=\textbackslash\{\}\$(stat -c \%y \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}" 2>/dev/null | cut -d' ' -f1 || echo N/A); f=\textbackslash\{\}\$(find \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}" -type f 2>/dev/null | wc -l); l=\textbackslash\{\}\$(lastlog -u \textbackslash\{\}"\textbackslash\{\}\$u\textbackslash\{\}" 2>/dev/null | tail -1 | awk '\{print \textbackslash\{\}\$5,\textbackslash\{\}\$6,\textbackslash\{\}\$7\}'); [ -z \textbackslash\{\}"\textbackslash\{\}\$l\textbackslash\{\}" ] \&\& l=Never; cmd=\textbackslash\{\}\$(tail -1 \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}"/.bash\_history 2>/dev/null | head -c 30); [ -z \textbackslash\{\}"\textbackslash\{\}\$cmd\textbackslash\{\}" ] \&\& cmd=N/A; printf '\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}n' \textbackslash\{\}"\textbackslash\{\}\$u\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$q\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$d\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$c\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$f\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$l\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$cmd\textbackslash\{\}"; done" | column -t -s \$'\textbackslash\{\}t'
+\end{lstlisting}
+
+\section*{Explanation}
+The command uses 'sudo bash -c' to execute the entire script with elevated privileges, ensuring access to all user data. It retrieves users with UID < 1000 (or 'nobody') via getent, then for each user gathers: disk quota from 'quota -u', home disk usage from 'du -sh', account creation date via 'stat', file count using 'find', last login from 'lslogins', and last command from .bash\_history. The 'bash -c' wrapper allows proper variable expansion and quoting within the sudo context. Output is joined by tabs and formatted by 'column -t' for readability, avoiding issues with spaces in values.
+
+\section*{Tags}
+user-management, disk-usage, system-administration, activity, report, quota, audit, system-users, service-accounts
+
+\section*{Dependencies}
+coreutils, util-linux, shadow-utils, findutils
+
+\section*{Arguments}
+\begin{enumerate}
+  \item \textbf{UID\_THRESHOLD} (Optional): Maximum UID to consider a system user (default: 1000 for non-human users) \\ Default: 1000
+\end{enumerate}
+
+\section*{Examples}
+\begin{enumerate}
+  \item \texttt{sudo bash -c "printf 'USER\textbackslash\{\}tQUOTA\textbackslash\{\}tHOME\textbackslash\{\}tDISK\_USAGE\textbackslash\{\}tCREATED\textbackslash\{\}tFILES\textbackslash\{\}tLAST\_LOGIN\textbackslash\{\}tLAST\_CMD\textbackslash\{\}n'; getent passwd | awk -F: '\textbackslash\{\}\$3 < 1000 || \textbackslash\{\}\$1 \textasciitilde{} /\textasciicircum{}nobody\$/ \{ print \textbackslash\{\}\$1,\textbackslash\{\}\$6 \}' | while read u h; do q=\textbackslash\{\}\$(quota -u \textbackslash\{\}"\textbackslash\{\}\$u\textbackslash\{\}" 2>/dev/null | tail -1 | awk '\{print \textbackslash\{\}\$2\}'); [ -z \textbackslash\{\}"\textbackslash\{\}\$q\textbackslash\{\}" ] \&\& q=none; d=\textbackslash\{\}\$(du -sh \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}" 2>/dev/null | cut -f1); c=\textbackslash\{\}\$(stat -c \%y \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}" 2>/dev/null | cut -d' ' -f1 || echo N/A); f=\textbackslash\{\}\$(find \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}" -type f 2>/dev/null | wc -l); l=\textbackslash\{\}\$(lastlog -u \textbackslash\{\}"\textbackslash\{\}\$u\textbackslash\{\}" 2>/dev/null | tail -1 | awk '\{print \textbackslash\{\}\$5,\textbackslash\{\}\$6,\textbackslash\{\}\$7\}'); [ -z \textbackslash\{\}"\textbackslash\{\}\$l\textbackslash\{\}" ] \&\& l=Never; cmd=\textbackslash\{\}\$(tail -1 \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}"/.bash\_history 2>/dev/null | head -c 30); [ -z \textbackslash\{\}"\textbackslash\{\}\$cmd\textbackslash\{\}" ] \&\& cmd=N/A; printf '\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}n' \textbackslash\{\}"\textbackslash\{\}\$u\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$q\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$d\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$c\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$f\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$l\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$cmd\textbackslash\{\}"; done" | column -t -s \$'\textbackslash\{\}t'} - Generate complete report for all non-human (system) users with all metrics (requires sudo)
+  \item \texttt{sudo bash -c "printf 'USER\textbackslash\{\}tQUOTA\textbackslash\{\}tDISK\_USAGE\textbackslash\{\}tCREATED\textbackslash\{\}tFILES\textbackslash\{\}tLAST\_LOGIN\textbackslash\{\}n'; getent passwd | awk -F: '\textbackslash\{\}\$3 < 1000 || \textbackslash\{\}\$1 \textasciitilde{} /\textasciicircum{}nobody\$/ \{ print \textbackslash\{\}\$1,\textbackslash\{\}\$6 \}' | while read u h; do q=\textbackslash\{\}\$(quota -u \textbackslash\{\}"\textbackslash\{\}\$u\textbackslash\{\}" 2>/dev/null | tail -1 | awk '\{print \textbackslash\{\}\$2\}'); [ -z \textbackslash\{\}"\textbackslash\{\}\$q\textbackslash\{\}" ] \&\& q=none; d=\textbackslash\{\}\$(du -sh \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}" 2>/dev/null | cut -f1); c=\textbackslash\{\}\$(stat -c \%y \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}" 2>/dev/null | cut -d' ' -f1 || echo N/A); f=\textbackslash\{\}\$(find \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}" -type f 2>/dev/null | wc -l); l=\textbackslash\{\}\$(lastlog -u \textbackslash\{\}"\textbackslash\{\}\$u\textbackslash\{\}" 2>/dev/null | tail -1 | awk '\{print \textbackslash\{\}\$5,\textbackslash\{\}\$6,\textbackslash\{\}\$7\}'); [ -z \textbackslash\{\}"\textbackslash\{\}\$l\textbackslash\{\}" ] \&\& l=Never; printf '\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}n' \textbackslash\{\}"\textbackslash\{\}\$u\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$q\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$d\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$c\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$f\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$l\textbackslash\{\}"; done | sort -t \$'\textbackslash\{\}t' -k3 -hr" | column -t -s \$'\textbackslash\{\}t'} - Sort by disk usage descending, exclude home path and last command
+  \item \texttt{sudo bash -c "printf 'USER\textbackslash\{\}tQUOTA\textbackslash\{\}tDISK\_USAGE\textbackslash\{\}tFILES\textbackslash\{\}n'; getent passwd | awk -F: '\textbackslash\{\}\$3 < 1000 || \textbackslash\{\}\$1 \textasciitilde{} /\textasciicircum{}nobody\$/ \{ print \textbackslash\{\}\$1,\textbackslash\{\}\$6 \}' | while read u h; do q=\textbackslash\{\}\$(quota -u \textbackslash\{\}"\textbackslash\{\}\$u\textbackslash\{\}" 2>/dev/null | tail -1 | awk '\{print \textbackslash\{\}\$2\}'); [ -z \textbackslash\{\}"\textbackslash\{\}\$q\textbackslash\{\}" ] \&\& q=none; d=\textbackslash\{\}\$(du -sh \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}" 2>/dev/null | cut -f1); f=\textbackslash\{\}\$(find \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}" -type f 2>/dev/null | wc -l); printf '\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}n' \textbackslash\{\}"\textbackslash\{\}\$u\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$q\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$d\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$f\textbackslash\{\}"; done" | column -t -s \$'\textbackslash\{\}t'} - Simplified report showing only quota, disk usage, and file count
+\end{enumerate}
+
+\section*{Output}
+\begin{lstlisting}
+USER        QUOTA HOME            DISK\_USAGE CREATED    FILES  LAST\_LOGIN      LAST\_CMD
+root        none  /root           1.5G       2023-01-15 15340  May  20 13:45   apt update
+daemon      none  /usr/sbin       32K        2023-01-15 12     Never           N/A
+bin         none  /bin            0          2023-01-15 0      Never           N/A
+www-data    none  /var/www        4.2G       2023-05-10 45678  Never           N/A
+nobody      none  /nonexistent    0          2023-01-15 0      Never           N/A
+\end{lstlisting}
+
+\section*{Notes}
+\begin{itemize}
+  \item This command is designed to run with sudo for complete information; running without sudo will show incomplete results
+  \item The 'sudo bash -c' wrapper preserves the entire command context and allows proper variable expansion
+  \item Disk quota requires quota system to be enabled on the filesystem; shows 'none' if unavailable
+  \item File count calculation uses 'find' which can be slow on directories with millions of files
+  \item Account creation date uses home directory birth time (\%w) if available, falling back to modification time (\%y)
+  \item Last command is truncated to 30 characters; extracted from .bash\_history. Note: Bash only flushes history to disk upon session exit or when 'history -a' is run, so this shows the last saved command, not necessarily the active session's most recent command.
+  \item Users with UIDs >= 1000 are standard human accounts and are excluded by default. Note that system/service accounts typically lack valid login shells or history files, making LAST\_CMD frequently N/A and LAST\_LOGIN Never.
+  \item The command uses getent instead of /etc/passwd for better compatibility with different user databases (LDAP, NIS, etc.)
+\end{itemize}
+
+\section*{Warnings}
+\begin{itemize}
+  \item Requires sudo access to function properly; user must have sudo privileges without password prompt configured in sudoers for unattended execution
+  \item Large file counts or extensive directory trees will cause significant performance degradation
+  \item Running with find on large home directories can consume considerable IO and CPU resources
+  \item The lslogins command retrieves last login information depending on wtmp/btmp logs; accuracy varies by distribution logging policies
+  \item Last command information depends on .bash\_history being available and enabled; other shells use different history files
+  \item Network-mounted home directories (NFS, SMB) will significantly increase command execution time
+  \item On systems with many users, overall execution time can be substantial; consider running during off-peak hours
+\end{itemize}
+
+\section*{See Also}
+\begin{itemize}
+  \item find-largest-storage-users
+  \item du-sort-largest-directories
+  \item disk-space-usage-per-directory
+  \item find-large-files-recursive
+\end{itemize}
+
+\section*{Status}
+reviewed
+
+\section*{Safety}
+caution
+
+\section*{Shell}
+bash
+
+\section*{Platforms}
+linux, gnu-linux
+
+\section*{Created At}
+2026-04-21
+
+\section*{Updated At}
+2026-04-21
+
+\end{document}

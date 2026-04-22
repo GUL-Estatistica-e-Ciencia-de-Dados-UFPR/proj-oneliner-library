@@ -1,0 +1,116 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+}
+
+\title{Find users with largest storage usage}
+\author{Marcos de Carvalho}
+\date{2026-04-21}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Displays the top 10 users on the system by storage consumption in their home directories, sorted in descending order by disk usage.
+\end{abstract}
+
+\section*{Language}
+bash
+
+\section*{Category}
+disk-usage
+
+\section*{Command}
+\begin{lstlisting}
+du -sh /home/* 2>/dev/null | sort -hr | head -10
+\end{lstlisting}
+
+\section*{Explanation}
+The command uses 'du -sh' to calculate the total disk usage in human-readable format for each home directory. The '2>/dev/null' suppresses permission denied errors for inaccessible directories. The output is piped to 'sort -hr' to sort in descending order (largest first) using human-readable number comparison. Finally, 'head -10' limits the output to the top 10 users.
+
+\section*{Tags}
+disk-usage, storage, users, system-administration, du, sort
+
+\section*{Dependencies}
+coreutils, findutils
+
+\section*{Arguments}
+\begin{enumerate}
+  \item \textbf{PATH} (Optional): Home directory path to analyze (default: /home) \\ Default: /home
+  \item \textbf{COUNT} (Optional): Number of top users to display (default: 10) \\ Default: 10
+\end{enumerate}
+
+\section*{Examples}
+\begin{enumerate}
+  \item \texttt{du -sh /home/* 2>/dev/null | sort -hr | head -10} - Show top 10 users by storage usage in /home
+  \item \texttt{du -sh /home/* 2>/dev/null | sort -hr} - Show all users sorted by storage usage without limit
+  \item \texttt{du -sh /home/* 2>/dev/null | sort -hr | head -5} - Show top 5 users by storage usage
+  \item \texttt{du -sh /root /home/* 2>/dev/null | sort -hr | head -10} - Include root's home directory in the analysis
+\end{enumerate}
+
+\section*{Output}
+\begin{lstlisting}
+450G	/home/alice
+320G	/home/bob
+215G	/home/charlie
+156G	/home/diana
+98G	/home/eve
+67G	/home/frank
+45G	/home/grace
+32G	/home/henry
+28G	/home/iris
+19G	/home/jack
+\end{lstlisting}
+
+\section*{Notes}
+\begin{itemize}
+  \item The command suppresses permission errors with '2>/dev/null', allowing users to see results without elevated privileges
+  \item Human-readable format (-h) displays sizes in K, M, G, etc., making interpretation easier
+  \item Sort with -h flag properly handles human-readable numbers (not lexicographic sorting)
+  \item Symbolic links in /home are counted separately if they point outside /home
+  \item Hidden files and directories within user homes are included in the totals
+  \item Results may vary if some home directories are mounted on different filesystems
+\end{itemize}
+
+\section*{Warnings}
+\begin{itemize}
+  \item Results may be incomplete if you lack read permissions on certain home directories
+  \item On systems with many users, this command may take considerable time to complete
+  \item NFS-mounted or slow storage may cause noticeable delays
+\end{itemize}
+
+\section*{See Also}
+\begin{itemize}
+  \item find-large-files-recursive
+  \item disk-space-usage-per-directory
+\end{itemize}
+
+\section*{Status}
+reviewed
+
+\section*{Safety}
+safe
+
+\section*{Shell}
+bash
+
+\section*{Platforms}
+linux, gnu-linux, freebsd
+
+\section*{Created At}
+2026-04-21
+
+\section*{Updated At}
+2026-04-21
+
+\end{document}
