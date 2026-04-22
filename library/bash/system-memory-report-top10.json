@@ -3,9 +3,9 @@
   "title": "System memory report with top 10 consuming processes",
   "language": "bash",
   "category": "monitoring",
-  "command": "echo -e \"Memory Report:\\n$(free -h)\\n\\nTop 10 Memory Consuming Processes (%MEM):\\n$(ps -eo pid,comm,%mem --sort=-%mem | head -n 11)\"",
-  "description": "Displays system memory usage in human-readable format and lists the top 10 memory-consuming processes by percentage of memory used.",
-  "explanation": "The command uses 'free -h' to show memory statistics in human-readable units (e.g., MB, GB). It then uses 'ps' to list all processes sorted by memory usage (%MEM) in descending order, showing the top 10 (including header). The output is formatted with clear section headers and spacing for readability.",
+  "command": "echo -e \"Memory Report:\\n$(free -h)\\n\\nTop 10 Memory Consuming Processes (%MEM and RSS in MB):\\n$(ps -eo pid,comm,%mem,rss --sort=-%mem | awk 'NR==1 {print $0 \" RSS(MB)\"}; NR>1 {printf \"%s %s %s %.2f\\n\", $1, $2, $3, $4/1024}' | head -n 11)\"",
+  "description": "Displays system memory usage in human-readable format and lists the top 10 memory-consuming processes by percentage of memory used and resident set size in MB.",
+  "explanation": "The command uses 'free -h' to show memory statistics in human-readable units (e.g., MB, GB). It then uses 'ps' to list all processes sorted by memory usage (%MEM) in descending order, showing the top 10 processes including their RSS (Resident Set Size) converted to MB. The awk command formats the output to display PID, COMMAND, %MEM, and RSS(MB) with proper headers. The output is formatted with clear section headers and spacing for readability.",
   "tags": [
     "memory",
     "system-monitoring",
@@ -14,7 +14,7 @@
     "ps",
     "free"
   ],
-  "author": "Kilo Assistant",
+  "author": "Marcos de Carvalho",
   "created_at": "2026-04-22",
   "updated_at": "2026-04-22",
   "safety": "safe",
@@ -32,21 +32,22 @@
     "procps-ng"
   ],
   "arguments": [],
-  "examples": [
+"examples": [
     {
-      "command": "echo -e \"Memory Report:\\n$(free -h)\\n\\nTop 10 Memory Consuming Processes (%MEM):\\n$(ps -eo pid,comm,%mem --sort=-%mem | head -n 11)\"",
+      "command": "echo -e \"Memory Report:\\n$(free -h)\\n\\nTop 10 Memory Consuming Processes (%MEM and RSS in MB):\\n$(ps -eo pid,comm,%mem,rss --sort=-%mem | awk 'NR==1 {print $0 \" RSS(MB)\"}; NR>1 {printf \"%s %s %s %.2f\\n\", $1, $2, $3, $4/1024}' | head -n 11)\"",
       "description": "Run the memory report oneliner directly in the shell"
     },
     {
-      "command": "alias memreport='echo -e \"Memory Report:\\n$(free -h)\\n\\nTop 10 Memory Consuming Processes (%MEM):\\n$(ps -eo pid,comm,%mem --sort=-%mem | head -n 11)\"' && memreport",
+      "command": "alias memreport='echo -e \"Memory Report:\\n$(free -h)\\n\\nTop 10 Memory Consuming Processes (%MEM and RSS in MB):\\n$(ps -eo pid,comm,%mem,rss --sort=-%mem | awk 'NR==1 {print $0 \" RSS(MB)\"}; NR>1 {printf \"%s %s %s %.2f\\n\", $1, $2, $3, $4/1024}' | head -n 11)\"' && memreport",
       "description": "Define as an alias and then execute it"
     }
   ],
-  "output": "Memory Report:\n              total        used        free      shared  buff/cache   available\nMem:           7.7G        2.3G        3.1G        256M        2.3G        5.0G\nSwap:          2.0G          0B        2.0G\n\nTop 10 Memory Consuming Processes (%MEM):\n  PID COMMAND         %MEM\n 1234 firefox         15.2\n 5678 chrome          12.8\n 9012 code             8.5\n 3456 thunderbird      6.2\n 7890 slack            4.1\n 1122 python3          3.8\n 3344 java             3.5\n 5566 docker           2.9\n 7788 Xorg             2.5\n 9900 gnome-shell      2.2",
+  "output": "Memory Report:\n              total        used        free      shared  buff/cache   available\nMem:           7.7G        2.3G        3.1G        256M        2.3G        5.0G\nSwap:          2.0G          0B        2.0G\n\nTop 10 Memory Consuming Processes (%MEM and RSS in MB):\n  PID COMMAND         %MEM  RSS(MB)\n 1234 firefox         15.2  1175.04\n 5678 chrome          12.8   991.42\n 9012 code             8.5   657.92\n 3456 thunderbird      6.2   479.74\n 7890 slack            4.1   317.12\n 1122 python3          3.8   293.76\n 3344 java             3.5   270.85\n 5566 docker           2.9   224.26\n 7788 Xorg             2.5   193.28\n 9900 gnome-shell      2.2   170.24",
   "notes": [
     "The %MEM column shows the percentage of available physical memory used by the process.",
-    "The header line (PID COMMAND %MEM) is included in the top 10 output.",
-    "For a more detailed view including memory in MB, use 'ps -eo pid,comm,rss --sort=-rss' and convert RSS from KB to MB."
+    "The RSS(MB) column shows the Resident Set Size in megabytes (non-swapped physical memory used).",
+    "The header line is included in the top 10 output for clarity.",
+    "The awk command converts RSS from KB to MB by dividing by 1024 and formats to 2 decimal places."
   ],
   "warnings": [],
   "see_also": [
