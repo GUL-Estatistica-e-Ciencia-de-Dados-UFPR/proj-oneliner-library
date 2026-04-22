@@ -306,3 +306,61 @@ Whether you are:
 
 Your contribution helps build a high-quality shared resource.
 
+---
+---
+---
+---
+
+## 💡 Using Oneliners as Aliases
+
+All commands in GOLL are designed to be easily added as aliases in your shell for quick access. This allows you to remember and execute complex operations with simple shortcuts.
+
+### Temporary Aliases (Current Session Only)
+
+To create an alias that lasts only for your current terminal session:
+
+```bash
+alias shortname='your-command-here'
+```
+
+Example using the system memory report oneliner:
+```bash
+alias memreport='echo -e "Memory Report:\n$(free -h)\n\nTop 10 Memory Consuming Processes (%MEM and RSS in MB):\n$(ps -eo pid,comm,%mem,rss --sort=-%mem | awk '\''NR==1 {print $0 " RSS(MB)"}; NR>1 {printf "%s %s %s %.2f\n", $1, $2, $3, $4/1024}''' | head -n 11)"'
+```
+
+### Permanent Aliases (Across Sessions)
+
+To make aliases permanent, add them to your shell's configuration file:
+
+#### Bash (~/.bashrc or ~/.bash_profile)
+```bash
+# Add to ~/.bashrc or ~/.bash_profile
+alias memreport='echo -e "Memory Report:\n$(free -h)\n\nTop 10 Memory Consuming Processes (%MEM and RSS in MB):\n$(ps -eo pid,comm,%mem,rss --sort=-%mem | awk '\''NR==1 {print $0 " RSS(MB)"}; NR>1 {printf "%s %s %s %.2f\n", $1, $2, $3, $4/1024}''' | head -n 11)"'
+```
+Then reload: `source ~/.bashrc`
+
+#### Zsh (~/.zshrc)
+```bash
+# Add to ~/.zshrc
+alias memreport='echo -e "Memory Report:\n$(free -h)\n\nTop 10 Memory Consuming Processes (%MEM and RSS in MB):\n$(ps -eo pid,comm,%mem,rss --sort=-%mem | awk '\''NR==1 {print $0 " RSS(MB)"}; NR>1 {printf "%s %s %s %.2f\n", $1, $2, $3, $4/1024}''' | head -n 11)"'
+```
+Then reload: `source ~/.zshrc`
+
+#### Fish (~/.config/fish/config.fish)
+```bash
+# Add to ~/.config/fish/config.fish
+alias memreport="echo -e 'Memory Report:\n(free -h)\n\nTop 10 Memory Consuming Processes (%MEM and RSS in MB):\n(ps -eo pid,comm,%mem,rss --sort=-%mem | awk '\''NR==1 {print \$0 \" RSS(MB)\"}; NR>1 {printf \"%s %s %s %.2f\\n\", \$1, \$2, \$3, \$4/1024}''' | head -n 11)'"
+```
+Then reload: `source ~/.config/fish/config.fish`
+
+### Tips for Creating Effective Aliases
+
+1. **Choose memorable names**: Use short, intuitive names like `memreport`, `bigfiles`, `gitclean`
+2. **Quote properly**: Use quotes around the alias value to prevent premature variable expansion
+3. **Escape inner quotes**: When your command contains quotes, escape them appropriately for your shell
+4. **Document your aliases**: Consider keeping a personal alias reference file
+5. **Start with temporary aliases**: Test them before making them permanent
+
+By using these oneliners as aliases, you can significantly improve your command-line efficiency and have powerful tools readily available at your fingertips.
+
+---
