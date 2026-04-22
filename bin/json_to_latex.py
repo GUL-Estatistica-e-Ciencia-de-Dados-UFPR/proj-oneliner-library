@@ -17,9 +17,8 @@ def escape_latex(text):
     """
     if text is None:
         return ""
-    # Replace backslashes first to avoid double escaping
-    text = text.replace("\\", "\\textbackslash{}")
-    # Characters that need escaping in LaTeX
+    # Characters that need escaping in LaTeX (outside of lstlisting)
+    # Note: We're more selective about what we escape since lstlisting handles many chars
     special_chars = {
         "&": "\\&",
         "%": "\\%",
@@ -30,9 +29,29 @@ def escape_latex(text):
         "}": "\\}",
         "~": "\\textasciitilde{}",
         "^": "\\textasciicircum{}",
+        "\\": "\\textbackslash{}",
     }
     for char, replacement in special_chars.items():
         text = text.replace(char, replacement)
+    return text
+
+
+def escape_latex_for_lstlisting(text):
+    """
+    Escape special LaTeX characters for use within lstlisting environment.
+    Escapes characters that can interfere with LaTeX processing.
+    """
+    if text is None:
+        return ""
+    # Characters that need escaping in lstlisting to prevent LaTeX interpretation
+    text = text.replace("\\", "\\textbackslash{}")
+    text = text.replace("&", "\\&")
+    text = text.replace("%", "\\%")
+    text = text.replace("$", "\\$")
+    text = text.replace("#", "\\#")
+    text = text.replace("{", "\\{")
+    text = text.replace("}", "\\}")
+    text = text.replace("_", "\\_")
     return text
 
 
@@ -94,27 +113,27 @@ def json_to_latex(data):
     Convert a JSON oneliner entry to a LaTeX string.
     """
     # Extract fields with defaults for optional ones
-    title = data.get("title", "Untitled")
-    language = data.get("language", "unknown")
-    category = data.get("category", "uncategorized")
-    command = data.get("command", "")
-    description = data.get("description", "No description provided.")
-    explanation = data.get("explanation", "No detailed explanation provided.")
-    tags = data.get("tags", [])
-    author = data.get("author", "Unknown")
-    created_at = data.get("created_at", "2026-01-01")
-    updated_at = data.get("updated_at", created_at)
-    safety = data.get("safety", "safe")
-    shell = data.get("shell", "not-applicable")
-    platforms = data.get("platforms", [])
-    dependencies = data.get("dependencies", [])
-    arguments = data.get("arguments", [])
-    examples = data.get("examples", [])
-    output = data.get("output", "No example output provided.")
-    notes = data.get("notes", [])
-    warnings = data.get("warnings", [])
-    see_also = data.get("see_also", [])
-    status = data.get("status", "draft")
+    title = data.get('title', 'Untitled')
+    language = data.get('language', 'unknown')
+    category = data.get('category', 'uncategorized')
+    command = data.get('command', '')
+    description = data.get('description', 'No description provided.')
+    explanation = data.get('explanation', 'No detailed explanation provided.')
+    tags = data.get('tags', [])
+    author = data.get('author', 'Unknown')
+    created_at = data.get('created_at', '2026-01-01')
+    updated_at = data.get('updated_at', created_at)
+    safety = data.get('safety', 'safe')
+    shell = data.get('shell', 'not-applicable')
+    platforms = data.get('platforms', [])
+    dependencies = data.get('dependencies', [])
+    arguments = data.get('arguments', [])
+    examples = data.get('examples', [])
+    output = data.get('output', 'No example output provided.')
+    notes = data.get('notes', [])
+    warnings = data.get('warnings', [])
+    see_also = data.get('see_also', [])
+    status = data.get('status', 'draft')
 
     latex = (
         r"""\documentclass{article}
@@ -131,15 +150,9 @@ def json_to_latex(data):
     backgroundcolor=\color{gray!5},
 }
 
-\title{"""
-        + escape_latex(title)
-        + r"""}
-\author{"""
-        + escape_latex(author)
-        + r"""}
-\date{"""
-        + escape_latex(created_at)
-        + r"""}
+\title{""" + escape_latex(title) + r"""}
+\author{""" + escape_latex(author) + r"""}
+\date{""" + escape_latex(created_at) + r"""}
 """
     )
 
@@ -150,53 +163,38 @@ def json_to_latex(data):
 \maketitle
 
 \begin{abstract}
-"""
-        + escape_latex(description)
-        + r"""
+""" + escape_latex(description) + r"""
 \end{abstract}
 
 \section*{Language}
-"""
-        + escape_latex(language)
-        + r"""
+""" + escape_latex(language) + r"""
 
 \section*{Category}
-"""
-        + escape_latex(category)
-        + r"""
+""" + escape_latex(category) + r"""
 
 \section*{Command}
 \begin{lstlisting}
-"""
-        + escape_latex(command)
-        + r"""
+""" + escape_latex_for_lstlisting(command) + r"""
 \end{lstlisting}
 
 \section*{Explanation}
-"""
-        + escape_latex(explanation)
-        + r"""
+""" + escape_latex(explanation) + r"""
 
 \section*{Tags}
-"""
-        + format_list(tags)
-        + r"""
+""" + format_list(tags) + r"""
 
 \section*{Dependencies}
-"""
-        + format_list(dependencies)
-        + r"""
+""" + format_list(dependencies) + r"""
 
 \section*{Arguments}
 """
-    )
     if arguments:
         latex += "\\begin{enumerate}\n"
         for arg in arguments:
-            name = escape_latex(arg.get("name", ""))
-            desc = escape_latex(arg.get("description", ""))
-            required = "Required" if arg.get("required", False) else "Optional"
-            default = arg.get("default", "None")
+            name = escape_latex(arg.get('name', ''))
+            desc = escape_latex(arg.get('description', ''))
+            required = "Required" if arg.get('required', False) else "Optional"
+            default = arg.get('default', 'None')
             if default is not None:
                 default_str = escape_latex(str(default))
             else:
@@ -209,68 +207,44 @@ def json_to_latex(data):
     else:
         latex += "None\n"
 
-    latex += (
-        r"""
+    latex += r"""
 \section*{Examples}
-"""
-        + format_examples(examples)
-        + r"""
+""" + format_examples(examples) + r"""
 
 \section*{Output}
 \begin{lstlisting}
-"""
-        + escape_latex(output)
-        + r"""
+""" + output + r"""
 \end{lstlisting}
 
 \section*{Notes}
-"""
-        + format_string_array(notes)
-        + r"""
+""" + format_string_array(notes) + r"""
 
 \section*{Warnings}
-"""
-        + format_string_array(warnings)
-        + r"""
+""" + format_string_array(warnings) + r"""
 
 \section*{See Also}
-"""
-        + format_string_array(see_also)
-        + r"""
+""" + format_string_array(see_also) + r"""
 
 \section*{Status}
-"""
-        + escape_latex(status)
-        + r"""
+""" + escape_latex(status) + r"""
 
 \section*{Safety}
-"""
-        + escape_latex(safety)
-        + r"""
+""" + escape_latex(safety) + r"""
 
 \section*{Shell}
-"""
-        + escape_latex(shell)
-        + r"""
+""" + escape_latex(shell) + r"""
 
 \section*{Platforms}
-"""
-        + format_list(platforms)
-        + r"""
+""" + format_list(platforms) + r"""
 
 \section*{Created At}
-"""
-        + escape_latex(created_at)
-        + r"""
+""" + escape_latex(created_at) + r"""
 
 \section*{Updated At}
-"""
-        + escape_latex(updated_at)
-        + r"""
+""" + escape_latex(updated_at) + r"""
 
 \end{document}
 """
-    )
     return latex
 
 

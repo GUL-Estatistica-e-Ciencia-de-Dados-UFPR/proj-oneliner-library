@@ -1,0 +1,95 @@
+<h1 class="unnumbered" id="language">Language</h1>
+<p>bash</p>
+<h1 class="unnumbered" id="category">Category</h1>
+<p>disk-usage</p>
+<h1 class="unnumbered" id="command">Command</h1>
+<pre><code>du -sh */ | sort -hr | head -10</code></pre>
+<h1 class="unnumbered" id="explanation">Explanation</h1>
+<p>The command uses ’du -sh’ to calculate the total disk usage for each
+directory in human-readable format. The ’*/’ glob pattern matches only
+directories (not files). The output is piped to ’sort -hr’ to sort in
+descending order using human-readable number comparison, with the
+largest directories appearing first. Finally, ’head -10’ limits output
+to the top 10 directories.</p>
+<h1 class="unnumbered" id="tags">Tags</h1>
+<p>du, disk-usage, directories, storage, sort, system-administration</p>
+<h1 class="unnumbered" id="dependencies">Dependencies</h1>
+<p>coreutils</p>
+<h1 class="unnumbered" id="arguments">Arguments</h1>
+<ol>
+<li><p><strong>PATH</strong> (Optional): Directory path to analyze
+(default: current directory)<br />
+Default: .</p></li>
+<li><p><strong>COUNT</strong> (Optional): Number of largest directories
+to display (default: 10)<br />
+Default: 10</p></li>
+</ol>
+<h1 class="unnumbered" id="examples">Examples</h1>
+<ol>
+<li><p><code>du -sh */ | sort -hr | head -10</code> - Show top 10
+largest subdirectories in current directory</p></li>
+<li><p><code>du -sh */ | sort -hr</code> - Show all subdirectories
+sorted by size without limit</p></li>
+<li><p><code>du -sh */ | sort -hr | head -5</code> - Show top 5 largest
+subdirectories</p></li>
+<li><p><code>du -sh ./* | sort -hr | head -10</code> - Include hidden
+files and directories (those starting with dot)</p></li>
+<li><p><code>cd /var &amp;&amp; du -sh */ | sort -hr | head -10</code> -
+Find largest subdirectories in /var</p></li>
+</ol>
+<h1 class="unnumbered" id="output">Output</h1>
+<pre><code>847G    cache/
+512G    data/
+256G    backups/
+128G    logs/
+96G documents/
+64G downloads/
+32G pictures/
+16G videos/
+8.5G    archives/
+2.1G    temp/</code></pre>
+<h1 class="unnumbered" id="notes">Notes</h1>
+<ul>
+<li><p>The ’*/’ pattern matches only directories; use ’*’ to include
+files as well</p></li>
+<li><p>The -h flag makes output human-readable (K, M, G, T); use -B for
+a specific block size</p></li>
+<li><p>The -s flag summarizes each directory’s total size instead of
+listing contents recursively</p></li>
+<li><p>Hidden directories (starting with .) are excluded; use ’./*’ or
+’*’ (with shopt) to include them</p></li>
+<li><p>On systems with many subdirectories, results are calculated
+quickly since du only traverses each directory once</p></li>
+<li><p>Symbolic links are not followed by default; add -L flag to follow
+symlinks</p></li>
+<li><p>Results may vary if some directories are mounted on different
+filesystems or are inaccessible due to permissions</p></li>
+</ul>
+<h1 class="unnumbered" id="warnings">Warnings</h1>
+<ul>
+<li><p>Results may be incomplete or misleading if you lack read
+permissions on some directories</p></li>
+<li><p>On network filesystems (NFS, SMB), the command may be slower due
+to network latency</p></li>
+<li><p>If dealing with millions of directories, the command can consume
+considerable memory and time</p></li>
+<li><p>Sparse files may cause inaccurate size reporting on some
+filesystems</p></li>
+</ul>
+<h1 class="unnumbered" id="see-also">See Also</h1>
+<ul>
+<li><p>find-largest-storage-users</p></li>
+<li><p>find-large-files-recursive</p></li>
+</ul>
+<h1 class="unnumbered" id="status">Status</h1>
+<p>reviewed</p>
+<h1 class="unnumbered" id="safety">Safety</h1>
+<p>safe</p>
+<h1 class="unnumbered" id="shell">Shell</h1>
+<p>bash</p>
+<h1 class="unnumbered" id="platforms">Platforms</h1>
+<p>linux, gnu-linux, freebsd, openbsd, netbsd</p>
+<h1 class="unnumbered" id="created-at">Created At</h1>
+<p>2026-04-21</p>
+<h1 class="unnumbered" id="updated-at">Updated At</h1>
+<p>2026-04-21</p>

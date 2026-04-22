@@ -1,0 +1,76 @@
+<h1 class="unnumbered" id="language">Language</h1>
+<p>bash</p>
+<h1 class="unnumbered" id="category">Category</h1>
+<p>filesystem</p>
+<h1 class="unnumbered" id="command">Command</h1>
+<pre><code>fallocate -l 1G test\_file</code></pre>
+<h1 class="unnumbered" id="explanation">Explanation</h1>
+<p>The ’fallocate’ command communicates directly with the filesystem to
+preallocate disk space for a file. Unlike ’dd’, which must write every
+byte to disk, ’fallocate’ simply marks the space as allocated in the
+filesystem’s metadata. This is extremely efficient for creating large
+test files, swap files, or preallocating space for databases. The length
+(-l) can be specified in bytes or using suffixes like K, M, G, T, P,
+E.</p>
+<h1 class="unnumbered" id="tags">Tags</h1>
+<p>fallocate, filesystem, storage, disk-usage, allocation, testing</p>
+<h1 class="unnumbered" id="dependencies">Dependencies</h1>
+<p>util-linux</p>
+<h1 class="unnumbered" id="arguments">Arguments</h1>
+<ol>
+<li><p><strong>SIZE</strong> (Optional): The size of the file to create
+(e.g., 10M, 1G, 500M).<br />
+Default: 1G</p></li>
+<li><p><strong>FILENAME</strong> (Optional): The name of the file to be
+created.<br />
+Default: test_file</p></li>
+</ol>
+<h1 class="unnumbered" id="examples">Examples</h1>
+<ol>
+<li><p><code>fallocate -l 100M dummy_file</code> - Create a 100 MB file
+named dummy_file</p></li>
+<li><p><code>fallocate -l 1G large_test_file</code> - Create a 1 GB file
+for testing</p></li>
+<li><p><code>fallocate -l 10G /swapfile</code> - Preallocate 10 GB for a
+swap file (requires subsequent mkswap and swapon)</p></li>
+</ol>
+<h1 class="unnumbered" id="output">Output</h1>
+<pre><code>(No output on success)</code></pre>
+<h1 class="unnumbered" id="notes">Notes</h1>
+<ul>
+<li><p>Not all filesystems support fallocate. It is well-supported on
+ext4, xfs, btrfs, and ocfs2.</p></li>
+<li><p>If the filesystem doesn’t support fallocate, you can use
+’truncate -s SIZE FILENAME’ as a fallback, though it creates a sparse
+file.</p></li>
+<li><p>For older systems or filesystems, ’dd if=/dev/zero of=FILENAME
+bs=1M count=SIZE_IN_MB’ is the most compatible but much slower
+method.</p></li>
+</ul>
+<h1 class="unnumbered" id="warnings">Warnings</h1>
+<ul>
+<li><p>This command will overwrite the specified file if it already
+exists.</p></li>
+<li><p>On some filesystems, the allocated space may contain ’stale’ data
+from previously deleted files, though modern Linux filesystems (ext4,
+xfs) zero-fill or mark it as uninitialized for security.</p></li>
+<li><p>Ensure you have enough free disk space before running this
+command.</p></li>
+</ul>
+<h1 class="unnumbered" id="see-also">See Also</h1>
+<ul>
+<li><p>find-large-files-recursive</p></li>
+<li><p>disk-space-usage-per-directory</p></li>
+</ul>
+<h1 class="unnumbered" id="status">Status</h1>
+<p>reviewed</p>
+<h1 class="unnumbered" id="safety">Safety</h1>
+<p>caution</p>
+<h1 class="unnumbered" id="shell">Shell</h1>
+<p>bash</p>
+<h1 class="unnumbered" id="platforms">Platforms</h1>
+<p>linux</p>
+<h1 class="unnumbered" id="created-at">Created At</h1>
+<p>2026-04-21</p>
+<h1 class="unnumbered" id="updated-at">Updated At</h1>
+<p>2026-04-21</p>

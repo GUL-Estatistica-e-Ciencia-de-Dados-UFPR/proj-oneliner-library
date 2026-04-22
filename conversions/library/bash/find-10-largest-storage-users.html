@@ -1,0 +1,88 @@
+<h1 class="unnumbered" id="language">Language</h1>
+<p>bash</p>
+<h1 class="unnumbered" id="category">Category</h1>
+<p>disk-usage</p>
+<h1 class="unnumbered" id="command">Command</h1>
+<pre><code>du -sh /home/* 2&gt;/dev/null | sort -hr | head -10</code></pre>
+<h1 class="unnumbered" id="explanation">Explanation</h1>
+<p>The command uses ’du -sh’ to calculate the total disk usage in
+human-readable format for each home directory. The ’2&gt;/dev/null’
+suppresses permission denied errors for inaccessible directories. The
+output is piped to ’sort -hr’ to sort in descending order (largest
+first) using human-readable number comparison. Finally, ’head -10’
+limits the output to the top 10 users.</p>
+<h1 class="unnumbered" id="tags">Tags</h1>
+<p>disk-usage, storage, users, system-administration, du, sort</p>
+<h1 class="unnumbered" id="dependencies">Dependencies</h1>
+<p>coreutils, findutils</p>
+<h1 class="unnumbered" id="arguments">Arguments</h1>
+<ol>
+<li><p><strong>PATH</strong> (Optional): Home directory path to analyze
+(default: /home)<br />
+Default: /home</p></li>
+<li><p><strong>COUNT</strong> (Optional): Number of top users to display
+(default: 10)<br />
+Default: 10</p></li>
+</ol>
+<h1 class="unnumbered" id="examples">Examples</h1>
+<ol>
+<li><p><code>du -sh /home/* 2&gt;/dev/null | sort -hr | head -10</code>
+- Show top 10 users by storage usage in /home</p></li>
+<li><p><code>du -sh /home/* 2&gt;/dev/null | sort -hr</code> - Show all
+users sorted by storage usage without limit</p></li>
+<li><p><code>du -sh /home/* 2&gt;/dev/null | sort -hr | head -5</code> -
+Show top 5 users by storage usage</p></li>
+<li><p><code>du -sh /root /home/* 2&gt;/dev/null | sort -hr | head -10</code>
+- Include root’s home directory in the analysis</p></li>
+</ol>
+<h1 class="unnumbered" id="output">Output</h1>
+<pre><code>450G    /home/alice
+320G    /home/bob
+215G    /home/charlie
+156G    /home/diana
+98G /home/eve
+67G /home/frank
+45G /home/grace
+32G /home/henry
+28G /home/iris
+19G /home/jack</code></pre>
+<h1 class="unnumbered" id="notes">Notes</h1>
+<ul>
+<li><p>The command suppresses permission errors with ’2&gt;/dev/null’,
+allowing users to see results without elevated privileges</p></li>
+<li><p>Human-readable format (-h) displays sizes in K, M, G, etc.,
+making interpretation easier</p></li>
+<li><p>Sort with -h flag properly handles human-readable numbers (not
+lexicographic sorting)</p></li>
+<li><p>Symbolic links in /home are counted separately if they point
+outside /home</p></li>
+<li><p>Hidden files and directories within user homes are included in
+the totals</p></li>
+<li><p>Results may vary if some home directories are mounted on
+different filesystems</p></li>
+</ul>
+<h1 class="unnumbered" id="warnings">Warnings</h1>
+<ul>
+<li><p>Results may be incomplete if you lack read permissions on certain
+home directories</p></li>
+<li><p>On systems with many users, this command may take considerable
+time to complete</p></li>
+<li><p>NFS-mounted or slow storage may cause noticeable delays</p></li>
+</ul>
+<h1 class="unnumbered" id="see-also">See Also</h1>
+<ul>
+<li><p>find-large-files-recursive</p></li>
+<li><p>disk-space-usage-per-directory</p></li>
+</ul>
+<h1 class="unnumbered" id="status">Status</h1>
+<p>reviewed</p>
+<h1 class="unnumbered" id="safety">Safety</h1>
+<p>safe</p>
+<h1 class="unnumbered" id="shell">Shell</h1>
+<p>bash</p>
+<h1 class="unnumbered" id="platforms">Platforms</h1>
+<p>linux, gnu-linux, freebsd</p>
+<h1 class="unnumbered" id="created-at">Created At</h1>
+<p>2026-04-21</p>
+<h1 class="unnumbered" id="updated-at">Updated At</h1>
+<p>2026-04-21</p>

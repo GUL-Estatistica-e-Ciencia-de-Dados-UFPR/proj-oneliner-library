@@ -1,0 +1,110 @@
+<h1 class="unnumbered" id="language">Language</h1>
+<p>bash</p>
+<h1 class="unnumbered" id="category">Category</h1>
+<p>text-processing</p>
+<h1 class="unnumbered" id="command">Command</h1>
+<pre><code>bash -c &#39;old=\$1; new=\$2; shift 2; find &quot;\$@&quot; -type f -exec sed -i &quot;s\#\$old\#\$new\#g&quot; \{\} +&#39; \_</code></pre>
+<h1 class="unnumbered" id="explanation">Explanation</h1>
+<p>This oneliner uses a subshell (‘bash -c‘) to parse positional
+parameters. The first argument is the string to replace (‘$1‘), the
+second is the replacement (‘$2‘), and ‘shift 2‘ leaves the remaining
+arguments as the files or patterns to search in (‘$@‘). The ‘find‘
+command locates all matching files and processes them with ‘sed‘ using
+the ‘-exec {} +‘ syntax, which efficiently handles multiple files in
+batches. The ‘_‘ at the end acts as ‘$0‘ (the script name) so ‘$1‘ maps
+to the first actual argument. This approach handles an arbitrary amount
+of files and supports wildcard file patterns without hardcoding values
+into the command itself.</p>
+<h1 class="unnumbered" id="tags">Tags</h1>
+<p>sed, text-processing, string-replacement, file-editing,
+search-replace, batch-replace</p>
+<h1 class="unnumbered" id="dependencies">Dependencies</h1>
+<p>sed, coreutils</p>
+<h1 class="unnumbered" id="arguments">Arguments</h1>
+<ol>
+<li><p><strong>SEARCH</strong> (Required): The string to search for
+(first parameter passed after the command).</p></li>
+<li><p><strong>REPLACE</strong> (Required): The replacement string
+(second parameter passed after the command).</p></li>
+<li><p><strong>FILES</strong> (Required): One or more file paths or
+patterns (e.g., file1.txt, *.txt, /path/*.js).</p></li>
+</ol>
+<h1 class="unnumbered" id="examples">Examples</h1>
+<ol>
+<li><p><code>bash -c ’old=$1; new=$2; shift 2; find "$@" -type f -exec sed -i "s#$old#$new#g" {} +’ _ ’old-domain.com’ ’new-domain.com’ config.json settings.json</code>
+- Paste directly: replace ’old-domain.com’ with ’new-domain.com’ in
+config.json and settings.json</p></li>
+<li><p><code>bash -c ’old=$1; new=$2; shift 2; find "$@" -type f -exec sed -i "s#$old#$new#g" {} +’ _ ’/var/old/path’ ’/var/new/path’ nginx.conf</code>
+- Replace a path containing slashes in a configuration file</p></li>
+<li><p><code>bash -c ’old=$1; new=$2; shift 2; find "$@" -type f -exec sed -i "s#$old#$new#g" {} +’ _ ’old-text’ ’new-text’ *.txt</code>
+- Replace in all .txt files in current directory using a
+wildcard</p></li>
+<li><p><code>alias repl="bash -c ’old=\{}$1; new=\{}$2; shift 2; find \{}"\{}$@\{}" -type f -exec sed -i \{}"s#\{}$old#\{}$new#g\{}" {} +’ _"</code>
+- Create an alias named ’repl’ to easily perform string
+replacements</p></li>
+<li><p><code>repl ’deprecated_method’ ’new_method’ src/**/*.py</code> -
+Use the alias to replace in all Python files in src directory and
+subdirectories</p></li>
+<li><p><code>repl ’old-api’ ’new-api’ config/*.json docs/*.md</code> -
+Use the alias to replace in multiple file types across different
+directories</p></li>
+</ol>
+<h1 class="unnumbered" id="output">Output</h1>
+<pre><code>(No output on success - files are modified in place)</code></pre>
+<h1 class="unnumbered" id="notes">Notes</h1>
+<ul>
+<li><p>Pure oneliner: uses bash -c to accept arbitrary parameters after
+the command string</p></li>
+<li><p>Usage: Paste the command and append your search string,
+replacement string, and file patterns</p></li>
+<li><p>Can be easily turned into a powerful alias in your .bashrc or
+.bash_profile</p></li>
+<li><p>The -i flag modifies files in place; make backups first with cp
+file.txt file.txt.bak if concerned</p></li>
+<li><p>Using # as delimiter prevents issues when search/replace strings
+contain forward slashes</p></li>
+<li><p>The g flag replaces all occurrences per line; remove it to
+replace only first occurrence</p></li>
+<li><p>The -exec {} + syntax bundles multiple files to sed for
+efficiency</p></li>
+<li><p>Files with spaces or special characters are handled correctly by
+find</p></li>
+<li><p>For case-insensitive replacement, modify the command to include
+the i flag: sed -i "s#$old#$new#gi"</p></li>
+</ul>
+<h1 class="unnumbered" id="warnings">Warnings</h1>
+<ul>
+<li><p>The -i flag modifies files directly without confirmation - always
+test on copies first</p></li>
+<li><p>If search string is empty, sed will replace every character with
+the replacement string</p></li>
+<li><p>The command will silently fail to modify files if they lack write
+permissions</p></li>
+<li><p>Very large files or many files may cause performance
+issues</p></li>
+<li><p>Replacement is literal - regex special characters will be treated
+as patterns (not escaped)</p></li>
+<li><p>Be careful with wildcard patterns - they may match more files
+than intended</p></li>
+<li><p>The find command only processes regular files, not
+directories</p></li>
+<li><p>Special characters in search/replace strings must be properly
+quoted or escaped</p></li>
+</ul>
+<h1 class="unnumbered" id="see-also">See Also</h1>
+<ul>
+<li><p>find-large-files-recursive</p></li>
+<li><p>disk-space-usage-per-directory</p></li>
+</ul>
+<h1 class="unnumbered" id="status">Status</h1>
+<p>reviewed</p>
+<h1 class="unnumbered" id="safety">Safety</h1>
+<p>caution</p>
+<h1 class="unnumbered" id="shell">Shell</h1>
+<p>bash</p>
+<h1 class="unnumbered" id="platforms">Platforms</h1>
+<p>linux, gnu-linux, freebsd, openbsd, netbsd</p>
+<h1 class="unnumbered" id="created-at">Created At</h1>
+<p>2026-04-21</p>
+<h1 class="unnumbered" id="updated-at">Updated At</h1>
+<p>2026-04-21</p>
