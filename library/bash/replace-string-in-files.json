@@ -44,8 +44,7 @@
     {
       "name": "FILES",
       "description": "One or more file paths or patterns (e.g., file1.txt, *.txt, /path/*.js).",
-      "required": true,
-      "multiple": true
+      "required": true
     }
   ],
   "examples": [
