@@ -3,7 +3,7 @@
 <h1 class="unnumbered" id="category">Category</h1>
 <p>system-monitoring</p>
 <h1 class="unnumbered" id="command">Command</h1>
-<pre><code>echo &quot;=== Errors/Failures in Today&#39;s Journal ===&quot;; journalctl --no-pager --since today --grep &#39;fail|error|fatal&#39; --output json | jq -r &#39;.\_EXE&#39; | sort | uniq -c | sort -nr | awk &#39;\{printf &quot;\%4d  \%s\textbackslash\{\}n&quot;, \$1, \$2\}&#39;</code></pre>
+<pre><code>echo &quot;=== Errors/Failures in Today&#39;s Journal ===&quot;; journalctl --no-pager --since today --grep &#39;fail|error|fatal&#39; --output json | jq -r &#39;._EXE&#39; | sort | uniq -c | sort -nr | awk &#39;{printf &quot;%4d  %s\n&quot;, $1, $2}&#39;</code></pre>
 <h1 class="unnumbered" id="explanation">Explanation</h1>
 <p>The command retrieves all journal entries from today (since
 midnight), filters for messages containing the keywords ’fail’, ’error’,

@@ -32,7 +32,7 @@ diagnostics
 
 \section*{Command}
 \begin{lstlisting}
-dmesg -T -x --level=emerg,alert,crit,err,warn --color=always 2>/dev/null | awk 'BEGIN \{ print "\textbackslash\{\}033[1m=== KERNEL MESSAGE SUMMARY ===\textbackslash\{\}033[0m" \} \{ lines[NR] = \textbackslash\{\}\$0; lvl = \textbackslash\{\}\$2; gsub(/\textbackslash\{\}x1B\textbackslash\{\}[[0-9;]*[mK]/, \textbackslash\{\}"\textbackslash\{\}", lvl); gsub(/[: \textbackslash\{\}t]/, \textbackslash\{\}"\textbackslash\{\}", lvl); if(lvl \textasciitilde{} /\textasciicircum{}(emerg|alert|crit|err|warn|notice|info|debug)\textbackslash\{\}\$/) cnt[lvl]++; if(lvl \textasciitilde{} /\textasciicircum{}\textbackslash\{\}w+\textbackslash\{\}\$/) all\_cnt[lvl]++ \} END \{ if(NR>0) \{ print "\textbackslash\{\}033[1m--- ERRORS \& WARNINGS ---\textbackslash\{\}033[0m"; for(l in cnt) printf \textbackslash\{\}"  \%-7s : \%d\textbackslash\{\}n\textbackslash\{\}", l, cnt[l]; print "\textbackslash\{\}033[1m--- ALL MESSAGES (by severity) ---\textbackslash\{\}033[0m"; for(l in all\_cnt) printf \textbackslash\{\}"  \%-7s : \%d\textbackslash\{\}n\textbackslash\{\}", l, all\_cnt[l]; print "\textbackslash\{\}033[1m======================================\textbackslash\{\}033[0m\textbackslash\{\}n"; for(i=1; i<=NR; i++) print lines[i] \} else print "No kernel messages found for selected levels." \}'
+dmesg -T -x --level=emerg,alert,crit,err,warn --color=always 2>/dev/null | awk 'BEGIN { print "\033[1m=== KERNEL MESSAGE SUMMARY ===\033[0m" } { lines[NR] = \$0; lvl = \$2; gsub(/\x1B\[[0-9;]*[mK]/, \"\", lvl); gsub(/[: \t]/, \"\", lvl); if(lvl ~ /^(emerg|alert|crit|err|warn|notice|info|debug)\$/) cnt[lvl]++; if(lvl ~ /^\w+\$/) all_cnt[lvl]++ } END { if(NR>0) { print "\033[1m--- ERRORS & WARNINGS ---\033[0m"; for(l in cnt) printf \"  %-7s : %d\n\", l, cnt[l]; print "\033[1m--- ALL MESSAGES (by severity) ---\033[0m"; for(l in all_cnt) printf \"  %-7s : %d\n\", l, all_cnt[l]; print "\033[1m======================================\033[0m\n"; for(i=1; i<=NR; i++) print lines[i] } else print "No kernel messages found for selected levels." }'
 \end{lstlisting}
 
 \section*{Explanation}
@@ -43,6 +43,7 @@ dmesg, kernel, errors, warnings, logs, troubleshooting, monitoring, summary, awk
 
 \section*{Dependencies}
 util-linux, gawk
+
 
 \section*{Arguments}
 None
@@ -56,26 +57,26 @@ None
 
 \section*{Output}
 \begin{lstlisting}
-\textbackslash\{\}u001b[1m=== KERNEL MESSAGE SUMMARY ===\textbackslash\{\}u001b[0m
-\textbackslash\{\}u001b[1m--- ERRORS \& WARNINGS ---\textbackslash\{\}u001b[0m
+\u001b[1m=== KERNEL MESSAGE SUMMARY ===\u001b[0m
+\u001b[1m--- ERRORS & WARNINGS ---\u001b[0m
   err     : 2
   warn    : 3
   crit    : 1
-\textbackslash\{\}u001b[1m--- ALL MESSAGES (by severity) ---\textbackslash\{\}u001b[0m
+\u001b[1m--- ALL MESSAGES (by severity) ---\u001b[0m
   err     : 2
   warn    : 3
   crit    : 1
   notice  : 5
   info    : 12
   debug   : 0
-\textbackslash\{\}u001b[1m======================================\textbackslash\{\}u001b[0m
+\u001b[1m======================================\u001b[0m
 
 kern  :err   : [Tue Apr 21 10:00:00 2026] sd 0:0:0:0: [sda] Write cache: enabled
 kern  :warn  : [Tue Apr 21 10:01:23 2026] WARNING: CPU: 0 PID: 1234
 kern  :crit  : [Tue Apr 21 10:02:45 2026] Critical hardware error
 kern  :warn  : [Tue Apr 21 10:05:00 2026] ext4-fs: mounted with warnings
 kern  :err   : [Tue Apr 21 10:06:12 2026] usb 1-1: device descriptor read/64, error -71
-kern  :warn  : [Tue Apr 21 10:08:34 2026] IPv6: ADDRCONF(NETDEV\_UP): eth0: link is not ready
+kern  :warn  : [Tue Apr 21 10:08:34 2026] IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
 kern  :notice: [Tue Apr 21 10:10:00 2026] Kernel log system initialized
 kern  :info  : [Tue Apr 21 10:15:00 2026] Network interface eth0 up and running
 \end{lstlisting}

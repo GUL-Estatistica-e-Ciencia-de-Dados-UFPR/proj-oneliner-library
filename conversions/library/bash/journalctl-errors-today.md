@@ -8,7 +8,7 @@ system-monitoring
 
 # Command {#command .unnumbered}
 
-    echo "=== Errors/Failures in Today's Journal ==="; journalctl --no-pager --since today --grep 'fail|error|fatal' --output json | jq -r '.\_EXE' | sort | uniq -c | sort -nr | awk '\{printf "\%4d  \%s\textbackslash\{\}n", \$1, \$2\}'
+    echo "=== Errors/Failures in Today's Journal ==="; journalctl --no-pager --since today --grep 'fail|error|fatal' --output json | jq -r '._EXE' | sort | uniq -c | sort -nr | awk '{printf "%4d  %s\n", $1, $2}'
 
 # Explanation {#explanation .unnumbered}
 

@@ -8,7 +8,7 @@ filesystem
 
 # Command {#command .unnumbered}
 
-    find . -type f -size +100M -exec ls -lh \{\} + | awk '\{print \$5, \$9\}' | sort -hr
+    find . -type f -size +100M -exec ls -lh {} + | awk '{print $5, $9}' | sort -hr
 
 # Explanation {#explanation .unnumbered}
 
@@ -58,7 +58,7 @@ findutils, coreutils
     1.5G ./videos/archive.tar.gz
     987M ./backups/database.sql.bz2
     756M ./datasets/training-data.bin
-    543M ./cache/node\_modules.tar
+    543M ./cache/node_modules.tar
     387M ./downloads/ubuntu-22.04-iso
     256M ./logs/app-2026.log
     198M ./tmp/large-temp-file

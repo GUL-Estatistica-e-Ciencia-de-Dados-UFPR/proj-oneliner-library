@@ -32,7 +32,7 @@ system-administration
 
 \section*{Command}
 \begin{lstlisting}
-sudo bash -c "printf 'USER\textbackslash\{\}tQUOTA\textbackslash\{\}tHOME\textbackslash\{\}tDISK\_USAGE\textbackslash\{\}tCREATED\textbackslash\{\}tFILES\textbackslash\{\}tLAST\_LOGIN\textbackslash\{\}tLAST\_CMD\textbackslash\{\}n'; getent passwd | awk -F: '\textbackslash\{\}\$3 < 1000 || \textbackslash\{\}\$1 \textasciitilde{} /\textasciicircum{}nobody\$/ \{ print \textbackslash\{\}\$1,\textbackslash\{\}\$6 \}' | while read u h; do q=\textbackslash\{\}\$(quota -u \textbackslash\{\}"\textbackslash\{\}\$u\textbackslash\{\}" 2>/dev/null | tail -1 | awk '\{print \textbackslash\{\}\$2\}'); [ -z \textbackslash\{\}"\textbackslash\{\}\$q\textbackslash\{\}" ] \&\& q=none; d=\textbackslash\{\}\$(du -sh \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}" 2>/dev/null | cut -f1); c=\textbackslash\{\}\$(stat -c \%y \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}" 2>/dev/null | cut -d' ' -f1 || echo N/A); f=\textbackslash\{\}\$(find \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}" -type f 2>/dev/null | wc -l); l=\textbackslash\{\}\$(lastlog -u \textbackslash\{\}"\textbackslash\{\}\$u\textbackslash\{\}" 2>/dev/null | tail -1 | awk '\{print \textbackslash\{\}\$5,\textbackslash\{\}\$6,\textbackslash\{\}\$7\}'); [ -z \textbackslash\{\}"\textbackslash\{\}\$l\textbackslash\{\}" ] \&\& l=Never; cmd=\textbackslash\{\}\$(tail -1 \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}"/.bash\_history 2>/dev/null | head -c 30); [ -z \textbackslash\{\}"\textbackslash\{\}\$cmd\textbackslash\{\}" ] \&\& cmd=N/A; printf '\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}t\%s\textbackslash\{\}n' \textbackslash\{\}"\textbackslash\{\}\$u\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$q\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$h\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$d\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$c\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$f\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$l\textbackslash\{\}" \textbackslash\{\}"\textbackslash\{\}\$cmd\textbackslash\{\}"; done" | column -t -s \$'\textbackslash\{\}t'
+sudo bash -c "printf 'USER\tQUOTA\tHOME\tDISK_USAGE\tCREATED\tFILES\tLAST_LOGIN\tLAST_CMD\n'; getent passwd | awk -F: '\$3 < 1000 || \$1 ~ /^nobody$/ { print \$1,\$6 }' | while read u h; do q=\$(quota -u \"\$u\" 2>/dev/null | tail -1 | awk '{print \$2}'); [ -z \"\$q\" ] && q=none; d=\$(du -sh \"\$h\" 2>/dev/null | cut -f1); c=\$(stat -c %y \"\$h\" 2>/dev/null | cut -d' ' -f1 || echo N/A); f=\$(find \"\$h\" -type f 2>/dev/null | wc -l); l=\$(lastlog -u \"\$u\" 2>/dev/null | tail -1 | awk '{print \$5,\$6,\$7}'); [ -z \"\$l\" ] && l=Never; cmd=\$(tail -1 \"\$h\"/.bash_history 2>/dev/null | head -c 30); [ -z \"\$cmd\" ] && cmd=N/A; printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \"\$u\" \"\$q\" \"\$h\" \"\$d\" \"\$c\" \"\$f\" \"\$l\" \"\$cmd\"; done" | column -t -s $'\t'
 \end{lstlisting}
 
 \section*{Explanation}
@@ -43,6 +43,7 @@ user-management, disk-usage, system-administration, activity, report, quota, aud
 
 \section*{Dependencies}
 coreutils, util-linux, shadow-utils, findutils
+
 
 \section*{Arguments}
 \begin{enumerate}
@@ -58,7 +59,7 @@ coreutils, util-linux, shadow-utils, findutils
 
 \section*{Output}
 \begin{lstlisting}
-USER        QUOTA HOME            DISK\_USAGE CREATED    FILES  LAST\_LOGIN      LAST\_CMD
+USER        QUOTA HOME            DISK_USAGE CREATED    FILES  LAST_LOGIN      LAST_CMD
 root        none  /root           1.5G       2023-01-15 15340  May  20 13:45   apt update
 daemon      none  /usr/sbin       32K        2023-01-15 12     Never           N/A
 bin         none  /bin            0          2023-01-15 0      Never           N/A

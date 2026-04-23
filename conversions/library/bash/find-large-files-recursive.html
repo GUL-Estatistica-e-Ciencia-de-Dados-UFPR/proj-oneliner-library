@@ -3,7 +3,7 @@
 <h1 class="unnumbered" id="category">Category</h1>
 <p>filesystem</p>
 <h1 class="unnumbered" id="command">Command</h1>
-<pre><code>find . -type f -size +100M -exec ls -lh \{\} + | awk &#39;\{print \$5, \$9\}&#39; | sort -hr</code></pre>
+<pre><code>find . -type f -size +100M -exec ls -lh {} + | awk &#39;{print $5, $9}&#39; | sort -hr</code></pre>
 <h1 class="unnumbered" id="explanation">Explanation</h1>
 <p>The command uses ’find’ to recursively traverse the directory tree,
 filter for regular files (-type f), and select those exceeding 100 MB
@@ -41,7 +41,7 @@ subdirectories</p></li>
 <pre><code>1.5G ./videos/archive.tar.gz
 987M ./backups/database.sql.bz2
 756M ./datasets/training-data.bin
-543M ./cache/node\_modules.tar
+543M ./cache/node_modules.tar
 387M ./downloads/ubuntu-22.04-iso
 256M ./logs/app-2026.log
 198M ./tmp/large-temp-file</code></pre>

@@ -8,7 +8,7 @@ text-processing
 
 # Command {#command .unnumbered}
 
-    bash -c 'old=\$1; new=\$2; shift 2; find "\$@" -type f -exec sed -i "s\#\$old\#\$new\#g" \{\} +' \_
+    bash -c 'old=$1; new=$2; shift 2; find "$@" -type f -exec sed -i "s#$old#$new#g" {} +' _
 
 # Explanation {#explanation .unnumbered}
 

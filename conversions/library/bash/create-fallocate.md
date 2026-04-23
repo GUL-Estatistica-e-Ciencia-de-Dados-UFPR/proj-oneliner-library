@@ -8,7 +8,7 @@ filesystem
 
 # Command {#command .unnumbered}
 
-    fallocate -l 1G test\_file
+    fallocate -l 1G test_file
 
 # Explanation {#explanation .unnumbered}
 

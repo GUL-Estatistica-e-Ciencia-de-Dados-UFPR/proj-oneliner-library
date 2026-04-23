@@ -3,7 +3,7 @@
 <h1 class="unnumbered" id="category">Category</h1>
 <p>monitoring</p>
 <h1 class="unnumbered" id="command">Command</h1>
-<pre><code>echo -e &quot;Memory Report:\textbackslash\{\}n\$(free -h)\textbackslash\{\}n\textbackslash\{\}nTop 10 Memory Consuming Processes (\%MEM and RSS in MB):\textbackslash\{\}n\$(ps -eo pid,comm,\%mem,rss --sort=-\%mem | awk &#39;NR==1 \{print \$0 &quot; RSS(MB)&quot;\}; NR&gt;1 \{printf &quot;\%s \%s \%s \%.2f\textbackslash\{\}n&quot;, \$1, \$2, \$3, \$4/1024\}&#39; | head -n 11)&quot;</code></pre>
+<pre><code>echo -e &quot;Memory Report:\n$(free -h)\n\nTop 10 Memory Consuming Processes (%MEM and RSS in MB):\n$(ps -eo pid,comm,%mem,rss --sort=-%mem | awk &#39;NR==1 {print $0 &quot; RSS(MB)&quot;}; NR&gt;1 {printf &quot;%s %s %s %.2f\n&quot;, $1, $2, $3, $4/1024}&#39; | head -n 11)&quot;</code></pre>
 <h1 class="unnumbered" id="explanation">Explanation</h1>
 <p>The command uses ’free -h’ to show memory statistics in
 human-readable units (e.g., MB, GB). It then uses ’ps’ to list all
@@ -31,8 +31,8 @@ section headers and spacing for readability.</p>
 Mem:           7.7G        2.3G        3.1G        256M        2.3G        5.0G
 Swap:          2.0G          0B        2.0G
 
-Top 10 Memory Consuming Processes (\%MEM and RSS in MB):
-  PID COMMAND         \%MEM  RSS(MB)
+Top 10 Memory Consuming Processes (%MEM and RSS in MB):
+  PID COMMAND         %MEM  RSS(MB)
  1234 firefox         15.2  1175.04
  5678 chrome          12.8   991.42
  9012 code             8.5   657.92

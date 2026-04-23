@@ -3,7 +3,7 @@
 <h1 class="unnumbered" id="category">Category</h1>
 <p>text-processing</p>
 <h1 class="unnumbered" id="command">Command</h1>
-<pre><code>bash -c &#39;old=\$1; new=\$2; shift 2; find &quot;\$@&quot; -type f -exec sed -i &quot;s\#\$old\#\$new\#g&quot; \{\} +&#39; \_</code></pre>
+<pre><code>bash -c &#39;old=$1; new=$2; shift 2; find &quot;$@&quot; -type f -exec sed -i &quot;s#$old#$new#g&quot; {} +&#39; _</code></pre>
 <h1 class="unnumbered" id="explanation">Explanation</h1>
 <p>This oneliner uses a subshell (‘bash -c‘) to parse positional
 parameters. The first argument is the string to replace (‘$1‘), the

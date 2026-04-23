@@ -32,7 +32,7 @@ text-processing
 
 \section*{Command}
 \begin{lstlisting}
-bash -c 'old=\$1; new=\$2; shift 2; find "\$@" -type f -exec sed -i "s\#\$old\#\$new\#g" \{\} +' \_
+bash -c 'old=$1; new=$2; shift 2; find "$@" -type f -exec sed -i "s#$old#$new#g" {} +' _
 \end{lstlisting}
 
 \section*{Explanation}
@@ -43,6 +43,7 @@ sed, text-processing, string-replacement, file-editing, search-replace, batch-re
 
 \section*{Dependencies}
 sed, coreutils
+
 
 \section*{Arguments}
 \begin{enumerate}

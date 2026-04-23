@@ -8,7 +8,7 @@ monitoring
 
 # Command {#command .unnumbered}
 
-    echo -e "Memory Report:\textbackslash\{\}n\$(free -h)\textbackslash\{\}n\textbackslash\{\}nTop 10 Memory Consuming Processes (\%MEM and RSS in MB):\textbackslash\{\}n\$(ps -eo pid,comm,\%mem,rss --sort=-\%mem | awk 'NR==1 \{print \$0 " RSS(MB)"\}; NR>1 \{printf "\%s \%s \%s \%.2f\textbackslash\{\}n", \$1, \$2, \$3, \$4/1024\}' | head -n 11)"
+    echo -e "Memory Report:\n$(free -h)\n\nTop 10 Memory Consuming Processes (%MEM and RSS in MB):\n$(ps -eo pid,comm,%mem,rss --sort=-%mem | awk 'NR==1 {print $0 " RSS(MB)"}; NR>1 {printf "%s %s %s %.2f\n", $1, $2, $3, $4/1024}' | head -n 11)"
 
 # Explanation {#explanation .unnumbered}
 
@@ -47,8 +47,8 @@ None
     Mem:           7.7G        2.3G        3.1G        256M        2.3G        5.0G
     Swap:          2.0G          0B        2.0G
 
-    Top 10 Memory Consuming Processes (\%MEM and RSS in MB):
-      PID COMMAND         \%MEM  RSS(MB)
+    Top 10 Memory Consuming Processes (%MEM and RSS in MB):
+      PID COMMAND         %MEM  RSS(MB)
      1234 firefox         15.2  1175.04
      5678 chrome          12.8   991.42
      9012 code             8.5   657.92

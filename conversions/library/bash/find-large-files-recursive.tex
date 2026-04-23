@@ -32,7 +32,7 @@ filesystem
 
 \section*{Command}
 \begin{lstlisting}
-find . -type f -size +100M -exec ls -lh \{\} + | awk '\{print \$5, \$9\}' | sort -hr
+find . -type f -size +100M -exec ls -lh {} + | awk '{print $5, $9}' | sort -hr
 \end{lstlisting}
 
 \section*{Explanation}
@@ -43,6 +43,7 @@ find, filesystem, disk-usage, large-files, recursive, storage
 
 \section*{Dependencies}
 findutils, coreutils
+
 
 \section*{Arguments}
 \begin{enumerate}
@@ -63,7 +64,7 @@ findutils, coreutils
 1.5G ./videos/archive.tar.gz
 987M ./backups/database.sql.bz2
 756M ./datasets/training-data.bin
-543M ./cache/node\_modules.tar
+543M ./cache/node_modules.tar
 387M ./downloads/ubuntu-22.04-iso
 256M ./logs/app-2026.log
 198M ./tmp/large-temp-file

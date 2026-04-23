@@ -18,7 +18,8 @@ def escape_latex(text):
     if text is None:
         return ""
     # Characters that need escaping in LaTeX (outside of lstlisting)
-    # Note: We're more selective about what we escape since lstlisting handles many chars
+    # Process backslash first to avoid double-escaping other characters
+    text = text.replace("\\", "\\textbackslash{}")
     special_chars = {
         "&": "\\&",
         "%": "\\%",
@@ -29,7 +30,6 @@ def escape_latex(text):
         "}": "\\}",
         "~": "\\textasciitilde{}",
         "^": "\\textasciicircum{}",
-        "\\": "\\textbackslash{}",
     }
     for char, replacement in special_chars.items():
         text = text.replace(char, replacement)
@@ -39,19 +39,13 @@ def escape_latex(text):
 def escape_latex_for_lstlisting(text):
     """
     Escape special LaTeX characters for use within lstlisting environment.
-    Escapes characters that can interfere with LaTeX processing.
+    lstlisting is a verbatim environment, so it handles backslashes
+    and most other special characters natively.
     """
     if text is None:
         return ""
-    # Characters that need escaping in lstlisting to prevent LaTeX interpretation
-    text = text.replace("\\", "\\textbackslash{}")
-    text = text.replace("&", "\\&")
-    text = text.replace("%", "\\%")
-    text = text.replace("$", "\\$")
-    text = text.replace("#", "\\#")
-    text = text.replace("{", "\\{")
-    text = text.replace("}", "\\}")
-    text = text.replace("_", "\\_")
+    # We do not need to escape anything for lstlisting,
+    # it treats content as verbatim.
     return text
 
 
@@ -113,88 +107,64 @@ def json_to_latex(data):
     Convert a JSON oneliner entry to a LaTeX string.
     """
     # Extract fields with defaults for optional ones
-    title = data.get('title', 'Untitled')
-    language = data.get('language', 'unknown')
-    category = data.get('category', 'uncategorized')
-    command = data.get('command', '')
-    description = data.get('description', 'No description provided.')
-    explanation = data.get('explanation', 'No detailed explanation provided.')
-    tags = data.get('tags', [])
-    author = data.get('author', 'Unknown')
-    created_at = data.get('created_at', '2026-01-01')
-    updated_at = data.get('updated_at', created_at)
-    safety = data.get('safety', 'safe')
-    shell = data.get('shell', 'not-applicable')
-    platforms = data.get('platforms', [])
-    dependencies = data.get('dependencies', [])
-    arguments = data.get('arguments', [])
-    examples = data.get('examples', [])
-    output = data.get('output', 'No example output provided.')
-    notes = data.get('notes', [])
-    warnings = data.get('warnings', [])
-    see_also = data.get('see_also', [])
-    status = data.get('status', 'draft')
+    title = data.get("title", "Untitled")
+    language = data.get("language", "unknown")
+    category = data.get("category", "uncategorized")
+    command = data.get("command", "")
+    description = data.get("description", "No description provided.")
+    explanation = data.get("explanation", "No detailed explanation provided.")
+    tags = data.get("tags", [])
+    author = data.get("author", "Unknown")
+    created_at = data.get("created_at", "2026-01-01")
+    updated_at = data.get("updated_at", created_at)
+    safety = data.get("safety", "safe")
+    shell = data.get("shell", "not-applicable")
+    platforms = data.get("platforms", [])
+    dependencies = data.get("dependencies", [])
+    arguments = data.get("arguments", [])
+    examples = data.get("examples", [])
+    output = data.get("output", "No example output provided.")
+    notes = data.get("notes", [])
+    warnings = data.get("warnings", [])
+    see_also = data.get("see_also", [])
+    status = data.get("status", "draft")
 
-    latex = (
-        r"""\documentclass{article}
-\usepackage[utf8]{inputenc}
-\usepackage{hyperref}
-\usepackage{listings}
-\usepackage{xcolor}
-\usepackage{enumitem}
-
-\lstset{
-    basicstyle=\ttfamily\small,
-    breaklines=true,
-    frame=single,
-    backgroundcolor=\color{gray!5},
-}
-
-\title{""" + escape_latex(title) + r"""}
-\author{""" + escape_latex(author) + r"""}
-\date{""" + escape_latex(created_at) + r"""}
-"""
-    )
-
+    latex = "\\documentclass{article}\n"
+    latex += "\\usepackage[utf8]{inputenc}\n"
+    latex += "\\usepackage{hyperref}\n"
+    latex += "\\usepackage{listings}\n"
+    latex += "\\usepackage{xcolor}\n"
+    latex += "\\usepackage{enumitem}\n\n"
+    latex += "\\lstset{\n"
+    latex += "    basicstyle=\\ttfamily\\small,\n"
+    latex += "    breaklines=true,\n"
+    latex += "    frame=single,\n"
+    latex += "    backgroundcolor=\\color{gray!5},\n"
+    latex += "}\n\n"
+    latex += "\\title{" + escape_latex(title) + "}\n"
+    latex += "\\author{" + escape_latex(author) + "}\n"
+    latex += "\\date{" + escape_latex(created_at) + "}\n\n"
+    latex += "\\begin{document}\n\n"
+    latex += "\\maketitle\n\n"
+    latex += "\\begin{abstract}\n" + escape_latex(description) + "\n\\end{abstract}\n\n"
+    latex += "\\section*{Language}\n" + escape_latex(language) + "\n\n"
+    latex += "\\section*{Category}\n" + escape_latex(category) + "\n\n"
     latex += (
-        r"""
-\begin{document}
-
-\maketitle
-
-\begin{abstract}
-""" + escape_latex(description) + r"""
-\end{abstract}
-
-\section*{Language}
-""" + escape_latex(language) + r"""
-
-\section*{Category}
-""" + escape_latex(category) + r"""
-
-\section*{Command}
-\begin{lstlisting}
-""" + escape_latex_for_lstlisting(command) + r"""
-\end{lstlisting}
-
-\section*{Explanation}
-""" + escape_latex(explanation) + r"""
-
-\section*{Tags}
-""" + format_list(tags) + r"""
-
-\section*{Dependencies}
-""" + format_list(dependencies) + r"""
-
-\section*{Arguments}
-"""
+        "\\section*{Command}\n\\begin{lstlisting}\n"
+        + escape_latex_for_lstlisting(command)
+        + "\n\\end{lstlisting}\n\n"
+    )
+    latex += "\\section*{Explanation}\n" + escape_latex(explanation) + "\n\n"
+    latex += "\\section*{Tags}\n" + format_list(tags) + "\n\n"
+    latex += "\\section*{Dependencies}\n" + format_list(dependencies) + "\n\n"
+    latex += "\n\\section*{Arguments}\n"
     if arguments:
         latex += "\\begin{enumerate}\n"
         for arg in arguments:
-            name = escape_latex(arg.get('name', ''))
-            desc = escape_latex(arg.get('description', ''))
-            required = "Required" if arg.get('required', False) else "Optional"
-            default = arg.get('default', 'None')
+            name = escape_latex(arg.get("name", ""))
+            desc = escape_latex(arg.get("description", ""))
+            required = "Required" if arg.get("required", False) else "Optional"
+            default = arg.get("default", "None")
             if default is not None:
                 default_str = escape_latex(str(default))
             else:
@@ -206,45 +176,20 @@ def json_to_latex(data):
         latex += "\\end{enumerate}\n"
     else:
         latex += "None\n"
-
-    latex += r"""
-\section*{Examples}
-""" + format_examples(examples) + r"""
-
-\section*{Output}
-\begin{lstlisting}
-""" + output + r"""
-\end{lstlisting}
-
-\section*{Notes}
-""" + format_string_array(notes) + r"""
-
-\section*{Warnings}
-""" + format_string_array(warnings) + r"""
-
-\section*{See Also}
-""" + format_string_array(see_also) + r"""
-
-\section*{Status}
-""" + escape_latex(status) + r"""
-
-\section*{Safety}
-""" + escape_latex(safety) + r"""
-
-\section*{Shell}
-""" + escape_latex(shell) + r"""
-
-\section*{Platforms}
-""" + format_list(platforms) + r"""
-
-\section*{Created At}
-""" + escape_latex(created_at) + r"""
-
-\section*{Updated At}
-""" + escape_latex(updated_at) + r"""
-
-\end{document}
-"""
+    latex += "\n\\section*{Examples}\n" + format_examples(examples) + "\n"
+    latex += (
+        "\n\\section*{Output}\n\\begin{lstlisting}\n" + output + "\n\\end{lstlisting}\n"
+    )
+    latex += "\n\\section*{Notes}\n" + format_string_array(notes) + "\n"
+    latex += "\n\\section*{Warnings}\n" + format_string_array(warnings) + "\n"
+    latex += "\n\\section*{See Also}\n" + format_string_array(see_also) + "\n"
+    latex += "\n\\section*{Status}\n" + escape_latex(status) + "\n"
+    latex += "\n\\section*{Safety}\n" + escape_latex(safety) + "\n"
+    latex += "\n\\section*{Shell}\n" + escape_latex(shell) + "\n"
+    latex += "\n\\section*{Platforms}\n" + format_list(platforms) + "\n"
+    latex += "\n\\section*{Created At}\n" + escape_latex(created_at) + "\n"
+    latex += "\n\\section*{Updated At}\n" + escape_latex(updated_at) + "\n"
+    latex += "\n\\end{document}\n"
     return latex
 
 
