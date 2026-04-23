@@ -1,3 +1,12 @@
+# Kernel errors/warnings summary with full severity levels and colorized output {#kernel-errorswarnings-summary-with-full-severity-levels-and-colorized-output .unnumbered}
+
+**Author:** Marcos de Carvalho **Date:** 2026-04-21
+
+Retrieves all kernel messages from the kernel ring buffer, extracts and
+counts all message severity levels (emerg, alert, crit, err, warn,
+notice, info, debug), and presents them with a comprehensive summary
+frontmatter followed by the human-readable colorized logs.
+
 # Language {#language .unnumbered}
 
 bash

@@ -1,3 +1,10 @@
+# Find users with largest storage usage {#find-users-with-largest-storage-usage .unnumbered}
+
+**Author:** Marcos de Carvalho **Date:** 2026-04-21
+
+Displays the top 10 users on the system by storage consumption in their
+home directories, sorted in descending order by disk usage.
+
 # Language {#language .unnumbered}
 
 bash

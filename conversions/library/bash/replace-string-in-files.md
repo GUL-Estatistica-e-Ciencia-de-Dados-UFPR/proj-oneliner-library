@@ -1,3 +1,11 @@
+# Replace string in multiple files using sed {#replace-string-in-multiple-files-using-sed .unnumbered}
+
+**Author:** Marcos de Carvalho **Date:** 2026-04-21
+
+Replaces all occurrences of a string with a replacement string in
+multiple files or file patterns. Pure oneliner that works directly
+pasted with parameters, or in an alias.
+
 # Language {#language .unnumbered}
 
 bash

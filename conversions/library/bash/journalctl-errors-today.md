@@ -1,3 +1,10 @@
+# Show system executables with errors/failures from today's journal {#show-system-executables-with-errorsfailures-from-todays-journal .unnumbered}
+
+**Author:** marcos **Date:** 2026-04-22
+
+Lists system executables that have generated failure, error, or fatal
+messages in today's journal logs, sorted by frequency.
+
 # Language {#language .unnumbered}
 
 bash

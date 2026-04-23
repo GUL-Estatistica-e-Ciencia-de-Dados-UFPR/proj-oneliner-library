@@ -1,3 +1,11 @@
+# System memory report with top 10 consuming processes {#system-memory-report-with-top-10-consuming-processes .unnumbered}
+
+**Author:** Marcos de Carvalho **Date:** 2026-04-22
+
+Displays system memory usage in human-readable format and lists the top
+10 memory-consuming processes by percentage of memory used and resident
+set size in MB.
+
 # Language {#language .unnumbered}
 
 bash

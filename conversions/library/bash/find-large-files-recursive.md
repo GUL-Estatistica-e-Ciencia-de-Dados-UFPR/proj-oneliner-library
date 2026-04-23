@@ -1,3 +1,11 @@
+# Find large files recursively in a directory tree {#find-large-files-recursively-in-a-directory-tree .unnumbered}
+
+**Author:** marcos **Date:** 2026-04-21
+
+Recursively finds all regular files larger than 100 MB in the directory
+tree, displays them with human-readable sizes, and sorts by size in
+descending order.
+
 # Language {#language .unnumbered}
 
 bash

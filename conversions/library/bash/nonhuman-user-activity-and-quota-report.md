@@ -1,3 +1,14 @@
+# Comprehensive system/service non-human user report with disk quota, usage, and activity {#comprehensive-systemservice-non-human-user-report-with-disk-quota-usage-and-activity .unnumbered}
+
+**Author:** Marcos de Carvalho **Date:** 2026-04-21
+
+Generates a comprehensive system audit report for all non-human
+(system/service) users (requires sudo) showing username, disk quota
+limit, home directory path, actual disk usage, account creation date,
+file count, last login timestamp, and last executed command. All
+information is formatted in a readable table with elevated privileges
+for complete data access.
+
 # Language {#language .unnumbered}
 
 bash

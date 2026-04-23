@@ -1,3 +1,11 @@
+# Sort directories by disk usage and display the largest ones {#sort-directories-by-disk-usage-and-display-the-largest-ones .unnumbered}
+
+**Author:** Marcos de Carvalho **Date:** 2026-04-21
+
+Displays the top 10 directories with the largest disk usage in the
+current directory, sorted in descending order by size in human-readable
+format.
+
 # Language {#language .unnumbered}
 
 bash

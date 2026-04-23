@@ -1,3 +1,12 @@
+# Display disk space usage for all directories with hierarchical breakdown {#display-disk-space-usage-for-all-directories-with-hierarchical-breakdown .unnumbered}
+
+**Author:** marcos **Date:** 2026-04-21
+
+Shows disk space usage for directories up to 2 levels deep in the
+current directory tree, sorted by size in descending order with
+human-readable format, providing a hierarchical breakdown of disk
+consumption.
+
 # Language {#language .unnumbered}
 
 bash

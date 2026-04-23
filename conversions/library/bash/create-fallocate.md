@@ -1,3 +1,11 @@
+# Create a large file of a specific size quickly {#create-a-large-file-of-a-specific-size-quickly .unnumbered}
+
+**Author:** Marcos de Carvalho **Date:** 2026-04-21
+
+Quickly creates a file of a specific size (e.g., 1 GB) using fallocate,
+which is much faster than dd because it allocates blocks without writing
+actual data.
+
 # Language {#language .unnumbered}
 
 bash
