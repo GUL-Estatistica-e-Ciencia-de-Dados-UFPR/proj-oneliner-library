@@ -145,8 +145,15 @@ def json_to_latex(data):
     latex += "\\author{" + escape_latex(author) + "}\n"
     latex += "\\date{" + escape_latex(created_at) + "}\n\n"
     latex += "\\begin{document}\n\n"
-    latex += "\\maketitle\n\n"
-    latex += "\\begin{abstract}\n" + escape_latex(description) + "\n\\end{abstract}\n\n"
+    latex += "\\section*{" + escape_latex(title) + "}\n"
+    latex += (
+        "\\textbf{Author:} "
+        + escape_latex(author)
+        + " \\hfill \\textbf{Date:} "
+        + escape_latex(created_at)
+        + "\n\n"
+    )
+    latex += "\\noindent " + escape_latex(description) + "\n\n"
     latex += "\\section*{Language}\n" + escape_latex(language) + "\n\n"
     latex += "\\section*{Category}\n" + escape_latex(category) + "\n\n"
     latex += (
