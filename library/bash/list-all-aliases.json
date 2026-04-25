@@ -4,7 +4,7 @@
   "language": "bash",
   "category": "shell-utilities",
   "command": "bash -c 'shell_conf=\"${1:-$HOME/.bashrc}\"; [ -f \"$shell_conf\" ] || { echo \"Configuration file not found: $shell_conf\"; exit 1; }; grep -E \"^[[:space:]]*alias[[:space:]]\" \"$shell_conf\" | sed -E \"s/^[[:space:]]*alias[[:space:]]*//\" | sort -f | while IFS= read -r line; do alias_name=${line%%=*}; alias_cmd=${line#*=}; printf \"\\\\033[1;34m%-20s\\\\033[0m -> \\\\033[1;32m%s\\\\033[0m\\\\n\" \"$alias_name\" \"$alias_cmd\"; done' _",
-  "description": "Lists all aliases defined in the user's shell configuration file in alphabetical order with colored, formatted output. Works with bash, zsh, and other shells on Linux and BSD systems.",
+  "description": "Lists all aliases defined in the user's bash shell configuration file in alphabetical order with colored, formatted output. Works with bash, zsh, and other shells on Linux and BSD systems.",
   "explanation": "This command reads the user's shell configuration file from the path passed as the first argument (defaulting to ~/.bashrc), extracts alias definitions, sorts them alphabetically by alias name, and prints the alias name in blue and the stored alias command in green. It preserves the command text as written after the equals sign, which keeps the direct shell syntax intact and avoids fragile quote-stripping logic.",
   "tags": [
     "shell",

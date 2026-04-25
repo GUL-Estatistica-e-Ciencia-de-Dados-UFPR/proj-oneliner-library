@@ -2,7 +2,7 @@
 
 **Author:** marcos **Date:** 2026-04-25
 
-Lists all aliases defined in the user's shell configuration file in
+Lists all aliases defined in the user's bash shell configuration file in
 alphabetical order with colored, formatted output. Works with bash, zsh,
 and other shells on Linux and BSD systems.
 
