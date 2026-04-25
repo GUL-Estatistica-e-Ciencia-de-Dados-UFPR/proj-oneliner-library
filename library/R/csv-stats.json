@@ -1,0 +1,64 @@
+{
+  "id": "csv-stats",
+  "title": "Load CSV file and print dataset statistics using R",
+  "language": "R",
+  "category": "data-processing",
+  "command": "Rscript -e \"args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop('Need filename');df<-read.csv(args[1]);cat('Rows:',nrow(df),'Cols:',ncol(df),'Cells:',nrow(df)*ncol(df),'File size:',file.size(args[1]),'Object size:',format(object.size(df),units='auto'),'\\n')\"",
+  "description": "Loads a CSV file using R's read.csv and prints rows, columns, total cells, file size, and object memory usage.",
+  "explanation": "The command uses Rscript to execute R code that reads a CSV file specified as argument, computes basic statistics (rows, columns, cells), gets file size via file.size(), and reports object memory usage via object.size().",
+  "tags": [
+    "r",
+    "csv",
+    "statistics",
+    "data-analysis",
+    "memory"
+  ],
+  "author": "marcos",
+  "created_at": "2026-04-25",
+  "updated_at": "2026-04-25",
+  "safety": "safe",
+  "shell": "posix",
+  "platforms": [
+    "linux",
+    "gnu-linux",
+    "freebsd",
+    "openbsd",
+    "netbsd",
+    "macos"
+  ],
+  "dependencies": [
+    "r-base-core"
+  ],
+  "arguments": [
+    {
+      "name": "CSV_FILE",
+      "description": "CSV file to analyze",
+      "required": true
+    }
+  ],
+  "examples": [
+    {
+      "command": "Rscript -e \"args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop('Need filename');df<-read.csv(args[1]);cat('Rows:',nrow(df),'Cols:',ncol(df),'Cells:',nrow(df)*ncol(df),'File size:',file.size(args[1]),'Object size:',format(object.size(df),units='auto'),'\\n')\" data.csv",
+      "description": "Analyze data.csv"
+    },
+    {
+      "command": "Rscript -e \"args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop('Need filename');df<-read.csv(args[1]);cat('Rows:',nrow(df),'Cols:',ncol(df),'Cells:',nrow(df)*ncol(df),'File size:',file.size(args[1]),'Object size:',format(object.size(df),units='auto'),'\\n')\" large_dataset.csv 2>/dev/null",
+      "description": "Analyze suppressing warnings"
+    }
+  ],
+  "output": "Rows: 100 Cols: 10 Cells: 1000 File size: 12345 Object size: 78.2 Kb\n",
+  "notes": [
+    "Uses read.csv with default settings (header=TRUE, stringsAsFactors=FALSE in R>=4.0)",
+    "File size reported in bytes",
+    "Object size includes R overhead",
+    "For large files, consider adding options(stringsAsFactors=FALSE)"
+  ],
+  "warnings": [
+    "May load entire file into memory",
+    "Very large CSV files could exhaust memory"
+  ],
+  "see_also": [
+    "tsv-stats"
+  ],
+  "status": "reviewed"
+}
