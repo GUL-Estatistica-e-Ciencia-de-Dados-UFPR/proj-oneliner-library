@@ -10,6 +10,7 @@ import json
 import os
 import sys
 import subprocess
+import shlex
 from pathlib import Path
 
 
@@ -58,13 +59,18 @@ def detect_shell():
 def create_alias_in_config(config_file, alias_name, command, shell):
     """Add alias to the appropriate shell config file."""
     try:
-        # Prepare alias line based on shell
+        # json.load() already decodes JSON escapes. Quote the resulting shell
+        # command for the target shell so variables like $1 are preserved until
+        # the alias is invoked.
         if shell == "fish":
-            alias_line = f"alias {alias_name} \"{command}\""
+            escaped_command = (
+                command.replace("\\", "\\\\")
+                .replace("$", "\\$")
+                .replace('"', '\\"')
+            )
+            alias_line = f'alias {alias_name} "{escaped_command}"'
         else:
-            # Escape any existing double quotes in command
-            escaped_command = command.replace('"', '\\"')
-            alias_line = f"alias {alias_name}=\"{escaped_command}\""
+            alias_line = f"alias {alias_name}={shlex.quote(command)}"
         
         # Add alias with comment for identification
         alias_with_comment = f"\n# GOLL alias - added on {os.popen('date').read().strip()}\n{alias_line}\n"
