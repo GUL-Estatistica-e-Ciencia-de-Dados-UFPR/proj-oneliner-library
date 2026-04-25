@@ -1114,3 +1114,72 @@ substantial; consider running during off-peak hours</p></li>
 <p>2026-04-21</p>
 <h2 class="unnumbered" id="updated-at-10">Updated At</h2>
 <p>2026-04-21</p>
+<h1 id="git">Git</h1>
+<h2 id="init-repo-with-gitignore">Init Repo With Gitignore</h2>
+<h2 class="unnumbered"
+id="initialize-git-repository-stage-all-files-and-create-empty-.gitignore">Initialize
+git repository, stage all files and create empty .gitignore</h2>
+<p><strong>Author:</strong> marcos <strong>Date:</strong> 2026-04-25</p>
+<p>Initializes a new git repository in current directory, stages all
+existing files, and creates an empty .gitignore file.</p>
+<h2 class="unnumbered" id="language-11">Language</h2>
+<p>git</p>
+<h2 class="unnumbered" id="category-11">Category</h2>
+<p>version-control</p>
+<h2 class="unnumbered" id="command-11">Command</h2>
+<pre><code>git init &amp;&amp; git add . &amp;&amp; touch .gitignore</code></pre>
+<h2 class="unnumbered" id="explanation-11">Explanation</h2>
+<p>This command sequence creates a new git repository (git init), adds
+all files in the current directory to the staging area (git add .), and
+creates an empty .gitignore file (touch .gitignore) for future ignore
+patterns.</p>
+<h2 class="unnumbered" id="tags-11">Tags</h2>
+<p>git, version-control, repository, init, gitignore</p>
+<h2 class="unnumbered" id="dependencies-11">Dependencies</h2>
+<p>git</p>
+<h2 class="unnumbered" id="arguments-11">Arguments</h2>
+<ol>
+<li><p><strong>DIRECTORY</strong> (Optional): Directory where to
+initialize repository<br />
+Default: .</p></li>
+</ol>
+<h2 class="unnumbered" id="examples-11">Examples</h2>
+<ol>
+<li><p><code>git init &amp;&amp; git add . &amp;&amp; touch .gitignore</code>
+- Initialize repository in current directory</p></li>
+<li><p><code>cd /path/to/project &amp;&amp; git init &amp;&amp; git add . &amp;&amp; touch .gitignore</code>
+- Initialize repository in specific directory</p></li>
+</ol>
+<h2 class="unnumbered" id="output-11">Output</h2>
+<pre><code>Initialized empty Git repository in /home/user/project/.git/</code></pre>
+<h2 class="unnumbered" id="notes-11">Notes</h2>
+<ul>
+<li><p>The .gitignore file is empty after creation; you should add
+patterns to ignore unnecessary files</p></li>
+<li><p>If .gitignore already exists, touch command updates its
+timestamp</p></li>
+<li><p>Use git status to verify files are staged</p></li>
+</ul>
+<h2 class="unnumbered" id="warnings-11">Warnings</h2>
+<ul>
+<li><p>git add . stages all files including potentially sensitive
+data</p></li>
+<li><p>Review staged files before committing</p></li>
+</ul>
+<h2 class="unnumbered" id="see-also-11">See Also</h2>
+<ul>
+<li><p>git-commit-initial</p></li>
+<li><p>git-ignore-patterns</p></li>
+</ul>
+<h2 class="unnumbered" id="status-11">Status</h2>
+<p>reviewed</p>
+<h2 class="unnumbered" id="safety-11">Safety</h2>
+<p>safe</p>
+<h2 class="unnumbered" id="shell-11">Shell</h2>
+<p>posix</p>
+<h2 class="unnumbered" id="platforms-11">Platforms</h2>
+<p>linux, gnu-linux, freebsd, openbsd, netbsd</p>
+<h2 class="unnumbered" id="created-at-11">Created At</h2>
+<p>2026-04-25</p>
+<h2 class="unnumbered" id="updated-at-11">Updated At</h2>
+<p>2026-04-25</p>

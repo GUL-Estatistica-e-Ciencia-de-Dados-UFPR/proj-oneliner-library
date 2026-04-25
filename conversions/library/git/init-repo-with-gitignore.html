@@ -1,0 +1,67 @@
+<h1 class="unnumbered"
+id="initialize-git-repository-stage-all-files-and-create-empty-.gitignore">Initialize
+git repository, stage all files and create empty .gitignore</h1>
+<p><strong>Author:</strong> marcos <strong>Date:</strong> 2026-04-25</p>
+<p>Initializes a new git repository in current directory, stages all
+existing files, and creates an empty .gitignore file.</p>
+<h1 class="unnumbered" id="language">Language</h1>
+<p>git</p>
+<h1 class="unnumbered" id="category">Category</h1>
+<p>version-control</p>
+<h1 class="unnumbered" id="command">Command</h1>
+<pre><code>git init &amp;&amp; git add . &amp;&amp; touch .gitignore</code></pre>
+<h1 class="unnumbered" id="explanation">Explanation</h1>
+<p>This command sequence creates a new git repository (git init), adds
+all files in the current directory to the staging area (git add .), and
+creates an empty .gitignore file (touch .gitignore) for future ignore
+patterns.</p>
+<h1 class="unnumbered" id="tags">Tags</h1>
+<p>git, version-control, repository, init, gitignore</p>
+<h1 class="unnumbered" id="dependencies">Dependencies</h1>
+<p>git</p>
+<h1 class="unnumbered" id="arguments">Arguments</h1>
+<ol>
+<li><p><strong>DIRECTORY</strong> (Optional): Directory where to
+initialize repository<br />
+Default: .</p></li>
+</ol>
+<h1 class="unnumbered" id="examples">Examples</h1>
+<ol>
+<li><p><code>git init &amp;&amp; git add . &amp;&amp; touch .gitignore</code>
+- Initialize repository in current directory</p></li>
+<li><p><code>cd /path/to/project &amp;&amp; git init &amp;&amp; git add . &amp;&amp; touch .gitignore</code>
+- Initialize repository in specific directory</p></li>
+</ol>
+<h1 class="unnumbered" id="output">Output</h1>
+<pre><code>Initialized empty Git repository in /home/user/project/.git/</code></pre>
+<h1 class="unnumbered" id="notes">Notes</h1>
+<ul>
+<li><p>The .gitignore file is empty after creation; you should add
+patterns to ignore unnecessary files</p></li>
+<li><p>If .gitignore already exists, touch command updates its
+timestamp</p></li>
+<li><p>Use git status to verify files are staged</p></li>
+</ul>
+<h1 class="unnumbered" id="warnings">Warnings</h1>
+<ul>
+<li><p>git add . stages all files including potentially sensitive
+data</p></li>
+<li><p>Review staged files before committing</p></li>
+</ul>
+<h1 class="unnumbered" id="see-also">See Also</h1>
+<ul>
+<li><p>git-commit-initial</p></li>
+<li><p>git-ignore-patterns</p></li>
+</ul>
+<h1 class="unnumbered" id="status">Status</h1>
+<p>reviewed</p>
+<h1 class="unnumbered" id="safety">Safety</h1>
+<p>safe</p>
+<h1 class="unnumbered" id="shell">Shell</h1>
+<p>posix</p>
+<h1 class="unnumbered" id="platforms">Platforms</h1>
+<p>linux, gnu-linux, freebsd, openbsd, netbsd</p>
+<h1 class="unnumbered" id="created-at">Created At</h1>
+<p>2026-04-25</p>
+<h1 class="unnumbered" id="updated-at">Updated At</h1>
+<p>2026-04-25</p>

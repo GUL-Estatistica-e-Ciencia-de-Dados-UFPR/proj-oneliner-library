@@ -1525,3 +1525,103 @@ linux, gnu-linux
 ## Updated At {#updated-at-10 .unnumbered}
 
 2026-04-21
+
+# Git
+
+## Init Repo With Gitignore
+
+## Initialize git repository, stage all files and create empty .gitignore {#initialize-git-repository-stage-all-files-and-create-empty-.gitignore .unnumbered}
+
+**Author:** marcos **Date:** 2026-04-25
+
+Initializes a new git repository in current directory, stages all
+existing files, and creates an empty .gitignore file.
+
+## Language {#language-11 .unnumbered}
+
+git
+
+## Category {#category-11 .unnumbered}
+
+version-control
+
+## Command {#command-11 .unnumbered}
+
+    git init && git add . && touch .gitignore
+
+## Explanation {#explanation-11 .unnumbered}
+
+This command sequence creates a new git repository (git init), adds all
+files in the current directory to the staging area (git add .), and
+creates an empty .gitignore file (touch .gitignore) for future ignore
+patterns.
+
+## Tags {#tags-11 .unnumbered}
+
+git, version-control, repository, init, gitignore
+
+## Dependencies {#dependencies-11 .unnumbered}
+
+git
+
+## Arguments {#arguments-11 .unnumbered}
+
+1.  **DIRECTORY** (Optional): Directory where to initialize repository\
+    Default: .
+
+## Examples {#examples-11 .unnumbered}
+
+1.  `git init && git add . && touch .gitignore` - Initialize repository
+    in current directory
+
+2.  `cd /path/to/project && git init && git add . && touch .gitignore` -
+    Initialize repository in specific directory
+
+## Output {#output-11 .unnumbered}
+
+    Initialized empty Git repository in /home/user/project/.git/
+
+## Notes {#notes-11 .unnumbered}
+
+-   The .gitignore file is empty after creation; you should add patterns
+    to ignore unnecessary files
+
+-   If .gitignore already exists, touch command updates its timestamp
+
+-   Use git status to verify files are staged
+
+## Warnings {#warnings-11 .unnumbered}
+
+-   git add . stages all files including potentially sensitive data
+
+-   Review staged files before committing
+
+## See Also {#see-also-11 .unnumbered}
+
+-   git-commit-initial
+
+-   git-ignore-patterns
+
+## Status {#status-11 .unnumbered}
+
+reviewed
+
+## Safety {#safety-11 .unnumbered}
+
+safe
+
+## Shell {#shell-11 .unnumbered}
+
+posix
+
+## Platforms {#platforms-11 .unnumbered}
+
+linux, gnu-linux, freebsd, openbsd, netbsd
+
+## Created At {#created-at-11 .unnumbered}
+
+2026-04-25
+
+## Updated At {#updated-at-11 .unnumbered}
+
+2026-04-25

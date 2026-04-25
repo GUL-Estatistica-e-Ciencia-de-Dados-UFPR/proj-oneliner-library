@@ -1062,4 +1062,86 @@ linux, gnu-linux
 \section*{Updated At}
 2026-04-21
 
+\chapter{Git}
+
+\section{Init Repo With Gitignore}
+\section*{Initialize git repository, stage all files and create empty .gitignore}
+\textbf{Author:} marcos \hfill \textbf{Date:} 2026-04-25
+
+\noindent Initializes a new git repository in current directory, stages all existing files, and creates an empty .gitignore file.
+
+\section*{Language}
+git
+
+\section*{Category}
+version-control
+
+\section*{Command}
+\begin{lstlisting}
+git init && git add . && touch .gitignore
+\end{lstlisting}
+
+\section*{Explanation}
+This command sequence creates a new git repository (git init), adds all files in the current directory to the staging area (git add .), and creates an empty .gitignore file (touch .gitignore) for future ignore patterns.
+
+\section*{Tags}
+git, version-control, repository, init, gitignore
+
+\section*{Dependencies}
+git
+
+
+\section*{Arguments}
+\begin{enumerate}
+  \item \textbf{DIRECTORY} (Optional): Directory where to initialize repository \\ Default: .
+\end{enumerate}
+
+\section*{Examples}
+\begin{enumerate}
+  \item \texttt{git init \&\& git add . \&\& touch .gitignore} - Initialize repository in current directory
+  \item \texttt{cd /path/to/project \&\& git init \&\& git add . \&\& touch .gitignore} - Initialize repository in specific directory
+\end{enumerate}
+
+\section*{Output}
+\begin{lstlisting}
+Initialized empty Git repository in /home/user/project/.git/
+\end{lstlisting}
+
+\section*{Notes}
+\begin{itemize}
+  \item The .gitignore file is empty after creation; you should add patterns to ignore unnecessary files
+  \item If .gitignore already exists, touch command updates its timestamp
+  \item Use git status to verify files are staged
+\end{itemize}
+
+\section*{Warnings}
+\begin{itemize}
+  \item git add . stages all files including potentially sensitive data
+  \item Review staged files before committing
+\end{itemize}
+
+\section*{See Also}
+\begin{itemize}
+  \item git-commit-initial
+  \item git-ignore-patterns
+\end{itemize}
+
+\section*{Status}
+reviewed
+
+\section*{Safety}
+safe
+
+\section*{Shell}
+posix
+
+\section*{Platforms}
+linux, gnu-linux, freebsd, openbsd, netbsd
+
+\section*{Created At}
+2026-04-25
+
+\section*{Updated At}
+2026-04-25
+
 \end{document}
