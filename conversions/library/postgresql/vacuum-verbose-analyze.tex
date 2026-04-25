@@ -1,0 +1,117 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+}
+
+\title{Perform PostgreSQL VACUUM with VERBOSE and ANALYZE options}
+\author{Marcos de Carvalho}
+\date{2026-04-25}
+
+\begin{document}
+
+\section*{Perform PostgreSQL VACUUM with VERBOSE and ANALYZE options}
+\textbf{Author:} Marcos de Carvalho \hfill \textbf{Date:} 2026-04-25
+
+\noindent Executes PostgreSQL VACUUM operation with VERBOSE output and ANALYZE for statistics update, following best practices for database maintenance. Accepts arguments: username password database host.
+
+\section*{Language}
+postgresql
+
+\section*{Category}
+database
+
+\section*{Command}
+\begin{lstlisting}
+PGPASSWORD="$2" psql -U "$1" -d "$3" -h "$4" -c "VACUUM (VERBOSE, ANALYZE);"
+\end{lstlisting}
+
+\section*{Explanation}
+The command connects to PostgreSQL via psql and runs VACUUM with VERBOSE (detailed output) and ANALYZE (update statistics). VACUUM reclaims storage occupied by dead tuples, while ANALYZE updates planner statistics. This combination is recommended for routine maintenance. Arguments: \$1=username, \$2=password (sets PGPASSWORD), \$3=database, \$4=host.
+
+\section*{Tags}
+postgresql, database, maintenance, vacuum, optimization
+
+\section*{Dependencies}
+postgresql-client
+
+
+\section*{Arguments}
+\begin{enumerate}
+  \item \textbf{USERNAME} (Required): PostgreSQL username
+  \item \textbf{PASSWORD} (Required): PostgreSQL password (sets PGPASSWORD environment variable)
+  \item \textbf{DATABASE} (Required): Database name
+  \item \textbf{HOST} (Optional): Database host \\ Default: localhost
+\end{enumerate}
+
+\section*{Examples}
+\begin{enumerate}
+  \item \texttt{vacuum\_pg() \{ PGPASSWORD="\$2" psql -U "\$1" -d "\$3" -h "\$4" -c "VACUUM (VERBOSE, ANALYZE);"; \}} - Define shell function for alias usage
+  \item \texttt{vacuum\_pg postgres secret123 mydb localhost} - Call function with arguments: user password db host
+  \item \texttt{PGPASSWORD="secret456" psql -U "appuser" -d "production" -h "db.example.com" -c "VACUUM (VERBOSE, ANALYZE);"} - Direct command with explicit values
+\end{enumerate}
+
+\section*{Output}
+\begin{lstlisting}
+VACUUM
+INFO:  vacuuming "public.some_table"
+INFO:  "some_table": removed 1000 row versions in 5 pages
+INFO:  "some_table": found 1000 removable, 5000 nonremovable row versions
+DETAIL:  0 dead row versions cannot be removed yet.
+CPU 0.00s/0.00u sec elapsed 0.00 sec.
+INFO:  analyzing "public.some_table"
+INFO:  "some_table": scanned 3000 of 3000 pages, containing 5000 live rows and 0 dead rows
+VACUUM
+\end{lstlisting}
+
+\section*{Notes}
+\begin{itemize}
+  \item Run during periods of low database activity
+  \item VERBOSE provides detailed output for monitoring
+  \item ANALYZE updates statistics for query planner
+  \item Consider using .pgpass file for password management
+  \item Monitor pg\_stat\_activity for concurrent sessions
+  \item For alias usage: vacuum\_pg() \{ PGPASSWORD="\$2" psql -U "\$1" -d "\$3" -h "\$4" -c "VACUUM (VERBOSE, ANALYZE);"; \}
+\end{itemize}
+
+\section*{Warnings}
+\begin{itemize}
+  \item VACUUM requires ACCESS SHARE lock on tables (conflicts with DDL)
+  \item Avoid running during peak hours or critical operations
+  \item For aggressive cleanup, consider VACUUM FULL but it requires exclusive lock
+  \item Ensure adequate maintenance\_work\_mem setting for performance
+\end{itemize}
+
+\section*{See Also}
+\begin{itemize}
+  \item postgresql-reindex
+  \item postgresql-analyze-only
+\end{itemize}
+
+\section*{Status}
+reviewed
+
+\section*{Safety}
+caution
+
+\section*{Shell}
+bash
+
+\section*{Platforms}
+linux, gnu-linux, freebsd, openbsd, netbsd
+
+\section*{Created At}
+2026-04-25
+
+\section*{Updated At}
+2026-04-25
+
+\end{document}

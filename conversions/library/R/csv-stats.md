@@ -1,6 +1,6 @@
 # Load CSV file and print dataset statistics using R {#load-csv-file-and-print-dataset-statistics-using-r .unnumbered}
 
-**Author:** marcos **Date:** 2026-04-25
+**Author:** Marcos de Carvalho **Date:** 2026-04-25
 
 Loads a CSV file using R's read.csv and prints rows, columns, total
 cells, file size, and object memory usage.

@@ -1,0 +1,91 @@
+<h1 class="unnumbered"
+id="perform-postgresql-vacuum-with-verbose-and-analyze-options">Perform
+PostgreSQL VACUUM with VERBOSE and ANALYZE options</h1>
+<p><strong>Author:</strong> Marcos de Carvalho <strong>Date:</strong>
+2026-04-25</p>
+<p>Executes PostgreSQL VACUUM operation with VERBOSE output and ANALYZE
+for statistics update, following best practices for database
+maintenance. Accepts arguments: username password database host.</p>
+<h1 class="unnumbered" id="language">Language</h1>
+<p>postgresql</p>
+<h1 class="unnumbered" id="category">Category</h1>
+<p>database</p>
+<h1 class="unnumbered" id="command">Command</h1>
+<pre><code>PGPASSWORD=&quot;$2&quot; psql -U &quot;$1&quot; -d &quot;$3&quot; -h &quot;$4&quot; -c &quot;VACUUM (VERBOSE, ANALYZE);&quot;</code></pre>
+<h1 class="unnumbered" id="explanation">Explanation</h1>
+<p>The command connects to PostgreSQL via psql and runs VACUUM with
+VERBOSE (detailed output) and ANALYZE (update statistics). VACUUM
+reclaims storage occupied by dead tuples, while ANALYZE updates planner
+statistics. This combination is recommended for routine maintenance.
+Arguments: $1=username, $2=password (sets PGPASSWORD), $3=database,
+$4=host.</p>
+<h1 class="unnumbered" id="tags">Tags</h1>
+<p>postgresql, database, maintenance, vacuum, optimization</p>
+<h1 class="unnumbered" id="dependencies">Dependencies</h1>
+<p>postgresql-client</p>
+<h1 class="unnumbered" id="arguments">Arguments</h1>
+<ol>
+<li><p><strong>USERNAME</strong> (Required): PostgreSQL
+username</p></li>
+<li><p><strong>PASSWORD</strong> (Required): PostgreSQL password (sets
+PGPASSWORD environment variable)</p></li>
+<li><p><strong>DATABASE</strong> (Required): Database name</p></li>
+<li><p><strong>HOST</strong> (Optional): Database host<br />
+Default: localhost</p></li>
+</ol>
+<h1 class="unnumbered" id="examples">Examples</h1>
+<ol>
+<li><p><code>vacuum_pg() { PGPASSWORD="$2" psql -U "$1" -d "$3" -h "$4" -c "VACUUM (VERBOSE, ANALYZE);"; }</code>
+- Define shell function for alias usage</p></li>
+<li><p><code>vacuum_pg postgres secret123 mydb localhost</code> - Call
+function with arguments: user password db host</p></li>
+<li><p><code>PGPASSWORD="secret456" psql -U "appuser" -d "production" -h "db.example.com" -c "VACUUM (VERBOSE, ANALYZE);"</code>
+- Direct command with explicit values</p></li>
+</ol>
+<h1 class="unnumbered" id="output">Output</h1>
+<pre><code>VACUUM
+INFO:  vacuuming &quot;public.some_table&quot;
+INFO:  &quot;some_table&quot;: removed 1000 row versions in 5 pages
+INFO:  &quot;some_table&quot;: found 1000 removable, 5000 nonremovable row versions
+DETAIL:  0 dead row versions cannot be removed yet.
+CPU 0.00s/0.00u sec elapsed 0.00 sec.
+INFO:  analyzing &quot;public.some_table&quot;
+INFO:  &quot;some_table&quot;: scanned 3000 of 3000 pages, containing 5000 live rows and 0 dead rows
+VACUUM</code></pre>
+<h1 class="unnumbered" id="notes">Notes</h1>
+<ul>
+<li><p>Run during periods of low database activity</p></li>
+<li><p>VERBOSE provides detailed output for monitoring</p></li>
+<li><p>ANALYZE updates statistics for query planner</p></li>
+<li><p>Consider using .pgpass file for password management</p></li>
+<li><p>Monitor pg_stat_activity for concurrent sessions</p></li>
+<li><p>For alias usage: vacuum_pg() { PGPASSWORD="$2" psql -U "$1" -d
+"$3" -h "$4" -c "VACUUM (VERBOSE, ANALYZE);"; }</p></li>
+</ul>
+<h1 class="unnumbered" id="warnings">Warnings</h1>
+<ul>
+<li><p>VACUUM requires ACCESS SHARE lock on tables (conflicts with
+DDL)</p></li>
+<li><p>Avoid running during peak hours or critical operations</p></li>
+<li><p>For aggressive cleanup, consider VACUUM FULL but it requires
+exclusive lock</p></li>
+<li><p>Ensure adequate maintenance_work_mem setting for
+performance</p></li>
+</ul>
+<h1 class="unnumbered" id="see-also">See Also</h1>
+<ul>
+<li><p>postgresql-reindex</p></li>
+<li><p>postgresql-analyze-only</p></li>
+</ul>
+<h1 class="unnumbered" id="status">Status</h1>
+<p>reviewed</p>
+<h1 class="unnumbered" id="safety">Safety</h1>
+<p>caution</p>
+<h1 class="unnumbered" id="shell">Shell</h1>
+<p>bash</p>
+<h1 class="unnumbered" id="platforms">Platforms</h1>
+<p>linux, gnu-linux, freebsd, openbsd, netbsd</p>
+<h1 class="unnumbered" id="created-at">Created At</h1>
+<p>2026-04-25</p>
+<h1 class="unnumbered" id="updated-at">Updated At</h1>
+<p>2026-04-25</p>

@@ -1,6 +1,6 @@
 # Load TSV file and print dataset statistics using R {#load-tsv-file-and-print-dataset-statistics-using-r .unnumbered}
 
-**Author:** marcos **Date:** 2026-04-25
+**Author:** Marcos de Carvalho **Date:** 2026-04-25
 
 Loads a TSV (tab-separated) file using R's read.delim and prints rows,
 columns, total cells, file size, and object memory usage.

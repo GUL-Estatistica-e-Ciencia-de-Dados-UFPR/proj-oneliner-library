@@ -1,79 +1,110 @@
-# Python
+# Postgresql
 
-## Csv To Tsv
+## Vacuum Verbose Analyze
 
-## Convert CSV file to TSV (tab-separated values) using Python stdlib {#convert-csv-file-to-tsv-tab-separated-values-using-python-stdlib .unnumbered}
+## Perform PostgreSQL VACUUM with VERBOSE and ANALYZE options {#perform-postgresql-vacuum-with-verbose-and-analyze-options .unnumbered}
 
 **Author:** Marcos de Carvalho **Date:** 2026-04-25
 
-Converts comma-separated values (CSV) to tab-separated values (TSV)
-using Python's standard library csv module.
+Executes PostgreSQL VACUUM operation with VERBOSE output and ANALYZE for
+statistics update, following best practices for database maintenance.
+Accepts arguments: username password database host.
 
 ## Language {#language .unnumbered}
 
-python
+postgresql
 
 ## Category {#category .unnumbered}
 
-data-processing
+database
 
 ## Command {#command .unnumbered}
 
-    python3 -c "import sys,csv; csv.writer(sys.stdout, delimiter='\t').writerows(csv.reader(sys.stdin))"
+    PGPASSWORD="$2" psql -U "$1" -d "$3" -h "$4" -c "VACUUM (VERBOSE, ANALYZE);"
 
 ## Explanation {#explanation .unnumbered}
 
-The command reads CSV data from stdin, parses it with csv.reader
-(default delimiter is comma), and writes it to stdout using csv.writer
-with tab delimiter. It preserves quoting and escaping rules.
+The command connects to PostgreSQL via psql and runs VACUUM with VERBOSE
+(detailed output) and ANALYZE (update statistics). VACUUM reclaims
+storage occupied by dead tuples, while ANALYZE updates planner
+statistics. This combination is recommended for routine maintenance.
+Arguments: \$1=username, \$2=password (sets PGPASSWORD), \$3=database,
+\$4=host.
 
 ## Tags {#tags .unnumbered}
 
-python, csv, tsv, data-conversion, text-processing
+postgresql, database, maintenance, vacuum, optimization
 
 ## Dependencies {#dependencies .unnumbered}
 
-python3
+postgresql-client
 
 ## Arguments {#arguments .unnumbered}
 
-1.  **INPUT_FILE** (Optional): CSV input file (use stdin redirection)\
-    Default: stdin
+1.  **USERNAME** (Required): PostgreSQL username
 
-2.  **OUTPUT_FILE** (Optional): TSV output file (use stdout
-    redirection)\
-    Default: stdout
+2.  **PASSWORD** (Required): PostgreSQL password (sets PGPASSWORD
+    environment variable)
+
+3.  **DATABASE** (Required): Database name
+
+4.  **HOST** (Optional): Database host\
+    Default: localhost
 
 ## Examples {#examples .unnumbered}
 
-1.  `python3 -c "import sys,csv; csv.writer(sys.stdout, delimiter=’\{}t’).writerows(csv.reader(sys.stdin))" < data.csv > data.tsv` -
-    Convert data.csv to data.tsv
+1.  `vacuum_pg() { PGPASSWORD="$2" psql -U "$1" -d "$3" -h "$4" -c "VACUUM (VERBOSE, ANALYZE);"; }` -
+    Define shell function for alias usage
 
-2.  `cat data.csv | python3 -c "import sys,csv; csv.writer(sys.stdout, delimiter=’\{}t’).writerows(csv.reader(sys.stdin))" | head -20` -
-    Preview first 20 rows converted
+2.  `vacuum_pg postgres secret123 mydb localhost` - Call function with
+    arguments: user password db host
+
+3.  `PGPASSWORD="secret456" psql -U "appuser" -d "production" -h "db.example.com" -c "VACUUM (VERBOSE, ANALYZE);"` -
+    Direct command with explicit values
 
 ## Output {#output .unnumbered}
 
-    col1    col2    col3
-    value1  value2  value3
+    VACUUM
+    INFO:  vacuuming "public.some_table"
+    INFO:  "some_table": removed 1000 row versions in 5 pages
+    INFO:  "some_table": found 1000 removable, 5000 nonremovable row versions
+    DETAIL:  0 dead row versions cannot be removed yet.
+    CPU 0.00s/0.00u sec elapsed 0.00 sec.
+    INFO:  analyzing "public.some_table"
+    INFO:  "some_table": scanned 3000 of 3000 pages, containing 5000 live rows and 0 dead rows
+    VACUUM
 
 ## Notes {#notes .unnumbered}
 
--   Handles quoted fields with commas correctly
+-   Run during periods of low database activity
 
--   Preserves newlines within quoted fields
+-   VERBOSE provides detailed output for monitoring
 
--   Works with any CSV dialect compatible with Python's csv module
+-   ANALYZE updates statistics for query planner
+
+-   Consider using .pgpass file for password management
+
+-   Monitor pg_stat_activity for concurrent sessions
+
+-   For alias usage: vacuum_pg() { PGPASSWORD=\"\$2\" psql -U \"\$1\" -d
+    \"\$3\" -h \"\$4\" -c \"VACUUM (VERBOSE, ANALYZE);\"; }
 
 ## Warnings {#warnings .unnumbered}
 
--   Large files may consume memory as all rows are read into list
+-   VACUUM requires ACCESS SHARE lock on tables (conflicts with DDL)
 
--   Input must be valid CSV format
+-   Avoid running during peak hours or critical operations
+
+-   For aggressive cleanup, consider VACUUM FULL but it requires
+    exclusive lock
+
+-   Ensure adequate maintenance_work_mem setting for performance
 
 ## See Also {#see-also .unnumbered}
 
--   tsv-to-csv
+-   postgresql-reindex
+
+-   postgresql-analyze-only
 
 ## Status {#status .unnumbered}
 
@@ -81,11 +112,11 @@ reviewed
 
 ## Safety {#safety .unnumbered}
 
-safe
+caution
 
 ## Shell {#shell .unnumbered}
 
-posix
+bash
 
 ## Platforms {#platforms .unnumbered}
 
@@ -99,13 +130,15 @@ linux, gnu-linux, freebsd, openbsd, netbsd
 
 2026-04-25
 
-## Tsv To Csv
+# Python
 
-## Convert TSV (tab-separated values) file to CSV using Python stdlib {#convert-tsv-tab-separated-values-file-to-csv-using-python-stdlib .unnumbered}
+## Csv To Tsv
+
+## Convert CSV file to TSV (tab-separated values) using Python stdlib {#convert-csv-file-to-tsv-tab-separated-values-using-python-stdlib .unnumbered}
 
 **Author:** Marcos de Carvalho **Date:** 2026-04-25
 
-Converts tab-separated values (TSV) to comma-separated values (CSV)
+Converts comma-separated values (CSV) to tab-separated values (TSV)
 using Python's standard library csv module.
 
 ## Language {#language-1 .unnumbered}
@@ -118,17 +151,17 @@ data-processing
 
 ## Command {#command-1 .unnumbered}
 
-    python3 -c "import sys,csv; csv.writer(sys.stdout).writerows(csv.reader(sys.stdin, delimiter='\t'))"
+    python3 -c "import sys,csv; csv.writer(sys.stdout, delimiter='\t').writerows(csv.reader(sys.stdin))"
 
 ## Explanation {#explanation-1 .unnumbered}
 
-The command reads TSV data from stdin, parses it with csv.reader using
-tab delimiter, and writes it to stdout using csv.writer with default
-comma delimiter. It preserves quoting and escaping rules.
+The command reads CSV data from stdin, parses it with csv.reader
+(default delimiter is comma), and writes it to stdout using csv.writer
+with tab delimiter. It preserves quoting and escaping rules.
 
 ## Tags {#tags-1 .unnumbered}
 
-python, tsv, csv, data-conversion, text-processing
+python, csv, tsv, data-conversion, text-processing
 
 ## Dependencies {#dependencies-1 .unnumbered}
 
@@ -136,43 +169,43 @@ python3
 
 ## Arguments {#arguments-1 .unnumbered}
 
-1.  **INPUT_FILE** (Optional): TSV input file (use stdin redirection)\
+1.  **INPUT_FILE** (Optional): CSV input file (use stdin redirection)\
     Default: stdin
 
-2.  **OUTPUT_FILE** (Optional): CSV output file (use stdout
+2.  **OUTPUT_FILE** (Optional): TSV output file (use stdout
     redirection)\
     Default: stdout
 
 ## Examples {#examples-1 .unnumbered}
 
-1.  `python3 -c "import sys,csv; csv.writer(sys.stdout).writerows(csv.reader(sys.stdin, delimiter=’\{}t’))" < data.tsv > data.csv` -
-    Convert data.tsv to data.csv
+1.  `python3 -c "import sys,csv; csv.writer(sys.stdout, delimiter=’\{}t’).writerows(csv.reader(sys.stdin))" < data.csv > data.tsv` -
+    Convert data.csv to data.tsv
 
-2.  `cat data.tsv | python3 -c "import sys,csv; csv.writer(sys.stdout).writerows(csv.reader(sys.stdin, delimiter=’\{}t’))" | head -20` -
+2.  `cat data.csv | python3 -c "import sys,csv; csv.writer(sys.stdout, delimiter=’\{}t’).writerows(csv.reader(sys.stdin))" | head -20` -
     Preview first 20 rows converted
 
 ## Output {#output-1 .unnumbered}
 
-    col1,col2,col3
-    value1,value2,value3
+    col1    col2    col3
+    value1  value2  value3
 
 ## Notes {#notes-1 .unnumbered}
 
--   Handles quoted fields with tabs correctly
+-   Handles quoted fields with commas correctly
 
 -   Preserves newlines within quoted fields
 
--   Works with any TSV dialect compatible with Python's csv module
+-   Works with any CSV dialect compatible with Python's csv module
 
 ## Warnings {#warnings-1 .unnumbered}
 
 -   Large files may consume memory as all rows are read into list
 
--   Input must be valid TSV format
+-   Input must be valid CSV format
 
 ## See Also {#see-also-1 .unnumbered}
 
--   csv-to-tsv
+-   tsv-to-csv
 
 ## Status {#status-1 .unnumbered}
 
@@ -198,6 +231,105 @@ linux, gnu-linux, freebsd, openbsd, netbsd
 
 2026-04-25
 
+## Tsv To Csv
+
+## Convert TSV (tab-separated values) file to CSV using Python stdlib {#convert-tsv-tab-separated-values-file-to-csv-using-python-stdlib .unnumbered}
+
+**Author:** Marcos de Carvalho **Date:** 2026-04-25
+
+Converts tab-separated values (TSV) to comma-separated values (CSV)
+using Python's standard library csv module.
+
+## Language {#language-2 .unnumbered}
+
+python
+
+## Category {#category-2 .unnumbered}
+
+data-processing
+
+## Command {#command-2 .unnumbered}
+
+    python3 -c "import sys,csv; csv.writer(sys.stdout).writerows(csv.reader(sys.stdin, delimiter='\t'))"
+
+## Explanation {#explanation-2 .unnumbered}
+
+The command reads TSV data from stdin, parses it with csv.reader using
+tab delimiter, and writes it to stdout using csv.writer with default
+comma delimiter. It preserves quoting and escaping rules.
+
+## Tags {#tags-2 .unnumbered}
+
+python, tsv, csv, data-conversion, text-processing
+
+## Dependencies {#dependencies-2 .unnumbered}
+
+python3
+
+## Arguments {#arguments-2 .unnumbered}
+
+1.  **INPUT_FILE** (Optional): TSV input file (use stdin redirection)\
+    Default: stdin
+
+2.  **OUTPUT_FILE** (Optional): CSV output file (use stdout
+    redirection)\
+    Default: stdout
+
+## Examples {#examples-2 .unnumbered}
+
+1.  `python3 -c "import sys,csv; csv.writer(sys.stdout).writerows(csv.reader(sys.stdin, delimiter=’\{}t’))" < data.tsv > data.csv` -
+    Convert data.tsv to data.csv
+
+2.  `cat data.tsv | python3 -c "import sys,csv; csv.writer(sys.stdout).writerows(csv.reader(sys.stdin, delimiter=’\{}t’))" | head -20` -
+    Preview first 20 rows converted
+
+## Output {#output-2 .unnumbered}
+
+    col1,col2,col3
+    value1,value2,value3
+
+## Notes {#notes-2 .unnumbered}
+
+-   Handles quoted fields with tabs correctly
+
+-   Preserves newlines within quoted fields
+
+-   Works with any TSV dialect compatible with Python's csv module
+
+## Warnings {#warnings-2 .unnumbered}
+
+-   Large files may consume memory as all rows are read into list
+
+-   Input must be valid TSV format
+
+## See Also {#see-also-2 .unnumbered}
+
+-   csv-to-tsv
+
+## Status {#status-2 .unnumbered}
+
+reviewed
+
+## Safety {#safety-2 .unnumbered}
+
+safe
+
+## Shell {#shell-2 .unnumbered}
+
+posix
+
+## Platforms {#platforms-2 .unnumbered}
+
+linux, gnu-linux, freebsd, openbsd, netbsd
+
+## Created At {#created-at-2 .unnumbered}
+
+2026-04-25
+
+## Updated At {#updated-at-2 .unnumbered}
+
+2026-04-25
+
 # Bash
 
 ## Create Fallocate
@@ -210,19 +342,19 @@ Quickly creates a file of a specific size (e.g., 1 GB) using fallocate,
 which is much faster than dd because it allocates blocks without writing
 actual data.
 
-## Language {#language-2 .unnumbered}
+## Language {#language-3 .unnumbered}
 
 bash
 
-## Category {#category-2 .unnumbered}
+## Category {#category-3 .unnumbered}
 
 filesystem
 
-## Command {#command-2 .unnumbered}
+## Command {#command-3 .unnumbered}
 
     fallocate -l 1G test_file
 
-## Explanation {#explanation-2 .unnumbered}
+## Explanation {#explanation-3 .unnumbered}
 
 The 'fallocate' command communicates directly with the filesystem to
 preallocate disk space for a file. Unlike 'dd', which must write every
@@ -231,15 +363,15 @@ filesystem's metadata. This is extremely efficient for creating large
 test files, swap files, or preallocating space for databases. The length
 (-l) can be specified in bytes or using suffixes like K, M, G, T, P, E.
 
-## Tags {#tags-2 .unnumbered}
+## Tags {#tags-3 .unnumbered}
 
 fallocate, filesystem, storage, disk-usage, allocation, testing
 
-## Dependencies {#dependencies-2 .unnumbered}
+## Dependencies {#dependencies-3 .unnumbered}
 
 util-linux
 
-## Arguments {#arguments-2 .unnumbered}
+## Arguments {#arguments-3 .unnumbered}
 
 1.  **SIZE** (Optional): The size of the file to create (e.g., 10M, 1G,
     500M).\
@@ -248,7 +380,7 @@ util-linux
 2.  **FILENAME** (Optional): The name of the file to be created.\
     Default: test_file
 
-## Examples {#examples-2 .unnumbered}
+## Examples {#examples-3 .unnumbered}
 
 1.  `fallocate -l 100M dummy_file` - Create a 100 MB file named
     dummy_file
@@ -258,11 +390,11 @@ util-linux
 3.  `fallocate -l 10G /swapfile` - Preallocate 10 GB for a swap file
     (requires subsequent mkswap and swapon)
 
-## Output {#output-2 .unnumbered}
+## Output {#output-3 .unnumbered}
 
     (No output on success)
 
-## Notes {#notes-2 .unnumbered}
+## Notes {#notes-3 .unnumbered}
 
 -   Not all filesystems support fallocate. It is well-supported on ext4,
     xfs, btrfs, and ocfs2.
@@ -273,7 +405,7 @@ util-linux
 -   For older systems or filesystems, 'dd if=/dev/zero of=FILENAME bs=1M
     count=SIZE_IN_MB' is the most compatible but much slower method.
 
-## Warnings {#warnings-2 .unnumbered}
+## Warnings {#warnings-3 .unnumbered}
 
 -   This command will overwrite the specified file if it already exists.
 
@@ -283,33 +415,33 @@ util-linux
 
 -   Ensure you have enough free disk space before running this command.
 
-## See Also {#see-also-2 .unnumbered}
+## See Also {#see-also-3 .unnumbered}
 
 -   find-large-files-recursive
 
 -   disk-space-usage-per-directory
 
-## Status {#status-2 .unnumbered}
+## Status {#status-3 .unnumbered}
 
 reviewed
 
-## Safety {#safety-2 .unnumbered}
+## Safety {#safety-3 .unnumbered}
 
 caution
 
-## Shell {#shell-2 .unnumbered}
+## Shell {#shell-3 .unnumbered}
 
 bash
 
-## Platforms {#platforms-2 .unnumbered}
+## Platforms {#platforms-3 .unnumbered}
 
 linux
 
-## Created At {#created-at-2 .unnumbered}
+## Created At {#created-at-3 .unnumbered}
 
 2026-04-21
 
-## Updated At {#updated-at-2 .unnumbered}
+## Updated At {#updated-at-3 .unnumbered}
 
 2026-04-21
 
@@ -323,19 +455,19 @@ Displays the top 10 directories with the largest disk usage in the
 current directory, sorted in descending order by size in human-readable
 format.
 
-## Language {#language-3 .unnumbered}
+## Language {#language-4 .unnumbered}
 
 bash
 
-## Category {#category-3 .unnumbered}
+## Category {#category-4 .unnumbered}
 
 disk-usage
 
-## Command {#command-3 .unnumbered}
+## Command {#command-4 .unnumbered}
 
     du -sh */ | sort -hr | head -10
 
-## Explanation {#explanation-3 .unnumbered}
+## Explanation {#explanation-4 .unnumbered}
 
 The command uses 'du -sh' to calculate the total disk usage for each
 directory in human-readable format. The '\*/' glob pattern matches only
@@ -344,15 +476,15 @@ descending order using human-readable number comparison, with the
 largest directories appearing first. Finally, 'head -10' limits output
 to the top 10 directories.
 
-## Tags {#tags-3 .unnumbered}
+## Tags {#tags-4 .unnumbered}
 
 du, disk-usage, directories, storage, sort, system-administration
 
-## Dependencies {#dependencies-3 .unnumbered}
+## Dependencies {#dependencies-4 .unnumbered}
 
 coreutils
 
-## Arguments {#arguments-3 .unnumbered}
+## Arguments {#arguments-4 .unnumbered}
 
 1.  **PATH** (Optional): Directory path to analyze (default: current
     directory)\
@@ -362,7 +494,7 @@ coreutils
     (default: 10)\
     Default: 10
 
-## Examples {#examples-3 .unnumbered}
+## Examples {#examples-4 .unnumbered}
 
 1.  `du -sh */ | sort -hr | head -10` - Show top 10 largest
     subdirectories in current directory
@@ -378,7 +510,7 @@ coreutils
 5.  `cd /var && du -sh */ | sort -hr | head -10` - Find largest
     subdirectories in /var
 
-## Output {#output-3 .unnumbered}
+## Output {#output-4 .unnumbered}
 
     847G    cache/
     512G    data/
@@ -391,7 +523,7 @@ coreutils
     8.5G    archives/
     2.1G    temp/
 
-## Notes {#notes-3 .unnumbered}
+## Notes {#notes-4 .unnumbered}
 
 -   The '\*/' pattern matches only directories; use '\*' to include
     files as well
@@ -414,7 +546,7 @@ coreutils
 -   Results may vary if some directories are mounted on different
     filesystems or are inaccessible due to permissions
 
-## Warnings {#warnings-3 .unnumbered}
+## Warnings {#warnings-4 .unnumbered}
 
 -   Results may be incomplete or misleading if you lack read permissions
     on some directories
@@ -427,156 +559,11 @@ coreutils
 
 -   Sparse files may cause inaccurate size reporting on some filesystems
 
-## See Also {#see-also-3 .unnumbered}
+## See Also {#see-also-4 .unnumbered}
 
 -   find-largest-storage-users
 
 -   find-large-files-recursive
-
-## Status {#status-3 .unnumbered}
-
-reviewed
-
-## Safety {#safety-3 .unnumbered}
-
-safe
-
-## Shell {#shell-3 .unnumbered}
-
-bash
-
-## Platforms {#platforms-3 .unnumbered}
-
-linux, gnu-linux, freebsd, openbsd, netbsd
-
-## Created At {#created-at-3 .unnumbered}
-
-2026-04-21
-
-## Updated At {#updated-at-3 .unnumbered}
-
-2026-04-21
-
-## Disk Space Usage Per Directory
-
-## Display disk space usage for all directories with hierarchical breakdown {#display-disk-space-usage-for-all-directories-with-hierarchical-breakdown .unnumbered}
-
-**Author:** marcos **Date:** 2026-04-21
-
-Shows disk space usage for directories up to 2 levels deep in the
-current directory tree, sorted by size in descending order with
-human-readable format, providing a hierarchical breakdown of disk
-consumption.
-
-## Language {#language-4 .unnumbered}
-
-bash
-
-## Category {#category-4 .unnumbered}
-
-disk-usage
-
-## Command {#command-4 .unnumbered}
-
-    du -h --max-depth=2 . | sort -hr
-
-## Explanation {#explanation-4 .unnumbered}
-
-The command uses 'du -h' to calculate disk usage in human-readable
-format. The '--max-depth=2' flag limits output to directories up to 2
-levels deep from the current directory, avoiding excessive detail while
-still showing the hierarchy. The '.' specifies the starting directory.
-The output is piped to 'sort -hr' to sort in descending order by
-human-readable sizes, making it easy to identify which directories
-consume the most space at each level.
-
-## Tags {#tags-4 .unnumbered}
-
-du, disk-usage, directories, storage, hierarchical, sort,
-system-administration
-
-## Dependencies {#dependencies-4 .unnumbered}
-
-coreutils
-
-## Arguments {#arguments-4 .unnumbered}
-
-1.  **PATH** (Optional): Root directory to analyze (default: current
-    directory)\
-    Default: .
-
-2.  **DEPTH** (Optional): Maximum directory depth to traverse (default:
-    2)\
-    Default: 2
-
-## Examples {#examples-4 .unnumbered}
-
-1.  `du -h –max-depth=2 . | sort -hr` - Show disk usage up to 2 levels
-    deep from current directory
-
-2.  `du -h –max-depth=1 . | sort -hr` - Show only immediate
-    subdirectories (1 level deep)
-
-3.  `du -h –max-depth=3 /home | sort -hr` - Show disk usage in /home up
-    to 3 levels deep
-
-4.  `du -h –max-depth=2 . | sort -hr | head -20` - Show top 20
-    directories by size (2 levels deep)
-
-5.  `du -ah –max-depth=2 . | sort -hr | head -15` - Include files in the
-    listing, show top 15 items
-
-## Output {#output-4 .unnumbered}
-
-    1.2T    .
-    847G    ./data
-    512G    ./data/cache
-    256G    ./data/backups
-    244G    ./media
-    128G    ./media/videos
-    116G    ./media/archives
-    156G    ./documents
-    96G ./documents/projects
-    60G ./documents/reports
-
-## Notes {#notes-4 .unnumbered}
-
--   The --max-depth flag controls recursion depth: 0 shows only the
-    starting directory, 1 shows immediate children, etc.
-
--   The -h flag makes output human-readable (K, M, G, T); use -B 1M for
-    sizes in fixed block units
-
--   The -s flag is not needed here as du summarizes by default
-
--   Hidden directories (those starting with .) are included
-    automatically
-
--   Each line shows cumulative size for that directory and all its
-    contents
-
--   Symbolic links are not followed by default; add -L to follow
-    symlinks
-
--   On filesystems with many nested directories, increasing --max-depth
-    may significantly increase runtime
-
-## Warnings {#warnings-4 .unnumbered}
-
--   Results may be incomplete if you lack read permissions on some
-    directories
-
--   On network filesystems (NFS, SMB), this command can be slow due to
-    network latency
-
--   Very deep directory hierarchies combined with high --max-depth
-    values may cause excessive output
-
--   Sparse files may report misleading sizes on some filesystems
-
-## See Also {#see-also-4 .unnumbered}
-
--   disk-space-sort-largest-directories
 
 ## Status {#status-4 .unnumbered}
 
@@ -602,6 +589,151 @@ linux, gnu-linux, freebsd, openbsd, netbsd
 
 2026-04-21
 
+## Disk Space Usage Per Directory
+
+## Display disk space usage for all directories with hierarchical breakdown {#display-disk-space-usage-for-all-directories-with-hierarchical-breakdown .unnumbered}
+
+**Author:** marcos **Date:** 2026-04-21
+
+Shows disk space usage for directories up to 2 levels deep in the
+current directory tree, sorted by size in descending order with
+human-readable format, providing a hierarchical breakdown of disk
+consumption.
+
+## Language {#language-5 .unnumbered}
+
+bash
+
+## Category {#category-5 .unnumbered}
+
+disk-usage
+
+## Command {#command-5 .unnumbered}
+
+    du -h --max-depth=2 . | sort -hr
+
+## Explanation {#explanation-5 .unnumbered}
+
+The command uses 'du -h' to calculate disk usage in human-readable
+format. The '--max-depth=2' flag limits output to directories up to 2
+levels deep from the current directory, avoiding excessive detail while
+still showing the hierarchy. The '.' specifies the starting directory.
+The output is piped to 'sort -hr' to sort in descending order by
+human-readable sizes, making it easy to identify which directories
+consume the most space at each level.
+
+## Tags {#tags-5 .unnumbered}
+
+du, disk-usage, directories, storage, hierarchical, sort,
+system-administration
+
+## Dependencies {#dependencies-5 .unnumbered}
+
+coreutils
+
+## Arguments {#arguments-5 .unnumbered}
+
+1.  **PATH** (Optional): Root directory to analyze (default: current
+    directory)\
+    Default: .
+
+2.  **DEPTH** (Optional): Maximum directory depth to traverse (default:
+    2)\
+    Default: 2
+
+## Examples {#examples-5 .unnumbered}
+
+1.  `du -h –max-depth=2 . | sort -hr` - Show disk usage up to 2 levels
+    deep from current directory
+
+2.  `du -h –max-depth=1 . | sort -hr` - Show only immediate
+    subdirectories (1 level deep)
+
+3.  `du -h –max-depth=3 /home | sort -hr` - Show disk usage in /home up
+    to 3 levels deep
+
+4.  `du -h –max-depth=2 . | sort -hr | head -20` - Show top 20
+    directories by size (2 levels deep)
+
+5.  `du -ah –max-depth=2 . | sort -hr | head -15` - Include files in the
+    listing, show top 15 items
+
+## Output {#output-5 .unnumbered}
+
+    1.2T    .
+    847G    ./data
+    512G    ./data/cache
+    256G    ./data/backups
+    244G    ./media
+    128G    ./media/videos
+    116G    ./media/archives
+    156G    ./documents
+    96G ./documents/projects
+    60G ./documents/reports
+
+## Notes {#notes-5 .unnumbered}
+
+-   The --max-depth flag controls recursion depth: 0 shows only the
+    starting directory, 1 shows immediate children, etc.
+
+-   The -h flag makes output human-readable (K, M, G, T); use -B 1M for
+    sizes in fixed block units
+
+-   The -s flag is not needed here as du summarizes by default
+
+-   Hidden directories (those starting with .) are included
+    automatically
+
+-   Each line shows cumulative size for that directory and all its
+    contents
+
+-   Symbolic links are not followed by default; add -L to follow
+    symlinks
+
+-   On filesystems with many nested directories, increasing --max-depth
+    may significantly increase runtime
+
+## Warnings {#warnings-5 .unnumbered}
+
+-   Results may be incomplete if you lack read permissions on some
+    directories
+
+-   On network filesystems (NFS, SMB), this command can be slow due to
+    network latency
+
+-   Very deep directory hierarchies combined with high --max-depth
+    values may cause excessive output
+
+-   Sparse files may report misleading sizes on some filesystems
+
+## See Also {#see-also-5 .unnumbered}
+
+-   disk-space-sort-largest-directories
+
+## Status {#status-5 .unnumbered}
+
+reviewed
+
+## Safety {#safety-5 .unnumbered}
+
+safe
+
+## Shell {#shell-5 .unnumbered}
+
+bash
+
+## Platforms {#platforms-5 .unnumbered}
+
+linux, gnu-linux, freebsd, openbsd, netbsd
+
+## Created At {#created-at-5 .unnumbered}
+
+2026-04-21
+
+## Updated At {#updated-at-5 .unnumbered}
+
+2026-04-21
+
 ## Dmesg Errors Pretty
 
 ## Kernel errors/warnings summary with full severity levels and colorized output {#kernel-errorswarnings-summary-with-full-severity-levels-and-colorized-output .unnumbered}
@@ -613,19 +745,19 @@ counts all message severity levels (emerg, alert, crit, err, warn,
 notice, info, debug), and presents them with a comprehensive summary
 frontmatter followed by the human-readable colorized logs.
 
-## Language {#language-5 .unnumbered}
+## Language {#language-6 .unnumbered}
 
 bash
 
-## Category {#category-5 .unnumbered}
+## Category {#category-6 .unnumbered}
 
 diagnostics
 
-## Command {#command-5 .unnumbered}
+## Command {#command-6 .unnumbered}
 
     dmesg -T -x --level=emerg,alert,crit,err,warn --color=always 2>/dev/null | awk 'BEGIN { print "\033[1m=== KERNEL MESSAGE SUMMARY ===\033[0m" } { lines[NR] = \$0; lvl = \$2; gsub(/\x1B\[[0-9;]*[mK]/, \"\", lvl); gsub(/[: \t]/, \"\", lvl); if(lvl ~ /^(emerg|alert|crit|err|warn|notice|info|debug)\$/) cnt[lvl]++; if(lvl ~ /^\w+\$/) all_cnt[lvl]++ } END { if(NR>0) { print "\033[1m--- ERRORS & WARNINGS ---\033[0m"; for(l in cnt) printf \"  %-7s : %d\n\", l, cnt[l]; print "\033[1m--- ALL MESSAGES (by severity) ---\033[0m"; for(l in all_cnt) printf \"  %-7s : %d\n\", l, all_cnt[l]; print "\033[1m======================================\033[0m\n"; for(i=1; i<=NR; i++) print lines[i] } else print "No kernel messages found for selected levels." }'
 
-## Explanation {#explanation-5 .unnumbered}
+## Explanation {#explanation-6 .unnumbered}
 
 The one-liner uses 'dmesg -T -x' to extract kernel messages with
 human-readable timestamps (-T) and decode the facility/level prefixes
@@ -640,21 +772,21 @@ levels), and (3) stores all log lines in memory. The END block prints a
 formatted summary frontmatter with both the 'errors/warnings' and 'all
 messages' counts, followed by the original colorized logs.
 
-## Tags {#tags-5 .unnumbered}
+## Tags {#tags-6 .unnumbered}
 
 dmesg, kernel, errors, warnings, logs, troubleshooting, monitoring,
 summary, awk, diagnostics, severity, log-analysis, linux, system,
 administration
 
-## Dependencies {#dependencies-5 .unnumbered}
+## Dependencies {#dependencies-6 .unnumbered}
 
 util-linux, gawk
 
-## Arguments {#arguments-5 .unnumbered}
+## Arguments {#arguments-6 .unnumbered}
 
 None
 
-## Examples {#examples-5 .unnumbered}
+## Examples {#examples-6 .unnumbered}
 
 1.  `dmesg -T -x –level=emerg,alert,crit,err,warn –color=always 2>/dev/null | awk ’BEGIN { print "\{}033[1m=== KERNEL MESSAGE SUMMARY ===\{}033[0m" } { lines[NR] = \{}$0; lvl = \{}$2; gsub(/\{}x1B\{}[[0-9;]*[mK]/, \{}"\{}", lvl); gsub(/[: \{}t]/, \{}"\{}", lvl); if(lvl ~ /^(emerg|alert|crit|err|warn|notice|info|debug)\{}$/) cnt[lvl]++; if(lvl ~ /^\{}w+\{}$/) all_cnt[lvl]++ } END { if(NR>0) { print "\{}033[1m— ERRORS & WARNINGS —\{}033[0m"; for(l in cnt) printf \{}" %-7s : %d\{}n\{}", l, cnt[l]; print "\{}033[1m— ALL MESSAGES (by severity) —\{}033[0m"; for(l in all_cnt) printf \{}" %-7s : %d\{}n\{}", l, all_cnt[l]; print "\{}033[1m======================================\{}033[0m\{}n"; for(i=1; i<=NR; i++) print lines[i] } else print "No kernel messages found for selected levels." }’` -
     Show full severity summary and colorized kernel messages
@@ -665,7 +797,7 @@ None
 3.  `sudo dmesg -T -x –level=emerg,alert,crit,err,warn –color=always 2>/dev/null | awk ’BEGIN { print "\{}033[1m=== KERNEL MESSAGE SUMMARY ===\{}033[0m" } { lines[NR] = \{}$0; lvl = \{}$2; gsub(/\{}x1B\{}[[0-9;]*[mK]/, \{}"\{}", lvl); gsub(/[: \{}t]/, \{}"\{}", lvl); if(lvl ~ /^(emerg|alert|crit|err|warn|notice|info|debug)\{}$/) cnt[lvl]++; if(lvl ~ /^\{}w+\{}$/) all_cnt[lvl]++ } END { if(NR>0) { print "\{}033[1m— ERRORS & WARNINGS —\{}033[0m"; for(l in cnt) printf \{}" %-7s : %d\{}n\{}", l, cnt[l]; print "\{}033[1m— ALL MESSAGES (by severity) —\{}033[0m"; for(l in all_cnt) printf \{}" %-7s : %d\{}n\{}", l, all_cnt[l]; print "\{}033[1m======================================\{}033[0m\{}n"; for(i=1; i<=NR; i++) print lines[i] } else print "No kernel messages found for selected levels." }’` -
     Run with sudo to access kernel ring buffer on restricted systems
 
-## Output {#output-5 .unnumbered}
+## Output {#output-6 .unnumbered}
 
     \u001b[1m=== KERNEL MESSAGE SUMMARY ===\u001b[0m
     \u001b[1m--- ERRORS & WARNINGS ---\u001b[0m
@@ -690,7 +822,7 @@ None
     kern  :notice: [Tue Apr 21 10:10:00 2026] Kernel log system initialized
     kern  :info  : [Tue Apr 21 10:15:00 2026] Network interface eth0 up and running
 
-## Notes {#notes-5 .unnumbered}
+## Notes {#notes-6 .unnumbered}
 
 -   Requires read access to the kernel ring buffer, which often requires
     sudo or being in the 'adm' group on some distributions.
@@ -714,39 +846,39 @@ None
     array) before printing, which is perfectly safe for typical volumes
     but could consume slightly more memory on massively flooded systems.
 
-## Warnings {#warnings-5 .unnumbered}
+## Warnings {#warnings-6 .unnumbered}
 
 -   Running without sufficient privileges (like sudo) will result in a
     blank output or a permission denied error on most modern secure
     Linux distributions.
 
-## See Also {#see-also-5 .unnumbered}
+## See Also {#see-also-6 .unnumbered}
 
 -   find-large-files-recursive
 
 -   disk-space-sort-largest-directories
 
-## Status {#status-5 .unnumbered}
+## Status {#status-6 .unnumbered}
 
 reviewed
 
-## Safety {#safety-5 .unnumbered}
+## Safety {#safety-6 .unnumbered}
 
 safe
 
-## Shell {#shell-5 .unnumbered}
+## Shell {#shell-6 .unnumbered}
 
 bash
 
-## Platforms {#platforms-5 .unnumbered}
+## Platforms {#platforms-6 .unnumbered}
 
 linux
 
-## Created At {#created-at-5 .unnumbered}
+## Created At {#created-at-6 .unnumbered}
 
 2026-04-21
 
-## Updated At {#updated-at-5 .unnumbered}
+## Updated At {#updated-at-6 .unnumbered}
 
 2026-04-21
 
@@ -759,19 +891,19 @@ linux
 Displays the top 10 users on the system by storage consumption in their
 home directories, sorted in descending order by disk usage.
 
-## Language {#language-6 .unnumbered}
+## Language {#language-7 .unnumbered}
 
 bash
 
-## Category {#category-6 .unnumbered}
+## Category {#category-7 .unnumbered}
 
 disk-usage
 
-## Command {#command-6 .unnumbered}
+## Command {#command-7 .unnumbered}
 
     du -sh /home/* 2>/dev/null | sort -hr | head -10
 
-## Explanation {#explanation-6 .unnumbered}
+## Explanation {#explanation-7 .unnumbered}
 
 The command uses 'du -sh' to calculate the total disk usage in
 human-readable format for each home directory. The '2\>/dev/null'
@@ -780,15 +912,15 @@ output is piped to 'sort -hr' to sort in descending order (largest
 first) using human-readable number comparison. Finally, 'head -10'
 limits the output to the top 10 users.
 
-## Tags {#tags-6 .unnumbered}
+## Tags {#tags-7 .unnumbered}
 
 disk-usage, storage, users, system-administration, du, sort
 
-## Dependencies {#dependencies-6 .unnumbered}
+## Dependencies {#dependencies-7 .unnumbered}
 
 coreutils, findutils
 
-## Arguments {#arguments-6 .unnumbered}
+## Arguments {#arguments-7 .unnumbered}
 
 1.  **PATH** (Optional): Home directory path to analyze (default:
     /home)\
@@ -797,7 +929,7 @@ coreutils, findutils
 2.  **COUNT** (Optional): Number of top users to display (default: 10)\
     Default: 10
 
-## Examples {#examples-6 .unnumbered}
+## Examples {#examples-7 .unnumbered}
 
 1.  `du -sh /home/* 2>/dev/null | sort -hr | head -10` - Show top 10
     users by storage usage in /home
@@ -811,7 +943,7 @@ coreutils, findutils
 4.  `du -sh /root /home/* 2>/dev/null | sort -hr | head -10` - Include
     root's home directory in the analysis
 
-## Output {#output-6 .unnumbered}
+## Output {#output-7 .unnumbered}
 
     450G    /home/alice
     320G    /home/bob
@@ -824,7 +956,7 @@ coreutils, findutils
     28G /home/iris
     19G /home/jack
 
-## Notes {#notes-6 .unnumbered}
+## Notes {#notes-7 .unnumbered}
 
 -   The command suppresses permission errors with '2\>/dev/null',
     allowing users to see results without elevated privileges
@@ -844,7 +976,7 @@ coreutils, findutils
 -   Results may vary if some home directories are mounted on different
     filesystems
 
-## Warnings {#warnings-6 .unnumbered}
+## Warnings {#warnings-7 .unnumbered}
 
 -   Results may be incomplete if you lack read permissions on certain
     home directories
@@ -854,33 +986,33 @@ coreutils, findutils
 
 -   NFS-mounted or slow storage may cause noticeable delays
 
-## See Also {#see-also-6 .unnumbered}
+## See Also {#see-also-7 .unnumbered}
 
 -   find-large-files-recursive
 
 -   disk-space-usage-per-directory
 
-## Status {#status-6 .unnumbered}
+## Status {#status-7 .unnumbered}
 
 reviewed
 
-## Safety {#safety-6 .unnumbered}
+## Safety {#safety-7 .unnumbered}
 
 safe
 
-## Shell {#shell-6 .unnumbered}
+## Shell {#shell-7 .unnumbered}
 
 bash
 
-## Platforms {#platforms-6 .unnumbered}
+## Platforms {#platforms-7 .unnumbered}
 
 linux, gnu-linux, freebsd
 
-## Created At {#created-at-6 .unnumbered}
+## Created At {#created-at-7 .unnumbered}
 
 2026-04-21
 
-## Updated At {#updated-at-6 .unnumbered}
+## Updated At {#updated-at-7 .unnumbered}
 
 2026-04-21
 
@@ -894,19 +1026,19 @@ Recursively finds all regular files larger than 100 MB in the directory
 tree, displays them with human-readable sizes, and sorts by size in
 descending order.
 
-## Language {#language-7 .unnumbered}
+## Language {#language-8 .unnumbered}
 
 bash
 
-## Category {#category-7 .unnumbered}
+## Category {#category-8 .unnumbered}
 
 filesystem
 
-## Command {#command-7 .unnumbered}
+## Command {#command-8 .unnumbered}
 
     find . -type f -size +100M -exec ls -lh {} + | awk '{print $5, $9}' | sort -hr
 
-## Explanation {#explanation-7 .unnumbered}
+## Explanation {#explanation-8 .unnumbered}
 
 The command uses 'find' to recursively traverse the directory tree,
 filter for regular files (-type f), and select those exceeding 100 MB
@@ -916,15 +1048,15 @@ each file in a batch operation, which is more efficient than using
 then 'sort -hr' sorts the results by human-readable sizes in descending
 order, showing the largest files first.
 
-## Tags {#tags-7 .unnumbered}
+## Tags {#tags-8 .unnumbered}
 
 find, filesystem, disk-usage, large-files, recursive, storage
 
-## Dependencies {#dependencies-7 .unnumbered}
+## Dependencies {#dependencies-8 .unnumbered}
 
 findutils, coreutils
 
-## Arguments {#arguments-7 .unnumbered}
+## Arguments {#arguments-8 .unnumbered}
 
 1.  **PATH** (Optional): Root directory to start the recursive search
     (default: current directory)\
@@ -934,7 +1066,7 @@ findutils, coreutils
     supports K, M, G suffixes)\
     Default: 100M
 
-## Examples {#examples-7 .unnumbered}
+## Examples {#examples-8 .unnumbered}
 
 1.  `find . -type f -size +100M -exec ls -lh {} + | awk ’{print $5, $9}’ | sort -hr` -
     Find files larger than 100 MB in current directory and
@@ -949,7 +1081,7 @@ findutils, coreutils
 4.  `find . -type f -size +50M -exec ls -lh {} + | awk ’{print $5, $9}’ | sort -hr | head -20` -
     Show top 20 largest files over 50 MB
 
-## Output {#output-7 .unnumbered}
+## Output {#output-8 .unnumbered}
 
     1.5G ./videos/archive.tar.gz
     987M ./backups/database.sql.bz2
@@ -959,7 +1091,7 @@ findutils, coreutils
     256M ./logs/app-2026.log
     198M ./tmp/large-temp-file
 
-## Notes {#notes-7 .unnumbered}
+## Notes {#notes-8 .unnumbered}
 
 -   The -size option supports various units: c (bytes), k (kilobytes), M
     (megabytes), G (gigabytes), and b (512-byte blocks)
@@ -977,7 +1109,7 @@ findutils, coreutils
 -   Results may be incomplete in directories where you lack read
     permissions
 
-## Warnings {#warnings-7 .unnumbered}
+## Warnings {#warnings-8 .unnumbered}
 
 -   On network filesystems (NFS, SMB), this command may be significantly
     slower
@@ -989,119 +1121,11 @@ findutils, coreutils
 
 -   Some filesystems may not report accurate sizes for sparse files
 
-## See Also {#see-also-7 .unnumbered}
+## See Also {#see-also-8 .unnumbered}
 
 -   find-largest-storage-users
 
 -   disk-space-sort-largest-directories
-
-## Status {#status-7 .unnumbered}
-
-reviewed
-
-## Safety {#safety-7 .unnumbered}
-
-safe
-
-## Shell {#shell-7 .unnumbered}
-
-bash
-
-## Platforms {#platforms-7 .unnumbered}
-
-linux, gnu-linux, freebsd, openbsd, netbsd
-
-## Created At {#created-at-7 .unnumbered}
-
-2026-04-21
-
-## Updated At {#updated-at-7 .unnumbered}
-
-2026-04-21
-
-## Journalctl Errors Today
-
-## Show system executables with errors/failures from today's journal {#show-system-executables-with-errorsfailures-from-todays-journal .unnumbered}
-
-**Author:** marcos **Date:** 2026-04-22
-
-Lists system executables that have generated failure, error, or fatal
-messages in today's journal logs, sorted by frequency.
-
-## Language {#language-8 .unnumbered}
-
-bash
-
-## Category {#category-8 .unnumbered}
-
-system-monitoring
-
-## Command {#command-8 .unnumbered}
-
-    echo "=== Errors/Failures in Today's Journal ==="; journalctl --no-pager --since today --grep 'fail|error|fatal' --output json | jq -r '._EXE' | sort | uniq -c | sort -nr | awk '{printf "%4d  %s\n", $1, $2}'
-
-## Explanation {#explanation-8 .unnumbered}
-
-The command retrieves all journal entries from today (since midnight),
-filters for messages containing the keywords 'fail', 'error', or 'fatal'
-(case-insensitive regex), outputs the results in JSON format for
-parsing, extracts the executable name (\_EXE field) from each log entry,
-counts occurrences of each executable, sorts them numerically in
-descending order (most frequent first), and formats the output with a
-header and aligned columns for readability.
-
-## Tags {#tags-8 .unnumbered}
-
-journalctl, systemd, logs, monitoring, troubleshooting, errors, failure,
-system-administration, diagnostics, debugging, logging, bash, jq,
-text-processing, process-management
-
-## Dependencies {#dependencies-8 .unnumbered}
-
-systemd, jq
-
-## Arguments {#arguments-8 .unnumbered}
-
-None
-
-## Examples {#examples-8 .unnumbered}
-
-1.  `journalctl-errors-today` - Show errors/failures from today's
-    journal
-
-2.  `journalctl –no-pager –since yesterday –grep ’fail|error|fatal’ –output json | jq -r ’._EXE’ | sort | uniq -c | sort -nr` -
-    Show errors/failures from yesterday's journal (raw output)
-
-## Output {#output-8 .unnumbered}
-
-    === Errors/Failures in Today's Journal ===
-       5  /usr/bin/systemd
-       3  /usr/bin/foo-daemon
-       1  /usr/lib/bar-service
-
-## Notes {#notes-8 .unnumbered}
-
--   Requires journalctl (systemd) and jq to be installed
-
--   Only shows entries from the current day (midnight to now)
-
--   Requires appropriate permissions to read journal logs
-
--   The regex pattern 'fail\|error\|fatal' matches any of these words in
-    log messages
-
--   Output is sorted by count (highest first) for easy identification of
-    frequent issues
-
-## Warnings {#warnings-8 .unnumbered}
-
-None
-
-## See Also {#see-also-8 .unnumbered}
-
--   dmesg-errors-pretty
-
--   user-activity-and-quota-report
 
 ## Status {#status-8 .unnumbered}
 
@@ -1117,13 +1141,121 @@ bash
 
 ## Platforms {#platforms-8 .unnumbered}
 
-linux, gnu-linux
+linux, gnu-linux, freebsd, openbsd, netbsd
 
 ## Created At {#created-at-8 .unnumbered}
 
-2026-04-22
+2026-04-21
 
 ## Updated At {#updated-at-8 .unnumbered}
+
+2026-04-21
+
+## Journalctl Errors Today
+
+## Show system executables with errors/failures from today's journal {#show-system-executables-with-errorsfailures-from-todays-journal .unnumbered}
+
+**Author:** marcos **Date:** 2026-04-22
+
+Lists system executables that have generated failure, error, or fatal
+messages in today's journal logs, sorted by frequency.
+
+## Language {#language-9 .unnumbered}
+
+bash
+
+## Category {#category-9 .unnumbered}
+
+system-monitoring
+
+## Command {#command-9 .unnumbered}
+
+    echo "=== Errors/Failures in Today's Journal ==="; journalctl --no-pager --since today --grep 'fail|error|fatal' --output json | jq -r '._EXE' | sort | uniq -c | sort -nr | awk '{printf "%4d  %s\n", $1, $2}'
+
+## Explanation {#explanation-9 .unnumbered}
+
+The command retrieves all journal entries from today (since midnight),
+filters for messages containing the keywords 'fail', 'error', or 'fatal'
+(case-insensitive regex), outputs the results in JSON format for
+parsing, extracts the executable name (\_EXE field) from each log entry,
+counts occurrences of each executable, sorts them numerically in
+descending order (most frequent first), and formats the output with a
+header and aligned columns for readability.
+
+## Tags {#tags-9 .unnumbered}
+
+journalctl, systemd, logs, monitoring, troubleshooting, errors, failure,
+system-administration, diagnostics, debugging, logging, bash, jq,
+text-processing, process-management
+
+## Dependencies {#dependencies-9 .unnumbered}
+
+systemd, jq
+
+## Arguments {#arguments-9 .unnumbered}
+
+None
+
+## Examples {#examples-9 .unnumbered}
+
+1.  `journalctl-errors-today` - Show errors/failures from today's
+    journal
+
+2.  `journalctl –no-pager –since yesterday –grep ’fail|error|fatal’ –output json | jq -r ’._EXE’ | sort | uniq -c | sort -nr` -
+    Show errors/failures from yesterday's journal (raw output)
+
+## Output {#output-9 .unnumbered}
+
+    === Errors/Failures in Today's Journal ===
+       5  /usr/bin/systemd
+       3  /usr/bin/foo-daemon
+       1  /usr/lib/bar-service
+
+## Notes {#notes-9 .unnumbered}
+
+-   Requires journalctl (systemd) and jq to be installed
+
+-   Only shows entries from the current day (midnight to now)
+
+-   Requires appropriate permissions to read journal logs
+
+-   The regex pattern 'fail\|error\|fatal' matches any of these words in
+    log messages
+
+-   Output is sorted by count (highest first) for easy identification of
+    frequent issues
+
+## Warnings {#warnings-9 .unnumbered}
+
+None
+
+## See Also {#see-also-9 .unnumbered}
+
+-   dmesg-errors-pretty
+
+-   user-activity-and-quota-report
+
+## Status {#status-9 .unnumbered}
+
+reviewed
+
+## Safety {#safety-9 .unnumbered}
+
+safe
+
+## Shell {#shell-9 .unnumbered}
+
+bash
+
+## Platforms {#platforms-9 .unnumbered}
+
+linux, gnu-linux
+
+## Created At {#created-at-9 .unnumbered}
+
+2026-04-22
+
+## Updated At {#updated-at-9 .unnumbered}
 
 2026-04-22
 
@@ -1140,19 +1272,19 @@ file count, last login timestamp, and last executed command. All
 information is formatted in a readable table with elevated privileges
 for complete data access.
 
-## Language {#language-9 .unnumbered}
+## Language {#language-10 .unnumbered}
 
 bash
 
-## Category {#category-9 .unnumbered}
+## Category {#category-10 .unnumbered}
 
 system-administration
 
-## Command {#command-9 .unnumbered}
+## Command {#command-10 .unnumbered}
 
     sudo bash -c "printf 'USER\tQUOTA\tHOME\tDISK_USAGE\tCREATED\tFILES\tLAST_LOGIN\tLAST_CMD\n'; getent passwd | awk -F: '\$3 < 1000 || \$1 ~ /^nobody$/ { print \$1,\$6 }' | while read u h; do q=\$(quota -u \"\$u\" 2>/dev/null | tail -1 | awk '{print \$2}'); [ -z \"\$q\" ] && q=none; d=\$(du -sh \"\$h\" 2>/dev/null | cut -f1); c=\$(stat -c %y \"\$h\" 2>/dev/null | cut -d' ' -f1 || echo N/A); f=\$(find \"\$h\" -type f 2>/dev/null | wc -l); l=\$(lastlog -u \"\$u\" 2>/dev/null | tail -1 | awk '{print \$5,\$6,\$7}'); [ -z \"\$l\" ] && l=Never; cmd=\$(tail -1 \"\$h\"/.bash_history 2>/dev/null | head -c 30); [ -z \"\$cmd\" ] && cmd=N/A; printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \"\$u\" \"\$q\" \"\$h\" \"\$d\" \"\$c\" \"\$f\" \"\$l\" \"\$cmd\"; done" | column -t -s $'\t'
 
-## Explanation {#explanation-9 .unnumbered}
+## Explanation {#explanation-10 .unnumbered}
 
 The command uses 'sudo bash -c' to execute the entire script with
 elevated privileges, ensuring access to all user data. It retrieves
@@ -1164,22 +1296,22 @@ wrapper allows proper variable expansion and quoting within the sudo
 context. Output is joined by tabs and formatted by 'column -t' for
 readability, avoiding issues with spaces in values.
 
-## Tags {#tags-9 .unnumbered}
+## Tags {#tags-10 .unnumbered}
 
 user-management, disk-usage, system-administration, activity, report,
 quota, audit, system-users, service-accounts
 
-## Dependencies {#dependencies-9 .unnumbered}
+## Dependencies {#dependencies-10 .unnumbered}
 
 coreutils, util-linux, shadow-utils, findutils
 
-## Arguments {#arguments-9 .unnumbered}
+## Arguments {#arguments-10 .unnumbered}
 
 1.  **UID_THRESHOLD** (Optional): Maximum UID to consider a system user
     (default: 1000 for non-human users)\
     Default: 1000
 
-## Examples {#examples-9 .unnumbered}
+## Examples {#examples-10 .unnumbered}
 
 1.  `sudo bash -c "printf ’USER\{}tQUOTA\{}tHOME\{}tDISK_USAGE\{}tCREATED\{}tFILES\{}tLAST_LOGIN\{}tLAST_CMD\{}n’; getent passwd | awk -F: ’\{}$3 < 1000 || \{}$1 ~ /^nobody$/ { print \{}$1,\{}$6 }’ | while read u h; do q=\{}$(quota -u \{}"\{}$u\{}" 2>/dev/null | tail -1 | awk ’{print \{}$2}’); [ -z \{}"\{}$q\{}" ] && q=none; d=\{}$(du -sh \{}"\{}$h\{}" 2>/dev/null | cut -f1); c=\{}$(stat -c %y \{}"\{}$h\{}" 2>/dev/null | cut -d’ ’ -f1 || echo N/A); f=\{}$(find \{}"\{}$h\{}" -type f 2>/dev/null | wc -l); l=\{}$(lastlog -u \{}"\{}$u\{}" 2>/dev/null | tail -1 | awk ’{print \{}$5,\{}$6,\{}$7}’); [ -z \{}"\{}$l\{}" ] && l=Never; cmd=\{}$(tail -1 \{}"\{}$h\{}"/.bash_history 2>/dev/null | head -c 30); [ -z \{}"\{}$cmd\{}" ] && cmd=N/A; printf ’%s\{}t%s\{}t%s\{}t%s\{}t%s\{}t%s\{}t%s\{}t%s\{}n’ \{}"\{}$u\{}" \{}"\{}$q\{}" \{}"\{}$h\{}" \{}"\{}$d\{}" \{}"\{}$c\{}" \{}"\{}$f\{}" \{}"\{}$l\{}" \{}"\{}$cmd\{}"; done" | column -t -s $’\{}t’` -
     Generate complete report for all non-human (system) users with all
@@ -1191,7 +1323,7 @@ coreutils, util-linux, shadow-utils, findutils
 3.  `sudo bash -c "printf ’USER\{}tQUOTA\{}tDISK_USAGE\{}tFILES\{}n’; getent passwd | awk -F: ’\{}$3 < 1000 || \{}$1 ~ /^nobody$/ { print \{}$1,\{}$6 }’ | while read u h; do q=\{}$(quota -u \{}"\{}$u\{}" 2>/dev/null | tail -1 | awk ’{print \{}$2}’); [ -z \{}"\{}$q\{}" ] && q=none; d=\{}$(du -sh \{}"\{}$h\{}" 2>/dev/null | cut -f1); f=\{}$(find \{}"\{}$h\{}" -type f 2>/dev/null | wc -l); printf ’%s\{}t%s\{}t%s\{}t%s\{}n’ \{}"\{}$u\{}" \{}"\{}$q\{}" \{}"\{}$d\{}" \{}"\{}$f\{}"; done" | column -t -s $’\{}t’` -
     Simplified report showing only quota, disk usage, and file count
 
-## Output {#output-9 .unnumbered}
+## Output {#output-10 .unnumbered}
 
     USER        QUOTA HOME            DISK_USAGE CREATED    FILES  LAST_LOGIN      LAST_CMD
     root        none  /root           1.5G       2023-01-15 15340  May  20 13:45   apt update
@@ -1200,7 +1332,7 @@ coreutils, util-linux, shadow-utils, findutils
     www-data    none  /var/www        4.2G       2023-05-10 45678  Never           N/A
     nobody      none  /nonexistent    0          2023-01-15 0      Never           N/A
 
-## Notes {#notes-9 .unnumbered}
+## Notes {#notes-10 .unnumbered}
 
 -   This command is designed to run with sudo for complete information;
     running without sudo will show incomplete results
@@ -1230,7 +1362,7 @@ coreutils, util-linux, shadow-utils, findutils
 -   The command uses getent instead of /etc/passwd for better
     compatibility with different user databases (LDAP, NIS, etc.)
 
-## Warnings {#warnings-9 .unnumbered}
+## Warnings {#warnings-10 .unnumbered}
 
 -   Requires sudo access to function properly; user must have sudo
     privileges without password prompt configured in sudoers for
@@ -1254,7 +1386,7 @@ coreutils, util-linux, shadow-utils, findutils
 -   On systems with many users, overall execution time can be
     substantial; consider running during off-peak hours
 
-## See Also {#see-also-9 .unnumbered}
+## See Also {#see-also-10 .unnumbered}
 
 -   find-largest-storage-users
 
@@ -1264,27 +1396,27 @@ coreutils, util-linux, shadow-utils, findutils
 
 -   find-large-files-recursive
 
-## Status {#status-9 .unnumbered}
+## Status {#status-10 .unnumbered}
 
 reviewed
 
-## Safety {#safety-9 .unnumbered}
+## Safety {#safety-10 .unnumbered}
 
 caution
 
-## Shell {#shell-9 .unnumbered}
+## Shell {#shell-10 .unnumbered}
 
 bash
 
-## Platforms {#platforms-9 .unnumbered}
+## Platforms {#platforms-10 .unnumbered}
 
 linux, gnu-linux
 
-## Created At {#created-at-9 .unnumbered}
+## Created At {#created-at-10 .unnumbered}
 
 2026-04-21
 
-## Updated At {#updated-at-9 .unnumbered}
+## Updated At {#updated-at-10 .unnumbered}
 
 2026-04-21
 
@@ -1298,19 +1430,19 @@ Replaces all occurrences of a string with a replacement string in
 multiple files or file patterns. Pure oneliner that works directly
 pasted with parameters, or in an alias.
 
-## Language {#language-10 .unnumbered}
+## Language {#language-11 .unnumbered}
 
 bash
 
-## Category {#category-10 .unnumbered}
+## Category {#category-11 .unnumbered}
 
 text-processing
 
-## Command {#command-10 .unnumbered}
+## Command {#command-11 .unnumbered}
 
     bash -c 'old=$1; new=$2; shift 2; find "$@" -type f -exec sed -i "s#$old#$new#g" {} +' _
 
-## Explanation {#explanation-10 .unnumbered}
+## Explanation {#explanation-11 .unnumbered}
 
 This oneliner uses a subshell ('bash -c') to parse positional
 parameters. The first argument is the string to replace ('\$1'), the
@@ -1323,16 +1455,16 @@ maps to the first actual argument. This approach handles an arbitrary
 amount of files and supports wildcard file patterns without hardcoding
 values into the command itself.
 
-## Tags {#tags-10 .unnumbered}
+## Tags {#tags-11 .unnumbered}
 
 sed, text-processing, string-replacement, file-editing, search-replace,
 batch-replace
 
-## Dependencies {#dependencies-10 .unnumbered}
+## Dependencies {#dependencies-11 .unnumbered}
 
 sed, coreutils
 
-## Arguments {#arguments-10 .unnumbered}
+## Arguments {#arguments-11 .unnumbered}
 
 1.  **SEARCH** (Required): The string to search for (first parameter
     passed after the command).
@@ -1343,7 +1475,7 @@ sed, coreutils
 3.  **FILES** (Required): One or more file paths or patterns (e.g.,
     file1.txt, \*.txt, /path/\*.js).
 
-## Examples {#examples-10 .unnumbered}
+## Examples {#examples-11 .unnumbered}
 
 1.  `bash -c ’old=$1; new=$2; shift 2; find "$@" -type f -exec sed -i "s#$old#$new#g" {} +’ _ ’old-domain.com’ ’new-domain.com’ config.json settings.json` -
     Paste directly: replace 'old-domain.com' with 'new-domain.com' in
@@ -1364,11 +1496,11 @@ sed, coreutils
 6.  `repl ’old-api’ ’new-api’ config/*.json docs/*.md` - Use the alias
     to replace in multiple file types across different directories
 
-## Output {#output-10 .unnumbered}
+## Output {#output-11 .unnumbered}
 
     (No output on success - files are modified in place)
 
-## Notes {#notes-10 .unnumbered}
+## Notes {#notes-11 .unnumbered}
 
 -   Pure oneliner: uses bash -c to accept arbitrary parameters after the
     command string
@@ -1396,7 +1528,7 @@ sed, coreutils
 -   For case-insensitive replacement, modify the command to include the
     i flag: sed -i \"s#\$old#\$new#gi\"
 
-## Warnings {#warnings-10 .unnumbered}
+## Warnings {#warnings-11 .unnumbered}
 
 -   The -i flag modifies files directly without confirmation - always
     test on copies first
@@ -1420,33 +1552,33 @@ sed, coreutils
 -   Special characters in search/replace strings must be properly quoted
     or escaped
 
-## See Also {#see-also-10 .unnumbered}
+## See Also {#see-also-11 .unnumbered}
 
 -   find-large-files-recursive
 
 -   disk-space-usage-per-directory
 
-## Status {#status-10 .unnumbered}
+## Status {#status-11 .unnumbered}
 
 reviewed
 
-## Safety {#safety-10 .unnumbered}
+## Safety {#safety-11 .unnumbered}
 
 caution
 
-## Shell {#shell-10 .unnumbered}
+## Shell {#shell-11 .unnumbered}
 
 bash
 
-## Platforms {#platforms-10 .unnumbered}
+## Platforms {#platforms-11 .unnumbered}
 
 linux, gnu-linux, freebsd, openbsd, netbsd
 
-## Created At {#created-at-10 .unnumbered}
+## Created At {#created-at-11 .unnumbered}
 
 2026-04-21
 
-## Updated At {#updated-at-10 .unnumbered}
+## Updated At {#updated-at-11 .unnumbered}
 
 2026-04-21
 
@@ -1460,19 +1592,19 @@ Displays system memory usage in human-readable format and lists the top
 10 memory-consuming processes by percentage of memory used and resident
 set size in MB.
 
-## Language {#language-11 .unnumbered}
+## Language {#language-12 .unnumbered}
 
 bash
 
-## Category {#category-11 .unnumbered}
+## Category {#category-12 .unnumbered}
 
 monitoring
 
-## Command {#command-11 .unnumbered}
+## Command {#command-12 .unnumbered}
 
     echo -e "Memory Report:\n$(free -h)\n\nTop 10 Memory Consuming Processes (%MEM and RSS in MB):\n$(ps -eo pid,comm,%mem,rss --sort=-%mem | awk 'NR==1 {print $0 " RSS(MB)"}; NR>1 {printf "%s %s %s %.2f\n", $1, $2, $3, $4/1024}' | head -n 11)"
 
-## Explanation {#explanation-11 .unnumbered}
+## Explanation {#explanation-12 .unnumbered}
 
 The command uses 'free -h' to show memory statistics in human-readable
 units (e.g., MB, GB). It then uses 'ps' to list all processes sorted by
@@ -1482,19 +1614,19 @@ formats the output to display PID, COMMAND, %MEM, and RSS(MB) with
 proper headers. The output is formatted with clear section headers and
 spacing for readability.
 
-## Tags {#tags-11 .unnumbered}
+## Tags {#tags-12 .unnumbered}
 
 memory, system-monitoring, top-processes, ram, ps, free
 
-## Dependencies {#dependencies-11 .unnumbered}
+## Dependencies {#dependencies-12 .unnumbered}
 
 bash, coreutils, procps-ng
 
-## Arguments {#arguments-11 .unnumbered}
+## Arguments {#arguments-12 .unnumbered}
 
 None
 
-## Examples {#examples-11 .unnumbered}
+## Examples {#examples-12 .unnumbered}
 
 1.  `echo -e "Memory Report:\{}n$(free -h)\{}n\{}nTop 10 Memory Consuming Processes (%MEM and RSS in MB):\{}n$(ps -eo pid,comm,%mem,rss –sort=-%mem | awk ’NR==1 {print $0 " RSS(MB)"}; NR>1 {printf "%s %s %s %.2f\{}n", $1, $2, $3, $4/1024}’ | head -n 11)"` -
     Run the memory report oneliner directly in the shell
@@ -1502,7 +1634,7 @@ None
 2.  `alias memreport=’echo -e "Memory Report:\{}n$(free -h)\{}n\{}nTop 10 Memory Consuming Processes (%MEM and RSS in MB):\{}n$(ps -eo pid,comm,%mem,rss –sort=-%mem | awk ’NR==1 {print $0 " RSS(MB)"}; NR>1 {printf "%s %s %s %.2f\{}n", $1, $2, $3, $4/1024}’ | head -n 11)"’ && memreport` -
     Define as an alias and then execute it
 
-## Output {#output-11 .unnumbered}
+## Output {#output-12 .unnumbered}
 
     Memory Report:
                   total        used        free      shared  buff/cache   available
@@ -1522,7 +1654,7 @@ None
      7788 Xorg             2.5   193.28
      9900 gnome-shell      2.2   170.24
 
-## Notes {#notes-11 .unnumbered}
+## Notes {#notes-12 .unnumbered}
 
 -   The %MEM column shows the percentage of available physical memory
     used by the process.
@@ -1535,37 +1667,37 @@ None
 -   The awk command converts RSS from KB to MB by dividing by 1024 and
     formats to 2 decimal places.
 
-## Warnings {#warnings-11 .unnumbered}
+## Warnings {#warnings-12 .unnumbered}
 
 None
 
-## See Also {#see-also-11 .unnumbered}
+## See Also {#see-also-12 .unnumbered}
 
 -   disk-usage-summary
 
 -   cpu-top-processes
 
-## Status {#status-11 .unnumbered}
+## Status {#status-12 .unnumbered}
 
 reviewed
 
-## Safety {#safety-11 .unnumbered}
+## Safety {#safety-12 .unnumbered}
 
 safe
 
-## Shell {#shell-11 .unnumbered}
+## Shell {#shell-12 .unnumbered}
 
 bash
 
-## Platforms {#platforms-11 .unnumbered}
+## Platforms {#platforms-12 .unnumbered}
 
 linux, gnu-linux, freebsd, openbsd, netbsd
 
-## Created At {#created-at-11 .unnumbered}
+## Created At {#created-at-12 .unnumbered}
 
 2026-04-22
 
-## Updated At {#updated-at-11 .unnumbered}
+## Updated At {#updated-at-12 .unnumbered}
 
 2026-04-22
 
@@ -1581,19 +1713,19 @@ actual disk usage, account creation date, file count, last login
 timestamp, and last executed command. All information is formatted in a
 readable table with elevated privileges for complete data access.
 
-## Language {#language-12 .unnumbered}
+## Language {#language-13 .unnumbered}
 
 bash
 
-## Category {#category-12 .unnumbered}
+## Category {#category-13 .unnumbered}
 
 system-administration
 
-## Command {#command-12 .unnumbered}
+## Command {#command-13 .unnumbered}
 
     sudo bash -c "printf 'USER\tQUOTA\tHOME\tDISK_USAGE\tCREATED\tFILES\tLAST_LOGIN\tLAST_CMD\n'; getent passwd | awk -F: '\$3 >= 1000 { if (\$1 ~ /^nobody$/) next; print \$1,\$6 }' | while read u h; do q=\$(quota -u \"\$u\" 2>/dev/null | tail -1 | awk '{print \$2}'); [ -z \"\$q\" ] && q=none; d=\$(du -sh \"\$h\" 2>/dev/null | cut -f1); c=\$(stat -c %y \"\$h\" 2>/dev/null | cut -d' ' -f1 || echo N/A); f=\$(find \"\$h\" -type f 2>/dev/null | wc -l); l=\$(lastlog -u \"\$u\" 2>/dev/null | tail -1 | awk '{print \$5,\$6,\$7}'); [ -z \"\$l\" ] && l=Never; cmd=\$(tail -1 \"\$h\"/.bash_history 2>/dev/null | head -c 30); [ -z \"\$cmd\" ] && cmd=N/A; printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \"\$u\" \"\$q\" \"\$h\" \"\$d\" \"\$c\" \"\$f\" \"\$l\" \"\$cmd\"; done" | column -t -s $'\t'
 
-## Explanation {#explanation-12 .unnumbered}
+## Explanation {#explanation-13 .unnumbered}
 
 The command uses 'sudo bash -c' to execute the entire script with
 elevated privileges, ensuring access to all user data. It retrieves
@@ -1605,22 +1737,22 @@ variable expansion and quoting within the sudo context. Output is joined
 by tabs and formatted by 'column -t' for readability, avoiding issues
 with spaces in values.
 
-## Tags {#tags-12 .unnumbered}
+## Tags {#tags-13 .unnumbered}
 
 user-management, disk-usage, system-administration, activity, report,
 quota, audit, users
 
-## Dependencies {#dependencies-12 .unnumbered}
+## Dependencies {#dependencies-13 .unnumbered}
 
 coreutils, util-linux, shadow-utils, findutils
 
-## Arguments {#arguments-12 .unnumbered}
+## Arguments {#arguments-13 .unnumbered}
 
 1.  **UID_THRESHOLD** (Optional): Minimum UID to consider a user
     (default: 1000 for human users only)\
     Default: 1000
 
-## Examples {#examples-12 .unnumbered}
+## Examples {#examples-13 .unnumbered}
 
 1.  `sudo bash -c "printf ’USER\{}tQUOTA\{}tHOME\{}tDISK_USAGE\{}tCREATED\{}tFILES\{}tLAST_LOGIN\{}tLAST_CMD\{}n’; getent passwd | awk -F: ’\{}$3 >= 1000 { if (\{}$1 ~ /^nobody$/) next; print \{}$1,\{}$6 }’ | while read u h; do q=\{}$(quota -u \{}"\{}$u\{}" 2>/dev/null | tail -1 | awk ’{print \{}$2}’); [ -z \{}"\{}$q\{}" ] && q=none; d=\{}$(du -sh \{}"\{}$h\{}" 2>/dev/null | cut -f1); c=\{}$(stat -c %y \{}"\{}$h\{}" 2>/dev/null | cut -d’ ’ -f1 || echo N/A); f=\{}$(find \{}"\{}$h\{}" -type f 2>/dev/null | wc -l); l=\{}$(lastlog -u \{}"\{}$u\{}" 2>/dev/null | tail -1 | awk ’{print \{}$5,\{}$6,\{}$7}’); [ -z \{}"\{}$l\{}" ] && l=Never; cmd=\{}$(tail -1 \{}"\{}$h\{}"/.bash_history 2>/dev/null | head -c 30); [ -z \{}"\{}$cmd\{}" ] && cmd=N/A; printf ’%s\{}t%s\{}t%s\{}t%s\{}t%s\{}t%s\{}t%s\{}t%s\{}n’ \{}"\{}$u\{}" \{}"\{}$q\{}" \{}"\{}$h\{}" \{}"\{}$d\{}" \{}"\{}$c\{}" \{}"\{}$f\{}" \{}"\{}$l\{}" \{}"\{}$cmd\{}"; done" | column -t -s $’\{}t’` -
     Generate complete report for all human users with all metrics
@@ -1632,7 +1764,7 @@ coreutils, util-linux, shadow-utils, findutils
 3.  `sudo bash -c "printf ’USER\{}tQUOTA\{}tDISK_USAGE\{}tFILES\{}n’; getent passwd | awk -F: ’\{}$3 >= 1000 { if (\{}$1 ~ /^nobody$/) next; print \{}$1,\{}$6 }’ | while read u h; do q=\{}$(quota -u \{}"\{}$u\{}" 2>/dev/null | tail -1 | awk ’{print \{}$2}’); [ -z \{}"\{}$q\{}" ] && q=none; d=\{}$(du -sh \{}"\{}$h\{}" 2>/dev/null | cut -f1); f=\{}$(find \{}"\{}$h\{}" -type f 2>/dev/null | wc -l); printf ’%s\{}t%s\{}t%s\{}t%s\{}n’ \{}"\{}$u\{}" \{}"\{}$q\{}" \{}"\{}$d\{}" \{}"\{}$f\{}"; done" | column -t -s $’\{}t’` -
     Simplified report showing only quota, disk usage, and file count
 
-## Output {#output-12 .unnumbered}
+## Output {#output-13 .unnumbered}
 
     USER        QUOTA HOME            DISK_USAGE CREATED    FILES LAST_LOGIN      LAST_CMD
     marcos      5G    /home/marcos    290G       2024-01-15 124356   May  20 13:45     grep -r pattern .
@@ -1640,7 +1772,7 @@ coreutils, util-linux, shadow-utils, findutils
     test-user   2G    /home/test-user 1.2G      2025-03-10 45678    May  10 09:30      ls -lah
     admin       10G   /home/admin     3.5G      2024-11-22 89234    May  15 11:22      sudo systemctl status
 
-## Notes {#notes-12 .unnumbered}
+## Notes {#notes-13 .unnumbered}
 
 -   This command is designed to run with sudo for complete information;
     running without sudo will show incomplete results
@@ -1668,7 +1800,7 @@ coreutils, util-linux, shadow-utils, findutils
 -   The command uses getent instead of /etc/passwd for better
     compatibility with different user databases (LDAP, NIS, etc.)
 
-## Warnings {#warnings-12 .unnumbered}
+## Warnings {#warnings-13 .unnumbered}
 
 -   Requires sudo access to function properly; user must have sudo
     privileges without password prompt configured in sudoers for
@@ -1692,7 +1824,7 @@ coreutils, util-linux, shadow-utils, findutils
 -   On systems with many users, overall execution time can be
     substantial; consider running during off-peak hours
 
-## See Also {#see-also-12 .unnumbered}
+## See Also {#see-also-13 .unnumbered}
 
 -   find-largest-storage-users
 
@@ -1702,27 +1834,27 @@ coreutils, util-linux, shadow-utils, findutils
 
 -   find-large-files-recursive
 
-## Status {#status-12 .unnumbered}
+## Status {#status-13 .unnumbered}
 
 reviewed
 
-## Safety {#safety-12 .unnumbered}
+## Safety {#safety-13 .unnumbered}
 
 caution
 
-## Shell {#shell-12 .unnumbered}
+## Shell {#shell-13 .unnumbered}
 
 bash
 
-## Platforms {#platforms-12 .unnumbered}
+## Platforms {#platforms-13 .unnumbered}
 
 linux, gnu-linux
 
-## Created At {#created-at-12 .unnumbered}
+## Created At {#created-at-13 .unnumbered}
 
 2026-04-21
 
-## Updated At {#updated-at-12 .unnumbered}
+## Updated At {#updated-at-13 .unnumbered}
 
 2026-04-21
 
@@ -1732,107 +1864,10 @@ linux, gnu-linux
 
 ## Load CSV file and print dataset statistics using R {#load-csv-file-and-print-dataset-statistics-using-r .unnumbered}
 
-**Author:** marcos **Date:** 2026-04-25
+**Author:** Marcos de Carvalho **Date:** 2026-04-25
 
 Loads a CSV file using R's read.csv and prints rows, columns, total
 cells, file size, and object memory usage.
-
-## Language {#language-13 .unnumbered}
-
-rscript
-
-## Category {#category-13 .unnumbered}
-
-data-processing
-
-## Command {#command-13 .unnumbered}
-
-    Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop('Need filename');df<-read.csv(args[1]);cat('Rows:',nrow(df),'Cols:',ncol(df),'Cells:',nrow(df)*ncol(df),'File size:',file.size(args[1]),'Object size:',format(object.size(df),units='auto'),'\n')"
-
-## Explanation {#explanation-13 .unnumbered}
-
-The command uses Rscript to execute R code that reads a CSV file
-specified as argument, computes basic statistics (rows, columns, cells),
-gets file size via file.size(), and reports object memory usage via
-object.size().
-
-## Tags {#tags-13 .unnumbered}
-
-rscript, csv, statistics, data-analysis, memory
-
-## Dependencies {#dependencies-13 .unnumbered}
-
-r-base-core
-
-## Arguments {#arguments-13 .unnumbered}
-
-1.  **CSV_FILE** (Required): CSV file to analyze
-
-## Examples {#examples-13 .unnumbered}
-
-1.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.csv(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" data.csv` -
-    Analyze data.csv
-
-2.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.csv(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" large_dataset.csv 2>/dev/null` -
-    Analyze suppressing warnings
-
-## Output {#output-13 .unnumbered}
-
-    Rows: 100 Cols: 10 Cells: 1000 File size: 12345 Object size: 78.2 Kb
-
-## Notes {#notes-13 .unnumbered}
-
--   Uses read.csv with default settings (header=TRUE,
-    stringsAsFactors=FALSE in R\>=4.0)
-
--   File size reported in bytes
-
--   Object size includes R overhead
-
--   For large files, consider adding options(stringsAsFactors=FALSE)
-
-## Warnings {#warnings-13 .unnumbered}
-
--   May load entire file into memory
-
--   Very large CSV files could exhaust memory
-
-## See Also {#see-also-13 .unnumbered}
-
--   tsv-stats
-
-## Status {#status-13 .unnumbered}
-
-reviewed
-
-## Safety {#safety-13 .unnumbered}
-
-safe
-
-## Shell {#shell-13 .unnumbered}
-
-posix
-
-## Platforms {#platforms-13 .unnumbered}
-
-linux, gnu-linux, freebsd, openbsd, netbsd
-
-## Created At {#created-at-13 .unnumbered}
-
-2026-04-25
-
-## Updated At {#updated-at-13 .unnumbered}
-
-2026-04-25
-
-## Tsv Stats
-
-## Load TSV file and print dataset statistics using R {#load-tsv-file-and-print-dataset-statistics-using-r .unnumbered}
-
-**Author:** marcos **Date:** 2026-04-25
-
-Loads a TSV (tab-separated) file using R's read.delim and prints rows,
-columns, total cells, file size, and object memory usage.
 
 ## Language {#language-14 .unnumbered}
 
@@ -1844,18 +1879,18 @@ data-processing
 
 ## Command {#command-14 .unnumbered}
 
-    Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop('Need filename');df<-read.delim(args[1]);cat('Rows:',nrow(df),'Cols:',ncol(df),'Cells:',nrow(df)*ncol(df),'File size:',file.size(args[1]),'Object size:',format(object.size(df),units='auto'),'\n')"
+    Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop('Need filename');df<-read.csv(args[1]);cat('Rows:',nrow(df),'Cols:',ncol(df),'Cells:',nrow(df)*ncol(df),'File size:',file.size(args[1]),'Object size:',format(object.size(df),units='auto'),'\n')"
 
 ## Explanation {#explanation-14 .unnumbered}
 
-The command uses Rscript to execute R code that reads a TSV file
+The command uses Rscript to execute R code that reads a CSV file
 specified as argument, computes basic statistics (rows, columns, cells),
 gets file size via file.size(), and reports object memory usage via
-object.size(). read.delim uses tab as separator by default.
+object.size().
 
 ## Tags {#tags-14 .unnumbered}
 
-rscript, tsv, statistics, data-analysis, memory
+rscript, csv, statistics, data-analysis, memory
 
 ## Dependencies {#dependencies-14 .unnumbered}
 
@@ -1863,14 +1898,14 @@ r-base-core
 
 ## Arguments {#arguments-14 .unnumbered}
 
-1.  **TSV_FILE** (Required): TSV (tab-separated) file to analyze
+1.  **CSV_FILE** (Required): CSV file to analyze
 
 ## Examples {#examples-14 .unnumbered}
 
-1.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.delim(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" data.tsv` -
-    Analyze data.tsv
+1.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.csv(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" data.csv` -
+    Analyze data.csv
 
-2.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.delim(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" large_dataset.tsv 2>/dev/null` -
+2.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.csv(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" large_dataset.csv 2>/dev/null` -
     Analyze suppressing warnings
 
 ## Output {#output-14 .unnumbered}
@@ -1879,7 +1914,7 @@ r-base-core
 
 ## Notes {#notes-14 .unnumbered}
 
--   Uses read.delim with default settings (header=TRUE, sep='\\{}t',
+-   Uses read.csv with default settings (header=TRUE,
     stringsAsFactors=FALSE in R\>=4.0)
 
 -   File size reported in bytes
@@ -1892,11 +1927,11 @@ r-base-core
 
 -   May load entire file into memory
 
--   Very large TSV files could exhaust memory
+-   Very large CSV files could exhaust memory
 
 ## See Also {#see-also-14 .unnumbered}
 
--   csv-stats
+-   tsv-stats
 
 ## Status {#status-14 .unnumbered}
 
@@ -1922,81 +1957,78 @@ linux, gnu-linux, freebsd, openbsd, netbsd
 
 2026-04-25
 
-# Git
+## Tsv Stats
 
-## Init Repo With Gitignore
-
-## Initialize git repository, stage all files and create empty .gitignore {#initialize-git-repository-stage-all-files-and-create-empty-.gitignore .unnumbered}
+## Load TSV file and print dataset statistics using R {#load-tsv-file-and-print-dataset-statistics-using-r .unnumbered}
 
 **Author:** Marcos de Carvalho **Date:** 2026-04-25
 
-Initializes a new git repository in current directory, stages all
-existing files, and creates an empty .gitignore file.
+Loads a TSV (tab-separated) file using R's read.delim and prints rows,
+columns, total cells, file size, and object memory usage.
 
 ## Language {#language-15 .unnumbered}
 
-git
+rscript
 
 ## Category {#category-15 .unnumbered}
 
-version-control
+data-processing
 
 ## Command {#command-15 .unnumbered}
 
-    git init && git add . && touch .gitignore
+    Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop('Need filename');df<-read.delim(args[1]);cat('Rows:',nrow(df),'Cols:',ncol(df),'Cells:',nrow(df)*ncol(df),'File size:',file.size(args[1]),'Object size:',format(object.size(df),units='auto'),'\n')"
 
 ## Explanation {#explanation-15 .unnumbered}
 
-This command sequence creates a new git repository (git init), adds all
-files in the current directory to the staging area (git add .), and
-creates an empty .gitignore file (touch .gitignore) for future ignore
-patterns.
+The command uses Rscript to execute R code that reads a TSV file
+specified as argument, computes basic statistics (rows, columns, cells),
+gets file size via file.size(), and reports object memory usage via
+object.size(). read.delim uses tab as separator by default.
 
 ## Tags {#tags-15 .unnumbered}
 
-git, version-control, repository, init, gitignore
+rscript, tsv, statistics, data-analysis, memory
 
 ## Dependencies {#dependencies-15 .unnumbered}
 
-git
+r-base-core
 
 ## Arguments {#arguments-15 .unnumbered}
 
-1.  **DIRECTORY** (Optional): Directory where to initialize repository\
-    Default: .
+1.  **TSV_FILE** (Required): TSV (tab-separated) file to analyze
 
 ## Examples {#examples-15 .unnumbered}
 
-1.  `git init && git add . && touch .gitignore` - Initialize repository
-    in current directory
+1.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.delim(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" data.tsv` -
+    Analyze data.tsv
 
-2.  `cd /path/to/project && git init && git add . && touch .gitignore` -
-    Initialize repository in specific directory
+2.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.delim(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" large_dataset.tsv 2>/dev/null` -
+    Analyze suppressing warnings
 
 ## Output {#output-15 .unnumbered}
 
-    Initialized empty Git repository in /home/user/project/.git/
+    Rows: 100 Cols: 10 Cells: 1000 File size: 12345 Object size: 78.2 Kb
 
 ## Notes {#notes-15 .unnumbered}
 
--   The .gitignore file is empty after creation; you should add patterns
-    to ignore unnecessary files
+-   Uses read.delim with default settings (header=TRUE, sep='\\{}t',
+    stringsAsFactors=FALSE in R\>=4.0)
 
--   If .gitignore already exists, touch command updates its timestamp
+-   File size reported in bytes
 
--   Use git status to verify files are staged
+-   Object size includes R overhead
+
+-   For large files, consider adding options(stringsAsFactors=FALSE)
 
 ## Warnings {#warnings-15 .unnumbered}
 
--   git add . stages all files including potentially sensitive data
+-   May load entire file into memory
 
--   Review staged files before committing
+-   Very large TSV files could exhaust memory
 
 ## See Also {#see-also-15 .unnumbered}
 
--   git-commit-initial
-
--   git-ignore-patterns
+-   csv-stats
 
 ## Status {#status-15 .unnumbered}
 
@@ -2019,5 +2051,105 @@ linux, gnu-linux, freebsd, openbsd, netbsd
 2026-04-25
 
 ## Updated At {#updated-at-15 .unnumbered}
+
+2026-04-25
+
+# Git
+
+## Init Repo With Gitignore
+
+## Initialize git repository, stage all files and create empty .gitignore {#initialize-git-repository-stage-all-files-and-create-empty-.gitignore .unnumbered}
+
+**Author:** Marcos de Carvalho **Date:** 2026-04-25
+
+Initializes a new git repository in current directory, stages all
+existing files, and creates an empty .gitignore file.
+
+## Language {#language-16 .unnumbered}
+
+git
+
+## Category {#category-16 .unnumbered}
+
+version-control
+
+## Command {#command-16 .unnumbered}
+
+    git init && git add . && touch .gitignore
+
+## Explanation {#explanation-16 .unnumbered}
+
+This command sequence creates a new git repository (git init), adds all
+files in the current directory to the staging area (git add .), and
+creates an empty .gitignore file (touch .gitignore) for future ignore
+patterns.
+
+## Tags {#tags-16 .unnumbered}
+
+git, version-control, repository, init, gitignore
+
+## Dependencies {#dependencies-16 .unnumbered}
+
+git
+
+## Arguments {#arguments-16 .unnumbered}
+
+1.  **DIRECTORY** (Optional): Directory where to initialize repository\
+    Default: .
+
+## Examples {#examples-16 .unnumbered}
+
+1.  `git init && git add . && touch .gitignore` - Initialize repository
+    in current directory
+
+2.  `cd /path/to/project && git init && git add . && touch .gitignore` -
+    Initialize repository in specific directory
+
+## Output {#output-16 .unnumbered}
+
+    Initialized empty Git repository in /home/user/project/.git/
+
+## Notes {#notes-16 .unnumbered}
+
+-   The .gitignore file is empty after creation; you should add patterns
+    to ignore unnecessary files
+
+-   If .gitignore already exists, touch command updates its timestamp
+
+-   Use git status to verify files are staged
+
+## Warnings {#warnings-16 .unnumbered}
+
+-   git add . stages all files including potentially sensitive data
+
+-   Review staged files before committing
+
+## See Also {#see-also-16 .unnumbered}
+
+-   git-commit-initial
+
+-   git-ignore-patterns
+
+## Status {#status-16 .unnumbered}
+
+reviewed
+
+## Safety {#safety-16 .unnumbered}
+
+safe
+
+## Shell {#shell-16 .unnumbered}
+
+posix
+
+## Platforms {#platforms-16 .unnumbered}
+
+linux, gnu-linux, freebsd, openbsd, netbsd
+
+## Created At {#created-at-16 .unnumbered}
+
+2026-04-25
+
+## Updated At {#updated-at-16 .unnumbered}
 
 2026-04-25
