@@ -1,0 +1,70 @@
+{
+  "id": "csv-to-tsv",
+  "title": "Convert CSV file to TSV (tab-separated values) using Python stdlib",
+  "language": "python",
+  "category": "data-processing",
+  "command": "python3 -c \"import sys,csv; csv.writer(sys.stdout, delimiter='\\t').writerows(csv.reader(sys.stdin))\"",
+  "description": "Converts comma-separated values (CSV) to tab-separated values (TSV) using Python's standard library csv module.",
+  "explanation": "The command reads CSV data from stdin, parses it with csv.reader (default delimiter is comma), and writes it to stdout using csv.writer with tab delimiter. It preserves quoting and escaping rules.",
+  "tags": [
+    "python",
+    "csv",
+    "tsv",
+    "data-conversion",
+    "text-processing"
+  ],
+  "author": "Marcos de Carvalho",
+  "created_at": "2026-04-25",
+  "updated_at": "2026-04-25",
+  "safety": "safe",
+  "shell": "posix",
+  "platforms": [
+    "linux",
+    "gnu-linux",
+    "freebsd",
+    "openbsd",
+    "netbsd",
+    "macos"
+  ],
+  "dependencies": [
+    "python3"
+  ],
+  "arguments": [
+    {
+      "name": "INPUT_FILE",
+      "description": "CSV input file (use stdin redirection)",
+      "required": false,
+      "default": "stdin"
+    },
+    {
+      "name": "OUTPUT_FILE",
+      "description": "TSV output file (use stdout redirection)",
+      "required": false,
+      "default": "stdout"
+    }
+  ],
+  "examples": [
+    {
+      "command": "python3 -c \"import sys,csv; csv.writer(sys.stdout, delimiter='\\t').writerows(csv.reader(sys.stdin))\" < data.csv > data.tsv",
+      "description": "Convert data.csv to data.tsv"
+    },
+    {
+      "command": "cat data.csv | python3 -c \"import sys,csv; csv.writer(sys.stdout, delimiter='\\t').writerows(csv.reader(sys.stdin))\" | head -20",
+      "description": "Preview first 20 rows converted"
+    }
+  ],
+  "output": "col1\tcol2\tcol3\nvalue1\tvalue2\tvalue3\n",
+  "notes": [
+    "Handles quoted fields with commas correctly",
+    "Preserves newlines within quoted fields",
+    "Works with any CSV dialect compatible with Python's csv module"
+  ],
+  "warnings": [
+    "Large files may consume memory as all rows are read into list",
+    "Input must be valid CSV format"
+  ],
+  "see_also": [
+    "tsv-to-csv"
+  ],
+  "status": "reviewed"
+}
