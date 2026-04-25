@@ -1,0 +1,102 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+}
+
+\title{Convert CSV file to TSV (tab-separated values) using Python stdlib}
+\author{Marcos de Carvalho}
+\date{2026-04-25}
+
+\begin{document}
+
+\section*{Convert CSV file to TSV (tab-separated values) using Python stdlib}
+\textbf{Author:} Marcos de Carvalho \hfill \textbf{Date:} 2026-04-25
+
+\noindent Converts comma-separated values (CSV) to tab-separated values (TSV) using Python's standard library csv module.
+
+\section*{Language}
+python
+
+\section*{Category}
+data-processing
+
+\section*{Command}
+\begin{lstlisting}
+python3 -c "import sys,csv; csv.writer(sys.stdout, delimiter='\t').writerows(csv.reader(sys.stdin))"
+\end{lstlisting}
+
+\section*{Explanation}
+The command reads CSV data from stdin, parses it with csv.reader (default delimiter is comma), and writes it to stdout using csv.writer with tab delimiter. It preserves quoting and escaping rules.
+
+\section*{Tags}
+python, csv, tsv, data-conversion, text-processing
+
+\section*{Dependencies}
+python3
+
+
+\section*{Arguments}
+\begin{enumerate}
+  \item \textbf{INPUT\_FILE} (Optional): CSV input file (use stdin redirection) \\ Default: stdin
+  \item \textbf{OUTPUT\_FILE} (Optional): TSV output file (use stdout redirection) \\ Default: stdout
+\end{enumerate}
+
+\section*{Examples}
+\begin{enumerate}
+  \item \texttt{python3 -c "import sys,csv; csv.writer(sys.stdout, delimiter='\textbackslash\{\}t').writerows(csv.reader(sys.stdin))" < data.csv > data.tsv} - Convert data.csv to data.tsv
+  \item \texttt{cat data.csv | python3 -c "import sys,csv; csv.writer(sys.stdout, delimiter='\textbackslash\{\}t').writerows(csv.reader(sys.stdin))" | head -20} - Preview first 20 rows converted
+\end{enumerate}
+
+\section*{Output}
+\begin{lstlisting}
+col1	col2	col3
+value1	value2	value3
+
+\end{lstlisting}
+
+\section*{Notes}
+\begin{itemize}
+  \item Handles quoted fields with commas correctly
+  \item Preserves newlines within quoted fields
+  \item Works with any CSV dialect compatible with Python's csv module
+\end{itemize}
+
+\section*{Warnings}
+\begin{itemize}
+  \item Large files may consume memory as all rows are read into list
+  \item Input must be valid CSV format
+\end{itemize}
+
+\section*{See Also}
+\begin{itemize}
+  \item tsv-to-csv
+\end{itemize}
+
+\section*{Status}
+reviewed
+
+\section*{Safety}
+safe
+
+\section*{Shell}
+posix
+
+\section*{Platforms}
+linux, gnu-linux, freebsd, openbsd, netbsd
+
+\section*{Created At}
+2026-04-25
+
+\section*{Updated At}
+2026-04-25
+
+\end{document}

@@ -23,8 +23,7 @@
     "gnu-linux",
     "freebsd",
     "openbsd",
-    "netbsd",
-    "macos"
+    "netbsd"
   ],
   "dependencies": [
     "python3"

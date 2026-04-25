@@ -1,0 +1,70 @@
+<h1 class="unnumbered"
+id="convert-tsv-tab-separated-values-file-to-csv-using-python-stdlib">Convert
+TSV (tab-separated values) file to CSV using Python stdlib</h1>
+<p><strong>Author:</strong> Marcos de Carvalho <strong>Date:</strong>
+2026-04-25</p>
+<p>Converts tab-separated values (TSV) to comma-separated values (CSV)
+using Python’s standard library csv module.</p>
+<h1 class="unnumbered" id="language">Language</h1>
+<p>python</p>
+<h1 class="unnumbered" id="category">Category</h1>
+<p>data-processing</p>
+<h1 class="unnumbered" id="command">Command</h1>
+<pre><code>python3 -c &quot;import sys,csv; csv.writer(sys.stdout).writerows(csv.reader(sys.stdin, delimiter=&#39;\t&#39;))&quot;</code></pre>
+<h1 class="unnumbered" id="explanation">Explanation</h1>
+<p>The command reads TSV data from stdin, parses it with csv.reader
+using tab delimiter, and writes it to stdout using csv.writer with
+default comma delimiter. It preserves quoting and escaping rules.</p>
+<h1 class="unnumbered" id="tags">Tags</h1>
+<p>python, tsv, csv, data-conversion, text-processing</p>
+<h1 class="unnumbered" id="dependencies">Dependencies</h1>
+<p>python3</p>
+<h1 class="unnumbered" id="arguments">Arguments</h1>
+<ol>
+<li><p><strong>INPUT_FILE</strong> (Optional): TSV input file (use stdin
+redirection)<br />
+Default: stdin</p></li>
+<li><p><strong>OUTPUT_FILE</strong> (Optional): CSV output file (use
+stdout redirection)<br />
+Default: stdout</p></li>
+</ol>
+<h1 class="unnumbered" id="examples">Examples</h1>
+<ol>
+<li><p><code>python3 -c "import sys,csv; csv.writer(sys.stdout).writerows(csv.reader(sys.stdin, delimiter=’\{}t’))" &lt; data.tsv &gt; data.csv</code>
+- Convert data.tsv to data.csv</p></li>
+<li><p><code>cat data.tsv | python3 -c "import sys,csv; csv.writer(sys.stdout).writerows(csv.reader(sys.stdin, delimiter=’\{}t’))" | head -20</code>
+- Preview first 20 rows converted</p></li>
+</ol>
+<h1 class="unnumbered" id="output">Output</h1>
+<pre><code>col1,col2,col3
+value1,value2,value3
+</code></pre>
+<h1 class="unnumbered" id="notes">Notes</h1>
+<ul>
+<li><p>Handles quoted fields with tabs correctly</p></li>
+<li><p>Preserves newlines within quoted fields</p></li>
+<li><p>Works with any TSV dialect compatible with Python’s csv
+module</p></li>
+</ul>
+<h1 class="unnumbered" id="warnings">Warnings</h1>
+<ul>
+<li><p>Large files may consume memory as all rows are read into
+list</p></li>
+<li><p>Input must be valid TSV format</p></li>
+</ul>
+<h1 class="unnumbered" id="see-also">See Also</h1>
+<ul>
+<li><p>csv-to-tsv</p></li>
+</ul>
+<h1 class="unnumbered" id="status">Status</h1>
+<p>reviewed</p>
+<h1 class="unnumbered" id="safety">Safety</h1>
+<p>safe</p>
+<h1 class="unnumbered" id="shell">Shell</h1>
+<p>posix</p>
+<h1 class="unnumbered" id="platforms">Platforms</h1>
+<p>linux, gnu-linux, freebsd, openbsd, netbsd</p>
+<h1 class="unnumbered" id="created-at">Created At</h1>
+<p>2026-04-25</p>
+<h1 class="unnumbered" id="updated-at">Updated At</h1>
+<p>2026-04-25</p>

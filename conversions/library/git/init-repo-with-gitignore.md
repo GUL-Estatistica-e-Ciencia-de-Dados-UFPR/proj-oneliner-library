@@ -1,6 +1,6 @@
 # Initialize git repository, stage all files and create empty .gitignore {#initialize-git-repository-stage-all-files-and-create-empty-.gitignore .unnumbered}
 
-**Author:** marcos **Date:** 2026-04-25
+**Author:** Marcos de Carvalho **Date:** 2026-04-25
 
 Initializes a new git repository in current directory, stages all
 existing files, and creates an empty .gitignore file.
