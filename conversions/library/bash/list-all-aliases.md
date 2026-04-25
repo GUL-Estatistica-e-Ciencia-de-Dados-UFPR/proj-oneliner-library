@@ -2,9 +2,9 @@
 
 **Author:** marcos **Date:** 2026-04-25
 
-Lists all aliases defined in the user's shell configuration file with
-colored, formatted output. Works with bash, zsh, and other shells on
-Linux and BSD systems.
+Lists all aliases defined in the user's shell configuration file in
+alphabetical order with colored, formatted output. Works with bash, zsh,
+and other shells on Linux and BSD systems.
 
 # Language {#language .unnumbered}
 
@@ -16,16 +16,16 @@ shell-utilities
 
 # Command {#command .unnumbered}
 
-    bash -c 'shell_conf=${1:-~/.bashrc}; if [ -f "$shell_conf" ]; then grep -E "^alias\s" "$shell_conf" | sed "s/^alias\s*//" | while IFS= read -r line; do alias_name=$(echo "$line" | cut -d"=" -f1); alias_cmd=$(echo "$line" | cut -d"=" -f2- | sed "s/^\(\s\)*\(\"\|\'\)\(.*\)\(\"\|\'\)\(\s\)*$/\3/"); printf "\033[1;34m%-20s\033[0m -> \033[1;32m%s\033[0m\n" "$alias_name" "$alias_cmd"; done; else echo "Configuration file not found: $shell_conf"; fi' _
+    bash -c 'shell_conf="${1:-$HOME/.bashrc}"; [ -f "$shell_conf" ] || { echo "Configuration file not found: $shell_conf"; exit 1; }; grep -E "^[[:space:]]*alias[[:space:]]" "$shell_conf" | sed -E "s/^[[:space:]]*alias[[:space:]]*//" | sort -f | while IFS= read -r line; do alias_name=${line%%=*}; alias_cmd=${line#*=}; printf "\\033[1;34m%-20s\\033[0m -> \\033[1;32m%s\\033[0m\\n" "$alias_name" "$alias_cmd"; done' _
 
 # Explanation {#explanation .unnumbered}
 
-This command detects the user's shell configuration file based on the
-SHELL environment variable, then parses the file to extract all alias
-definitions. It formats the output with colors to make alias names
-(blue) and their corresponding commands (green) easily distinguishable.
-The command accepts an optional argument for the configuration file
-path, defaulting to \~/.bashrc if not specified.
+This command reads the user's shell configuration file from the path
+passed as the first argument (defaulting to \~/.bashrc), extracts alias
+definitions, sorts them alphabetically by alias name, and prints the
+alias name in blue and the stored alias command in green. It preserves
+the command text as written after the equals sign, which keeps the
+direct shell syntax intact and avoids fragile quote-stripping logic.
 
 # Tags {#tags .unnumbered}
 
@@ -33,7 +33,7 @@ shell, alias, utilities, configuration, listing
 
 # Dependencies {#dependencies .unnumbered}
 
-bash, coreutils, grep, sed
+bash, grep, sed, sort
 
 # Arguments {#arguments .unnumbered}
 
@@ -43,21 +43,23 @@ bash, coreutils, grep, sed
 
 # Examples {#examples .unnumbered}
 
-1.  `bash -c ’shell_conf=${1:-~/.bashrc}; if [ -f "$shell_conf" ]; then grep -E "^alias\{}s" "$shell_conf" | sed "s/^alias\{}s*//" | while IFS= read -r line; do alias_name=$(echo "$line" | cut -d"=" -f1); alias_cmd=$(echo "$line" | cut -d"=" -f2- | sed "s/^\{}(\{}s\{})*\{}(\{}"\{}|\{}’\{})\{}(.*\{})\{}(\{}"\{}|\{}’\{})\{}(\{}s\{})*$/\{}3/"); printf "\{}033[1;34m%-20s\{}033[0m -> \{}033[1;32m%s\{}033[0m\{}n" "$alias_name" "$alias_cmd"; done; else echo "Configuration file not found: $shell_conf"; fi’ _` -
-    List all aliases from default shell configuration file
+1.  `bash -c ’shell_conf="${1:-$HOME/.bashrc}"; [ -f "$shell_conf" ] || { echo "Configuration file not found: $shell_conf"; exit 1; }; grep -E "^[[:space:]]*alias[[:space:]]" "$shell_conf" | sed -E "s/^[[:space:]]*alias[[:space:]]*//" | sort -f | while IFS= read -r line; do alias_name=${line%%=*}; alias_cmd=${line#*=}; printf "\{}\{}033[1;34m%-20s\{}\{}033[0m -> \{}\{}033[1;32m%s\{}\{}033[0m\{}\{}n" "$alias_name" "$alias_cmd"; done’ _` -
+    List all aliases from the default shell configuration file in
+    alphabetical order
 
-2.  `bash -c ’shell_conf=${1:-~/.bashrc}; if [ -f "$shell_conf" ]; then grep -E "^alias\{}s" "$shell_conf" | sed "s/^alias\{}s*//" | while IFS= read -r line; do alias_name=$(echo "$line" | cut -d"=" -f1); alias_cmd=$(echo "$line" | cut -d"=" -f2- | sed "s/^\{}(\{}s\{})*\{}(\{}"\{}|\{}’\{})\{}(.*\{})\{}(\{}"\{}|\{}’\{})\{}(\{}s\{})*$/\{}3/"); printf "\{}033[1;34m%-20s\{}033[0m -> \{}033[1;32m%s\{}033[0m\{}n" "$alias_name" "$alias_cmd"; done; else echo "Configuration file not found: $shell_conf"; fi’ _ ~/.zshrc` -
-    List all aliases from zsh configuration file
+2.  `bash -c ’shell_conf="${1:-$HOME/.bashrc}"; [ -f "$shell_conf" ] || { echo "Configuration file not found: $shell_conf"; exit 1; }; grep -E "^[[:space:]]*alias[[:space:]]" "$shell_conf" | sed -E "s/^[[:space:]]*alias[[:space:]]*//" | sort -f | while IFS= read -r line; do alias_name=${line%%=*}; alias_cmd=${line#*=}; printf "\{}\{}033[1;34m%-20s\{}\{}033[0m -> \{}\{}033[1;32m%s\{}\{}033[0m\{}\{}n" "$alias_name" "$alias_cmd"; done’ _ ~/.zshrc` -
+    List all aliases from a zsh configuration file in alphabetical order
 
-3.  `alias list-aliases=’bash -c ’"’"’shell_conf=${1:-~/.bashrc}; if [ -f "$shell_conf" ]; then grep -E "^alias\{}s" "$shell_conf" | sed "s/^alias\{}s*//" | while IFS= read -r line; do alias_name=$(echo "$line" | cut -d"=" -f1); alias_cmd=$(echo "$line" | cut -d"=" -f2- | sed "s/^\{}(\{}s\{})*\{}(\{}"\{}|\{}’\{})\{}(.*\{})\{}(\{}"\{}|\{}’\{})\{}(\{}s\{})*$/\{}3/"); printf "\{}033[1;34m%-20s\{}033[0m -> \{}033[1;32m%s\{}033[0m\{}n" "$alias_name" "$alias_cmd"; done; else echo "Configuration file not found: $shell_conf"; fi’"’"’ _’` -
-    Create a permanent alias for listing all aliases
+3.  `alias list-aliases=’bash -c ’"’"’shell_conf="${1:-$HOME/.bashrc}"; [ -f "$shell_conf" ] || { echo "Configuration file not found: $shell_conf"; exit 1; }; grep -E "^[[:space:]]*alias[[:space:]]" "$shell_conf" | sed -E "s/^[[:space:]]*alias[[:space:]]*//" | sort -f | while IFS= read -r line; do alias_name=${line%%=*}; alias_cmd=${line#*=}; printf "\{}\{}033[1;34m%-20s\{}\{}033[0m -> \{}\{}033[1;32m%s\{}\{}033[0m\{}\{}n" "$alias_name" "$alias_cmd"; done’"’"’ _’` -
+    Create a permanent alias for listing all aliases in alphabetical
+    order
 
 # Output {#output .unnumbered}
 
-    [1;34mll                  [0m -> [1;32mls -la[0m
-    [1;34mgs                  [0m -> [1;32mgit status[0m
-    [1;34mup                  [0m -> [1;32muptime[0m
-    [1;34mdocker-rm-stopped   [0m -> [1;32mdocker rm $(docker ps -aq --filter status=exited)[0m
+    \033[1;34mdocker-rm-stopped   \033[0m -> \033[1;32m'docker rm $(docker ps -aq --filter status=exited)'\033[0m
+    \033[1;34mgs                  \033[0m -> \033[1;32m"git status"\033[0m
+    \033[1;34mll                  \033[0m -> \033[1;32m'ls -la'\033[0m
+    \033[1;34mup                  \033[0m -> \033[1;32m'uptime'\033[0m
 
 # Notes {#notes .unnumbered}
 
@@ -66,7 +68,9 @@ bash, coreutils, grep, sed
 
 -   Color codes: alias names are displayed in blue, commands in green
 
--   Supports both single and double quoted alias definitions
+-   Alias names are listed in alphabetical order
+
+-   The command text is shown exactly as stored after the equals sign
 
 -   Can be used directly or converted to a permanent alias
 

@@ -1387,6 +1387,122 @@ linux, gnu-linux
 
 2026-04-22
 
+## List All Aliases
+
+## List all shell aliases in a colored, formatted display {#list-all-shell-aliases-in-a-colored-formatted-display .unnumbered}
+
+**Author:** marcos **Date:** 2026-04-25
+
+Lists all aliases defined in the user's shell configuration file in
+alphabetical order with colored, formatted output. Works with bash, zsh,
+and other shells on Linux and BSD systems.
+
+## Language {#language-11 .unnumbered}
+
+bash
+
+## Category {#category-11 .unnumbered}
+
+shell-utilities
+
+## Command {#command-11 .unnumbered}
+
+    bash -c 'shell_conf="${1:-$HOME/.bashrc}"; [ -f "$shell_conf" ] || { echo "Configuration file not found: $shell_conf"; exit 1; }; grep -E "^[[:space:]]*alias[[:space:]]" "$shell_conf" | sed -E "s/^[[:space:]]*alias[[:space:]]*//" | sort -f | while IFS= read -r line; do alias_name=${line%%=*}; alias_cmd=${line#*=}; printf "\\033[1;34m%-20s\\033[0m -> \\033[1;32m%s\\033[0m\\n" "$alias_name" "$alias_cmd"; done' _
+
+## Explanation {#explanation-11 .unnumbered}
+
+This command reads the user's shell configuration file from the path
+passed as the first argument (defaulting to \~/.bashrc), extracts alias
+definitions, sorts them alphabetically by alias name, and prints the
+alias name in blue and the stored alias command in green. It preserves
+the command text as written after the equals sign, which keeps the
+direct shell syntax intact and avoids fragile quote-stripping logic.
+
+## Tags {#tags-11 .unnumbered}
+
+shell, alias, utilities, configuration, listing
+
+## Dependencies {#dependencies-11 .unnumbered}
+
+bash, grep, sed, sort
+
+## Arguments {#arguments-11 .unnumbered}
+
+1.  **CONFIG_FILE** (Optional): Path to shell configuration file
+    (optional, defaults to \~/.bashrc)\
+    Default: \~/.bashrc
+
+## Examples {#examples-11 .unnumbered}
+
+1.  `bash -c ’shell_conf="${1:-$HOME/.bashrc}"; [ -f "$shell_conf" ] || { echo "Configuration file not found: $shell_conf"; exit 1; }; grep -E "^[[:space:]]*alias[[:space:]]" "$shell_conf" | sed -E "s/^[[:space:]]*alias[[:space:]]*//" | sort -f | while IFS= read -r line; do alias_name=${line%%=*}; alias_cmd=${line#*=}; printf "\{}\{}033[1;34m%-20s\{}\{}033[0m -> \{}\{}033[1;32m%s\{}\{}033[0m\{}\{}n" "$alias_name" "$alias_cmd"; done’ _` -
+    List all aliases from the default shell configuration file in
+    alphabetical order
+
+2.  `bash -c ’shell_conf="${1:-$HOME/.bashrc}"; [ -f "$shell_conf" ] || { echo "Configuration file not found: $shell_conf"; exit 1; }; grep -E "^[[:space:]]*alias[[:space:]]" "$shell_conf" | sed -E "s/^[[:space:]]*alias[[:space:]]*//" | sort -f | while IFS= read -r line; do alias_name=${line%%=*}; alias_cmd=${line#*=}; printf "\{}\{}033[1;34m%-20s\{}\{}033[0m -> \{}\{}033[1;32m%s\{}\{}033[0m\{}\{}n" "$alias_name" "$alias_cmd"; done’ _ ~/.zshrc` -
+    List all aliases from a zsh configuration file in alphabetical order
+
+3.  `alias list-aliases=’bash -c ’"’"’shell_conf="${1:-$HOME/.bashrc}"; [ -f "$shell_conf" ] || { echo "Configuration file not found: $shell_conf"; exit 1; }; grep -E "^[[:space:]]*alias[[:space:]]" "$shell_conf" | sed -E "s/^[[:space:]]*alias[[:space:]]*//" | sort -f | while IFS= read -r line; do alias_name=${line%%=*}; alias_cmd=${line#*=}; printf "\{}\{}033[1;34m%-20s\{}\{}033[0m -> \{}\{}033[1;32m%s\{}\{}033[0m\{}\{}n" "$alias_name" "$alias_cmd"; done’"’"’ _’` -
+    Create a permanent alias for listing all aliases in alphabetical
+    order
+
+## Output {#output-11 .unnumbered}
+
+    \033[1;34mdocker-rm-stopped   \033[0m -> \033[1;32m'docker rm $(docker ps -aq --filter status=exited)'\033[0m
+    \033[1;34mgs                  \033[0m -> \033[1;32m"git status"\033[0m
+    \033[1;34mll                  \033[0m -> \033[1;32m'ls -la'\033[0m
+    \033[1;34mup                  \033[0m -> \033[1;32m'uptime'\033[0m
+
+## Notes {#notes-11 .unnumbered}
+
+-   The command works with bash, zsh, and other shells by specifying the
+    appropriate configuration file
+
+-   Color codes: alias names are displayed in blue, commands in green
+
+-   Alias names are listed in alphabetical order
+
+-   The command text is shown exactly as stored after the equals sign
+
+-   Can be used directly or converted to a permanent alias
+
+-   Works on Linux and BSD systems
+
+## Warnings {#warnings-11 .unnumbered}
+
+-   Only shows aliases defined in the specified configuration file
+
+-   Does not display aliases defined in sessions or other files
+
+-   May not work with non-standard alias definitions
+
+## See Also {#see-also-11 .unnumbered}
+
+-   replace-string-in-files
+
+## Status {#status-11 .unnumbered}
+
+reviewed
+
+## Safety {#safety-11 .unnumbered}
+
+safe
+
+## Shell {#shell-11 .unnumbered}
+
+bash
+
+## Platforms {#platforms-11 .unnumbered}
+
+linux, gnu-linux, freebsd, openbsd, netbsd
+
+## Created At {#created-at-11 .unnumbered}
+
+2026-04-25
+
+## Updated At {#updated-at-11 .unnumbered}
+
+2026-04-25
+
 ## Nonhuman User Activity And Quota Report
 
 ## Comprehensive system/service non-human user report with disk quota, usage, and activity {#comprehensive-systemservice-non-human-user-report-with-disk-quota-usage-and-activity .unnumbered}
@@ -1400,19 +1516,19 @@ file count, last login timestamp, and last executed command. All
 information is formatted in a readable table with elevated privileges
 for complete data access.
 
-## Language {#language-11 .unnumbered}
+## Language {#language-12 .unnumbered}
 
 bash
 
-## Category {#category-11 .unnumbered}
+## Category {#category-12 .unnumbered}
 
 system-administration
 
-## Command {#command-11 .unnumbered}
+## Command {#command-12 .unnumbered}
 
     sudo bash -c "printf 'USER\tQUOTA\tHOME\tDISK_USAGE\tCREATED\tFILES\tLAST_LOGIN\tLAST_CMD\n'; getent passwd | awk -F: '\$3 < 1000 || \$1 ~ /^nobody$/ { print \$1,\$6 }' | while read u h; do q=\$(quota -u \"\$u\" 2>/dev/null | tail -1 | awk '{print \$2}'); [ -z \"\$q\" ] && q=none; d=\$(du -sh \"\$h\" 2>/dev/null | cut -f1); c=\$(stat -c %y \"\$h\" 2>/dev/null | cut -d' ' -f1 || echo N/A); f=\$(find \"\$h\" -type f 2>/dev/null | wc -l); l=\$(lastlog -u \"\$u\" 2>/dev/null | tail -1 | awk '{print \$5,\$6,\$7}'); [ -z \"\$l\" ] && l=Never; cmd=\$(tail -1 \"\$h\"/.bash_history 2>/dev/null | head -c 30); [ -z \"\$cmd\" ] && cmd=N/A; printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \"\$u\" \"\$q\" \"\$h\" \"\$d\" \"\$c\" \"\$f\" \"\$l\" \"\$cmd\"; done" | column -t -s $'\t'
 
-## Explanation {#explanation-11 .unnumbered}
+## Explanation {#explanation-12 .unnumbered}
 
 The command uses 'sudo bash -c' to execute the entire script with
 elevated privileges, ensuring access to all user data. It retrieves
@@ -1424,22 +1540,22 @@ wrapper allows proper variable expansion and quoting within the sudo
 context. Output is joined by tabs and formatted by 'column -t' for
 readability, avoiding issues with spaces in values.
 
-## Tags {#tags-11 .unnumbered}
+## Tags {#tags-12 .unnumbered}
 
 user-management, disk-usage, system-administration, activity, report,
 quota, audit, system-users, service-accounts
 
-## Dependencies {#dependencies-11 .unnumbered}
+## Dependencies {#dependencies-12 .unnumbered}
 
 coreutils, util-linux, shadow-utils, findutils
 
-## Arguments {#arguments-11 .unnumbered}
+## Arguments {#arguments-12 .unnumbered}
 
 1.  **UID_THRESHOLD** (Optional): Maximum UID to consider a system user
     (default: 1000 for non-human users)\
     Default: 1000
 
-## Examples {#examples-11 .unnumbered}
+## Examples {#examples-12 .unnumbered}
 
 1.  `sudo bash -c "printf ’USER\{}tQUOTA\{}tHOME\{}tDISK_USAGE\{}tCREATED\{}tFILES\{}tLAST_LOGIN\{}tLAST_CMD\{}n’; getent passwd | awk -F: ’\{}$3 < 1000 || \{}$1 ~ /^nobody$/ { print \{}$1,\{}$6 }’ | while read u h; do q=\{}$(quota -u \{}"\{}$u\{}" 2>/dev/null | tail -1 | awk ’{print \{}$2}’); [ -z \{}"\{}$q\{}" ] && q=none; d=\{}$(du -sh \{}"\{}$h\{}" 2>/dev/null | cut -f1); c=\{}$(stat -c %y \{}"\{}$h\{}" 2>/dev/null | cut -d’ ’ -f1 || echo N/A); f=\{}$(find \{}"\{}$h\{}" -type f 2>/dev/null | wc -l); l=\{}$(lastlog -u \{}"\{}$u\{}" 2>/dev/null | tail -1 | awk ’{print \{}$5,\{}$6,\{}$7}’); [ -z \{}"\{}$l\{}" ] && l=Never; cmd=\{}$(tail -1 \{}"\{}$h\{}"/.bash_history 2>/dev/null | head -c 30); [ -z \{}"\{}$cmd\{}" ] && cmd=N/A; printf ’%s\{}t%s\{}t%s\{}t%s\{}t%s\{}t%s\{}t%s\{}t%s\{}n’ \{}"\{}$u\{}" \{}"\{}$q\{}" \{}"\{}$h\{}" \{}"\{}$d\{}" \{}"\{}$c\{}" \{}"\{}$f\{}" \{}"\{}$l\{}" \{}"\{}$cmd\{}"; done" | column -t -s $’\{}t’` -
     Generate complete report for all non-human (system) users with all
@@ -1451,7 +1567,7 @@ coreutils, util-linux, shadow-utils, findutils
 3.  `sudo bash -c "printf ’USER\{}tQUOTA\{}tDISK_USAGE\{}tFILES\{}n’; getent passwd | awk -F: ’\{}$3 < 1000 || \{}$1 ~ /^nobody$/ { print \{}$1,\{}$6 }’ | while read u h; do q=\{}$(quota -u \{}"\{}$u\{}" 2>/dev/null | tail -1 | awk ’{print \{}$2}’); [ -z \{}"\{}$q\{}" ] && q=none; d=\{}$(du -sh \{}"\{}$h\{}" 2>/dev/null | cut -f1); f=\{}$(find \{}"\{}$h\{}" -type f 2>/dev/null | wc -l); printf ’%s\{}t%s\{}t%s\{}t%s\{}n’ \{}"\{}$u\{}" \{}"\{}$q\{}" \{}"\{}$d\{}" \{}"\{}$f\{}"; done" | column -t -s $’\{}t’` -
     Simplified report showing only quota, disk usage, and file count
 
-## Output {#output-11 .unnumbered}
+## Output {#output-12 .unnumbered}
 
     USER        QUOTA HOME            DISK_USAGE CREATED    FILES  LAST_LOGIN      LAST_CMD
     root        none  /root           1.5G       2023-01-15 15340  May  20 13:45   apt update
@@ -1460,7 +1576,7 @@ coreutils, util-linux, shadow-utils, findutils
     www-data    none  /var/www        4.2G       2023-05-10 45678  Never           N/A
     nobody      none  /nonexistent    0          2023-01-15 0      Never           N/A
 
-## Notes {#notes-11 .unnumbered}
+## Notes {#notes-12 .unnumbered}
 
 -   This command is designed to run with sudo for complete information;
     running without sudo will show incomplete results
@@ -1490,7 +1606,7 @@ coreutils, util-linux, shadow-utils, findutils
 -   The command uses getent instead of /etc/passwd for better
     compatibility with different user databases (LDAP, NIS, etc.)
 
-## Warnings {#warnings-11 .unnumbered}
+## Warnings {#warnings-12 .unnumbered}
 
 -   Requires sudo access to function properly; user must have sudo
     privileges without password prompt configured in sudoers for
@@ -1514,7 +1630,7 @@ coreutils, util-linux, shadow-utils, findutils
 -   On systems with many users, overall execution time can be
     substantial; consider running during off-peak hours
 
-## See Also {#see-also-11 .unnumbered}
+## See Also {#see-also-12 .unnumbered}
 
 -   find-largest-storage-users
 
@@ -1524,27 +1640,27 @@ coreutils, util-linux, shadow-utils, findutils
 
 -   find-large-files-recursive
 
-## Status {#status-11 .unnumbered}
+## Status {#status-12 .unnumbered}
 
 reviewed
 
-## Safety {#safety-11 .unnumbered}
+## Safety {#safety-12 .unnumbered}
 
 caution
 
-## Shell {#shell-11 .unnumbered}
+## Shell {#shell-12 .unnumbered}
 
 bash
 
-## Platforms {#platforms-11 .unnumbered}
+## Platforms {#platforms-12 .unnumbered}
 
 linux, gnu-linux
 
-## Created At {#created-at-11 .unnumbered}
+## Created At {#created-at-12 .unnumbered}
 
 2026-04-21
 
-## Updated At {#updated-at-11 .unnumbered}
+## Updated At {#updated-at-12 .unnumbered}
 
 2026-04-21
 
@@ -1558,19 +1674,19 @@ Replaces all occurrences of a string with a replacement string in
 multiple files or file patterns. Pure oneliner that works directly
 pasted with parameters, or in an alias.
 
-## Language {#language-12 .unnumbered}
+## Language {#language-13 .unnumbered}
 
 bash
 
-## Category {#category-12 .unnumbered}
+## Category {#category-13 .unnumbered}
 
 text-processing
 
-## Command {#command-12 .unnumbered}
+## Command {#command-13 .unnumbered}
 
     bash -c 'old=$1; new=$2; shift 2; find "$@" -type f -exec sed -i "s#$old#$new#g" {} +' _
 
-## Explanation {#explanation-12 .unnumbered}
+## Explanation {#explanation-13 .unnumbered}
 
 This oneliner uses a subshell ('bash -c') to parse positional
 parameters. The first argument is the string to replace ('\$1'), the
@@ -1583,16 +1699,16 @@ maps to the first actual argument. This approach handles an arbitrary
 amount of files and supports wildcard file patterns without hardcoding
 values into the command itself.
 
-## Tags {#tags-12 .unnumbered}
+## Tags {#tags-13 .unnumbered}
 
 sed, text-processing, string-replacement, file-editing, search-replace,
 batch-replace
 
-## Dependencies {#dependencies-12 .unnumbered}
+## Dependencies {#dependencies-13 .unnumbered}
 
 sed, coreutils
 
-## Arguments {#arguments-12 .unnumbered}
+## Arguments {#arguments-13 .unnumbered}
 
 1.  **SEARCH** (Required): The string to search for (first parameter
     passed after the command).
@@ -1603,7 +1719,7 @@ sed, coreutils
 3.  **FILES** (Required): One or more file paths or patterns (e.g.,
     file1.txt, \*.txt, /path/\*.js).
 
-## Examples {#examples-12 .unnumbered}
+## Examples {#examples-13 .unnumbered}
 
 1.  `bash -c ’old=$1; new=$2; shift 2; find "$@" -type f -exec sed -i "s#$old#$new#g" {} +’ _ ’old-domain.com’ ’new-domain.com’ config.json settings.json` -
     Paste directly: replace 'old-domain.com' with 'new-domain.com' in
@@ -1624,11 +1740,11 @@ sed, coreutils
 6.  `repl ’old-api’ ’new-api’ config/*.json docs/*.md` - Use the alias
     to replace in multiple file types across different directories
 
-## Output {#output-12 .unnumbered}
+## Output {#output-13 .unnumbered}
 
     (No output on success - files are modified in place)
 
-## Notes {#notes-12 .unnumbered}
+## Notes {#notes-13 .unnumbered}
 
 -   Pure oneliner: uses bash -c to accept arbitrary parameters after the
     command string
@@ -1656,7 +1772,7 @@ sed, coreutils
 -   For case-insensitive replacement, modify the command to include the
     i flag: sed -i \"s#\$old#\$new#gi\"
 
-## Warnings {#warnings-12 .unnumbered}
+## Warnings {#warnings-13 .unnumbered}
 
 -   The -i flag modifies files directly without confirmation - always
     test on copies first
@@ -1680,33 +1796,33 @@ sed, coreutils
 -   Special characters in search/replace strings must be properly quoted
     or escaped
 
-## See Also {#see-also-12 .unnumbered}
+## See Also {#see-also-13 .unnumbered}
 
 -   find-large-files-recursive
 
 -   disk-space-usage-per-directory
 
-## Status {#status-12 .unnumbered}
+## Status {#status-13 .unnumbered}
 
 reviewed
 
-## Safety {#safety-12 .unnumbered}
+## Safety {#safety-13 .unnumbered}
 
 caution
 
-## Shell {#shell-12 .unnumbered}
+## Shell {#shell-13 .unnumbered}
 
 bash
 
-## Platforms {#platforms-12 .unnumbered}
+## Platforms {#platforms-13 .unnumbered}
 
 linux, gnu-linux, freebsd, openbsd, netbsd
 
-## Created At {#created-at-12 .unnumbered}
+## Created At {#created-at-13 .unnumbered}
 
 2026-04-21
 
-## Updated At {#updated-at-12 .unnumbered}
+## Updated At {#updated-at-13 .unnumbered}
 
 2026-04-21
 
@@ -1720,19 +1836,19 @@ Displays system memory usage in human-readable format and lists the top
 10 memory-consuming processes by percentage of memory used and resident
 set size in MB.
 
-## Language {#language-13 .unnumbered}
+## Language {#language-14 .unnumbered}
 
 bash
 
-## Category {#category-13 .unnumbered}
+## Category {#category-14 .unnumbered}
 
 monitoring
 
-## Command {#command-13 .unnumbered}
+## Command {#command-14 .unnumbered}
 
     echo -e "Memory Report:\n$(free -h)\n\nTop 10 Memory Consuming Processes (%MEM and RSS in MB):\n$(ps -eo pid,comm,%mem,rss --sort=-%mem | awk 'NR==1 {print $0 " RSS(MB)"}; NR>1 {printf "%s %s %s %.2f\n", $1, $2, $3, $4/1024}' | head -n 11)"
 
-## Explanation {#explanation-13 .unnumbered}
+## Explanation {#explanation-14 .unnumbered}
 
 The command uses 'free -h' to show memory statistics in human-readable
 units (e.g., MB, GB). It then uses 'ps' to list all processes sorted by
@@ -1742,19 +1858,19 @@ formats the output to display PID, COMMAND, %MEM, and RSS(MB) with
 proper headers. The output is formatted with clear section headers and
 spacing for readability.
 
-## Tags {#tags-13 .unnumbered}
+## Tags {#tags-14 .unnumbered}
 
 memory, system-monitoring, top-processes, ram, ps, free
 
-## Dependencies {#dependencies-13 .unnumbered}
+## Dependencies {#dependencies-14 .unnumbered}
 
 bash, coreutils, procps-ng
 
-## Arguments {#arguments-13 .unnumbered}
+## Arguments {#arguments-14 .unnumbered}
 
 None
 
-## Examples {#examples-13 .unnumbered}
+## Examples {#examples-14 .unnumbered}
 
 1.  `echo -e "Memory Report:\{}n$(free -h)\{}n\{}nTop 10 Memory Consuming Processes (%MEM and RSS in MB):\{}n$(ps -eo pid,comm,%mem,rss –sort=-%mem | awk ’NR==1 {print $0 " RSS(MB)"}; NR>1 {printf "%s %s %s %.2f\{}n", $1, $2, $3, $4/1024}’ | head -n 11)"` -
     Run the memory report oneliner directly in the shell
@@ -1762,7 +1878,7 @@ None
 2.  `alias memreport=’echo -e "Memory Report:\{}n$(free -h)\{}n\{}nTop 10 Memory Consuming Processes (%MEM and RSS in MB):\{}n$(ps -eo pid,comm,%mem,rss –sort=-%mem | awk ’NR==1 {print $0 " RSS(MB)"}; NR>1 {printf "%s %s %s %.2f\{}n", $1, $2, $3, $4/1024}’ | head -n 11)"’ && memreport` -
     Define as an alias and then execute it
 
-## Output {#output-13 .unnumbered}
+## Output {#output-14 .unnumbered}
 
     Memory Report:
                   total        used        free      shared  buff/cache   available
@@ -1782,7 +1898,7 @@ None
      7788 Xorg             2.5   193.28
      9900 gnome-shell      2.2   170.24
 
-## Notes {#notes-13 .unnumbered}
+## Notes {#notes-14 .unnumbered}
 
 -   The %MEM column shows the percentage of available physical memory
     used by the process.
@@ -1795,37 +1911,37 @@ None
 -   The awk command converts RSS from KB to MB by dividing by 1024 and
     formats to 2 decimal places.
 
-## Warnings {#warnings-13 .unnumbered}
+## Warnings {#warnings-14 .unnumbered}
 
 None
 
-## See Also {#see-also-13 .unnumbered}
+## See Also {#see-also-14 .unnumbered}
 
 -   disk-usage-summary
 
 -   cpu-top-processes
 
-## Status {#status-13 .unnumbered}
+## Status {#status-14 .unnumbered}
 
 reviewed
 
-## Safety {#safety-13 .unnumbered}
+## Safety {#safety-14 .unnumbered}
 
 safe
 
-## Shell {#shell-13 .unnumbered}
+## Shell {#shell-14 .unnumbered}
 
 bash
 
-## Platforms {#platforms-13 .unnumbered}
+## Platforms {#platforms-14 .unnumbered}
 
 linux, gnu-linux, freebsd, openbsd, netbsd
 
-## Created At {#created-at-13 .unnumbered}
+## Created At {#created-at-14 .unnumbered}
 
 2026-04-22
 
-## Updated At {#updated-at-13 .unnumbered}
+## Updated At {#updated-at-14 .unnumbered}
 
 2026-04-22
 
@@ -1841,19 +1957,19 @@ actual disk usage, account creation date, file count, last login
 timestamp, and last executed command. All information is formatted in a
 readable table with elevated privileges for complete data access.
 
-## Language {#language-14 .unnumbered}
+## Language {#language-15 .unnumbered}
 
 bash
 
-## Category {#category-14 .unnumbered}
+## Category {#category-15 .unnumbered}
 
 system-administration
 
-## Command {#command-14 .unnumbered}
+## Command {#command-15 .unnumbered}
 
     sudo bash -c "printf 'USER\tQUOTA\tHOME\tDISK_USAGE\tCREATED\tFILES\tLAST_LOGIN\tLAST_CMD\n'; getent passwd | awk -F: '\$3 >= 1000 { if (\$1 ~ /^nobody$/) next; print \$1,\$6 }' | while read u h; do q=\$(quota -u \"\$u\" 2>/dev/null | tail -1 | awk '{print \$2}'); [ -z \"\$q\" ] && q=none; d=\$(du -sh \"\$h\" 2>/dev/null | cut -f1); c=\$(stat -c %y \"\$h\" 2>/dev/null | cut -d' ' -f1 || echo N/A); f=\$(find \"\$h\" -type f 2>/dev/null | wc -l); l=\$(lastlog -u \"\$u\" 2>/dev/null | tail -1 | awk '{print \$5,\$6,\$7}'); [ -z \"\$l\" ] && l=Never; cmd=\$(tail -1 \"\$h\"/.bash_history 2>/dev/null | head -c 30); [ -z \"\$cmd\" ] && cmd=N/A; printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \"\$u\" \"\$q\" \"\$h\" \"\$d\" \"\$c\" \"\$f\" \"\$l\" \"\$cmd\"; done" | column -t -s $'\t'
 
-## Explanation {#explanation-14 .unnumbered}
+## Explanation {#explanation-15 .unnumbered}
 
 The command uses 'sudo bash -c' to execute the entire script with
 elevated privileges, ensuring access to all user data. It retrieves
@@ -1865,22 +1981,22 @@ variable expansion and quoting within the sudo context. Output is joined
 by tabs and formatted by 'column -t' for readability, avoiding issues
 with spaces in values.
 
-## Tags {#tags-14 .unnumbered}
+## Tags {#tags-15 .unnumbered}
 
 user-management, disk-usage, system-administration, activity, report,
 quota, audit, users
 
-## Dependencies {#dependencies-14 .unnumbered}
+## Dependencies {#dependencies-15 .unnumbered}
 
 coreutils, util-linux, shadow-utils, findutils
 
-## Arguments {#arguments-14 .unnumbered}
+## Arguments {#arguments-15 .unnumbered}
 
 1.  **UID_THRESHOLD** (Optional): Minimum UID to consider a user
     (default: 1000 for human users only)\
     Default: 1000
 
-## Examples {#examples-14 .unnumbered}
+## Examples {#examples-15 .unnumbered}
 
 1.  `sudo bash -c "printf ’USER\{}tQUOTA\{}tHOME\{}tDISK_USAGE\{}tCREATED\{}tFILES\{}tLAST_LOGIN\{}tLAST_CMD\{}n’; getent passwd | awk -F: ’\{}$3 >= 1000 { if (\{}$1 ~ /^nobody$/) next; print \{}$1,\{}$6 }’ | while read u h; do q=\{}$(quota -u \{}"\{}$u\{}" 2>/dev/null | tail -1 | awk ’{print \{}$2}’); [ -z \{}"\{}$q\{}" ] && q=none; d=\{}$(du -sh \{}"\{}$h\{}" 2>/dev/null | cut -f1); c=\{}$(stat -c %y \{}"\{}$h\{}" 2>/dev/null | cut -d’ ’ -f1 || echo N/A); f=\{}$(find \{}"\{}$h\{}" -type f 2>/dev/null | wc -l); l=\{}$(lastlog -u \{}"\{}$u\{}" 2>/dev/null | tail -1 | awk ’{print \{}$5,\{}$6,\{}$7}’); [ -z \{}"\{}$l\{}" ] && l=Never; cmd=\{}$(tail -1 \{}"\{}$h\{}"/.bash_history 2>/dev/null | head -c 30); [ -z \{}"\{}$cmd\{}" ] && cmd=N/A; printf ’%s\{}t%s\{}t%s\{}t%s\{}t%s\{}t%s\{}t%s\{}t%s\{}n’ \{}"\{}$u\{}" \{}"\{}$q\{}" \{}"\{}$h\{}" \{}"\{}$d\{}" \{}"\{}$c\{}" \{}"\{}$f\{}" \{}"\{}$l\{}" \{}"\{}$cmd\{}"; done" | column -t -s $’\{}t’` -
     Generate complete report for all human users with all metrics
@@ -1892,7 +2008,7 @@ coreutils, util-linux, shadow-utils, findutils
 3.  `sudo bash -c "printf ’USER\{}tQUOTA\{}tDISK_USAGE\{}tFILES\{}n’; getent passwd | awk -F: ’\{}$3 >= 1000 { if (\{}$1 ~ /^nobody$/) next; print \{}$1,\{}$6 }’ | while read u h; do q=\{}$(quota -u \{}"\{}$u\{}" 2>/dev/null | tail -1 | awk ’{print \{}$2}’); [ -z \{}"\{}$q\{}" ] && q=none; d=\{}$(du -sh \{}"\{}$h\{}" 2>/dev/null | cut -f1); f=\{}$(find \{}"\{}$h\{}" -type f 2>/dev/null | wc -l); printf ’%s\{}t%s\{}t%s\{}t%s\{}n’ \{}"\{}$u\{}" \{}"\{}$q\{}" \{}"\{}$d\{}" \{}"\{}$f\{}"; done" | column -t -s $’\{}t’` -
     Simplified report showing only quota, disk usage, and file count
 
-## Output {#output-14 .unnumbered}
+## Output {#output-15 .unnumbered}
 
     USER        QUOTA HOME            DISK_USAGE CREATED    FILES LAST_LOGIN      LAST_CMD
     marcos      5G    /home/marcos    290G       2024-01-15 124356   May  20 13:45     grep -r pattern .
@@ -1900,7 +2016,7 @@ coreutils, util-linux, shadow-utils, findutils
     test-user   2G    /home/test-user 1.2G      2025-03-10 45678    May  10 09:30      ls -lah
     admin       10G   /home/admin     3.5G      2024-11-22 89234    May  15 11:22      sudo systemctl status
 
-## Notes {#notes-14 .unnumbered}
+## Notes {#notes-15 .unnumbered}
 
 -   This command is designed to run with sudo for complete information;
     running without sudo will show incomplete results
@@ -1928,7 +2044,7 @@ coreutils, util-linux, shadow-utils, findutils
 -   The command uses getent instead of /etc/passwd for better
     compatibility with different user databases (LDAP, NIS, etc.)
 
-## Warnings {#warnings-14 .unnumbered}
+## Warnings {#warnings-15 .unnumbered}
 
 -   Requires sudo access to function properly; user must have sudo
     privileges without password prompt configured in sudoers for
@@ -1952,7 +2068,7 @@ coreutils, util-linux, shadow-utils, findutils
 -   On systems with many users, overall execution time can be
     substantial; consider running during off-peak hours
 
-## See Also {#see-also-14 .unnumbered}
+## See Also {#see-also-15 .unnumbered}
 
 -   find-largest-storage-users
 
@@ -1962,27 +2078,27 @@ coreutils, util-linux, shadow-utils, findutils
 
 -   find-large-files-recursive
 
-## Status {#status-14 .unnumbered}
+## Status {#status-15 .unnumbered}
 
 reviewed
 
-## Safety {#safety-14 .unnumbered}
+## Safety {#safety-15 .unnumbered}
 
 caution
 
-## Shell {#shell-14 .unnumbered}
+## Shell {#shell-15 .unnumbered}
 
 bash
 
-## Platforms {#platforms-14 .unnumbered}
+## Platforms {#platforms-15 .unnumbered}
 
 linux, gnu-linux
 
-## Created At {#created-at-14 .unnumbered}
+## Created At {#created-at-15 .unnumbered}
 
 2026-04-21
 
-## Updated At {#updated-at-14 .unnumbered}
+## Updated At {#updated-at-15 .unnumbered}
 
 2026-04-21
 
@@ -1997,103 +2113,6 @@ linux, gnu-linux
 Loads a CSV file using R's read.csv and prints rows, columns, total
 cells, file size, and object memory usage.
 
-## Language {#language-15 .unnumbered}
-
-rscript
-
-## Category {#category-15 .unnumbered}
-
-data-processing
-
-## Command {#command-15 .unnumbered}
-
-    Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop('Need filename');df<-read.csv(args[1]);cat('Rows:',nrow(df),'Cols:',ncol(df),'Cells:',nrow(df)*ncol(df),'File size:',file.size(args[1]),'Object size:',format(object.size(df),units='auto'),'\n')"
-
-## Explanation {#explanation-15 .unnumbered}
-
-The command uses Rscript to execute R code that reads a CSV file
-specified as argument, computes basic statistics (rows, columns, cells),
-gets file size via file.size(), and reports object memory usage via
-object.size().
-
-## Tags {#tags-15 .unnumbered}
-
-rscript, csv, statistics, data-analysis, memory
-
-## Dependencies {#dependencies-15 .unnumbered}
-
-r-base-core
-
-## Arguments {#arguments-15 .unnumbered}
-
-1.  **CSV_FILE** (Required): CSV file to analyze
-
-## Examples {#examples-15 .unnumbered}
-
-1.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.csv(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" data.csv` -
-    Analyze data.csv
-
-2.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.csv(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" large_dataset.csv 2>/dev/null` -
-    Analyze suppressing warnings
-
-## Output {#output-15 .unnumbered}
-
-    Rows: 100 Cols: 10 Cells: 1000 File size: 12345 Object size: 78.2 Kb
-
-## Notes {#notes-15 .unnumbered}
-
--   Uses read.csv with default settings (header=TRUE,
-    stringsAsFactors=FALSE in R\>=4.0)
-
--   File size reported in bytes
-
--   Object size includes R overhead
-
--   For large files, consider adding options(stringsAsFactors=FALSE)
-
-## Warnings {#warnings-15 .unnumbered}
-
--   May load entire file into memory
-
--   Very large CSV files could exhaust memory
-
-## See Also {#see-also-15 .unnumbered}
-
--   tsv-stats
-
-## Status {#status-15 .unnumbered}
-
-draft
-
-## Safety {#safety-15 .unnumbered}
-
-safe
-
-## Shell {#shell-15 .unnumbered}
-
-posix
-
-## Platforms {#platforms-15 .unnumbered}
-
-linux, gnu-linux, freebsd, openbsd, netbsd
-
-## Created At {#created-at-15 .unnumbered}
-
-2026-04-25
-
-## Updated At {#updated-at-15 .unnumbered}
-
-2026-04-25
-
-## Tsv Stats
-
-## Load TSV file and print dataset statistics using R {#load-tsv-file-and-print-dataset-statistics-using-r .unnumbered}
-
-**Author:** Marcos de Carvalho **Date:** 2026-04-25
-
-Loads a TSV (tab-separated) file using R's read.delim and prints rows,
-columns, total cells, file size, and object memory usage.
-
 ## Language {#language-16 .unnumbered}
 
 rscript
@@ -2104,18 +2123,18 @@ data-processing
 
 ## Command {#command-16 .unnumbered}
 
-    Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop('Need filename');df<-read.delim(args[1]);cat('Rows:',nrow(df),'Cols:',ncol(df),'Cells:',nrow(df)*ncol(df),'File size:',file.size(args[1]),'Object size:',format(object.size(df),units='auto'),'\n')"
+    Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop('Need filename');df<-read.csv(args[1]);cat('Rows:',nrow(df),'Cols:',ncol(df),'Cells:',nrow(df)*ncol(df),'File size:',file.size(args[1]),'Object size:',format(object.size(df),units='auto'),'\n')"
 
 ## Explanation {#explanation-16 .unnumbered}
 
-The command uses Rscript to execute R code that reads a TSV file
+The command uses Rscript to execute R code that reads a CSV file
 specified as argument, computes basic statistics (rows, columns, cells),
 gets file size via file.size(), and reports object memory usage via
-object.size(). read.delim uses tab as separator by default.
+object.size().
 
 ## Tags {#tags-16 .unnumbered}
 
-rscript, tsv, statistics, data-analysis, memory
+rscript, csv, statistics, data-analysis, memory
 
 ## Dependencies {#dependencies-16 .unnumbered}
 
@@ -2123,14 +2142,14 @@ r-base-core
 
 ## Arguments {#arguments-16 .unnumbered}
 
-1.  **TSV_FILE** (Required): TSV (tab-separated) file to analyze
+1.  **CSV_FILE** (Required): CSV file to analyze
 
 ## Examples {#examples-16 .unnumbered}
 
-1.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.delim(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" data.tsv` -
-    Analyze data.tsv
+1.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.csv(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" data.csv` -
+    Analyze data.csv
 
-2.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.delim(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" large_dataset.tsv 2>/dev/null` -
+2.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.csv(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" large_dataset.csv 2>/dev/null` -
     Analyze suppressing warnings
 
 ## Output {#output-16 .unnumbered}
@@ -2139,7 +2158,7 @@ r-base-core
 
 ## Notes {#notes-16 .unnumbered}
 
--   Uses read.delim with default settings (header=TRUE, sep='\\{}t',
+-   Uses read.csv with default settings (header=TRUE,
     stringsAsFactors=FALSE in R\>=4.0)
 
 -   File size reported in bytes
@@ -2152,11 +2171,11 @@ r-base-core
 
 -   May load entire file into memory
 
--   Very large TSV files could exhaust memory
+-   Very large CSV files could exhaust memory
 
 ## See Also {#see-also-16 .unnumbered}
 
--   csv-stats
+-   tsv-stats
 
 ## Status {#status-16 .unnumbered}
 
@@ -2182,85 +2201,82 @@ linux, gnu-linux, freebsd, openbsd, netbsd
 
 2026-04-25
 
-# Git
+## Tsv Stats
 
-## Init Repo With Gitignore
-
-## Initialize git repository, stage all files and create empty .gitignore {#initialize-git-repository-stage-all-files-and-create-empty-.gitignore .unnumbered}
+## Load TSV file and print dataset statistics using R {#load-tsv-file-and-print-dataset-statistics-using-r .unnumbered}
 
 **Author:** Marcos de Carvalho **Date:** 2026-04-25
 
-Initializes a new git repository in current directory, stages all
-existing files, and creates an empty .gitignore file.
+Loads a TSV (tab-separated) file using R's read.delim and prints rows,
+columns, total cells, file size, and object memory usage.
 
 ## Language {#language-17 .unnumbered}
 
-git
+rscript
 
 ## Category {#category-17 .unnumbered}
 
-version-control
+data-processing
 
 ## Command {#command-17 .unnumbered}
 
-    git init && git add . && touch .gitignore
+    Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop('Need filename');df<-read.delim(args[1]);cat('Rows:',nrow(df),'Cols:',ncol(df),'Cells:',nrow(df)*ncol(df),'File size:',file.size(args[1]),'Object size:',format(object.size(df),units='auto'),'\n')"
 
 ## Explanation {#explanation-17 .unnumbered}
 
-This command sequence creates a new git repository (git init), adds all
-files in the current directory to the staging area (git add .), and
-creates an empty .gitignore file (touch .gitignore) for future ignore
-patterns.
+The command uses Rscript to execute R code that reads a TSV file
+specified as argument, computes basic statistics (rows, columns, cells),
+gets file size via file.size(), and reports object memory usage via
+object.size(). read.delim uses tab as separator by default.
 
 ## Tags {#tags-17 .unnumbered}
 
-git, version-control, repository, init, gitignore
+rscript, tsv, statistics, data-analysis, memory
 
 ## Dependencies {#dependencies-17 .unnumbered}
 
-git
+r-base-core
 
 ## Arguments {#arguments-17 .unnumbered}
 
-1.  **DIRECTORY** (Optional): Directory where to initialize repository\
-    Default: .
+1.  **TSV_FILE** (Required): TSV (tab-separated) file to analyze
 
 ## Examples {#examples-17 .unnumbered}
 
-1.  `git init && git add . && touch .gitignore` - Initialize repository
-    in current directory
+1.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.delim(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" data.tsv` -
+    Analyze data.tsv
 
-2.  `cd /path/to/project && git init && git add . && touch .gitignore` -
-    Initialize repository in specific directory
+2.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.delim(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" large_dataset.tsv 2>/dev/null` -
+    Analyze suppressing warnings
 
 ## Output {#output-17 .unnumbered}
 
-    Initialized empty Git repository in /home/user/project/.git/
+    Rows: 100 Cols: 10 Cells: 1000 File size: 12345 Object size: 78.2 Kb
 
 ## Notes {#notes-17 .unnumbered}
 
--   The .gitignore file is empty after creation; you should add patterns
-    to ignore unnecessary files
+-   Uses read.delim with default settings (header=TRUE, sep='\\{}t',
+    stringsAsFactors=FALSE in R\>=4.0)
 
--   If .gitignore already exists, touch command updates its timestamp
+-   File size reported in bytes
 
--   Use git status to verify files are staged
+-   Object size includes R overhead
+
+-   For large files, consider adding options(stringsAsFactors=FALSE)
 
 ## Warnings {#warnings-17 .unnumbered}
 
--   git add . stages all files including potentially sensitive data
+-   May load entire file into memory
 
--   Review staged files before committing
+-   Very large TSV files could exhaust memory
 
 ## See Also {#see-also-17 .unnumbered}
 
--   git-commit-initial
-
--   git-ignore-patterns
+-   csv-stats
 
 ## Status {#status-17 .unnumbered}
 
-reviewed
+draft
 
 ## Safety {#safety-17 .unnumbered}
 
@@ -2279,5 +2295,105 @@ linux, gnu-linux, freebsd, openbsd, netbsd
 2026-04-25
 
 ## Updated At {#updated-at-17 .unnumbered}
+
+2026-04-25
+
+# Git
+
+## Init Repo With Gitignore
+
+## Initialize git repository, stage all files and create empty .gitignore {#initialize-git-repository-stage-all-files-and-create-empty-.gitignore .unnumbered}
+
+**Author:** Marcos de Carvalho **Date:** 2026-04-25
+
+Initializes a new git repository in current directory, stages all
+existing files, and creates an empty .gitignore file.
+
+## Language {#language-18 .unnumbered}
+
+git
+
+## Category {#category-18 .unnumbered}
+
+version-control
+
+## Command {#command-18 .unnumbered}
+
+    git init && git add . && touch .gitignore
+
+## Explanation {#explanation-18 .unnumbered}
+
+This command sequence creates a new git repository (git init), adds all
+files in the current directory to the staging area (git add .), and
+creates an empty .gitignore file (touch .gitignore) for future ignore
+patterns.
+
+## Tags {#tags-18 .unnumbered}
+
+git, version-control, repository, init, gitignore
+
+## Dependencies {#dependencies-18 .unnumbered}
+
+git
+
+## Arguments {#arguments-18 .unnumbered}
+
+1.  **DIRECTORY** (Optional): Directory where to initialize repository\
+    Default: .
+
+## Examples {#examples-18 .unnumbered}
+
+1.  `git init && git add . && touch .gitignore` - Initialize repository
+    in current directory
+
+2.  `cd /path/to/project && git init && git add . && touch .gitignore` -
+    Initialize repository in specific directory
+
+## Output {#output-18 .unnumbered}
+
+    Initialized empty Git repository in /home/user/project/.git/
+
+## Notes {#notes-18 .unnumbered}
+
+-   The .gitignore file is empty after creation; you should add patterns
+    to ignore unnecessary files
+
+-   If .gitignore already exists, touch command updates its timestamp
+
+-   Use git status to verify files are staged
+
+## Warnings {#warnings-18 .unnumbered}
+
+-   git add . stages all files including potentially sensitive data
+
+-   Review staged files before committing
+
+## See Also {#see-also-18 .unnumbered}
+
+-   git-commit-initial
+
+-   git-ignore-patterns
+
+## Status {#status-18 .unnumbered}
+
+reviewed
+
+## Safety {#safety-18 .unnumbered}
+
+safe
+
+## Shell {#shell-18 .unnumbered}
+
+posix
+
+## Platforms {#platforms-18 .unnumbered}
+
+linux, gnu-linux, freebsd, openbsd, netbsd
+
+## Created At {#created-at-18 .unnumbered}
+
+2026-04-25
+
+## Updated At {#updated-at-18 .unnumbered}
 
 2026-04-25
