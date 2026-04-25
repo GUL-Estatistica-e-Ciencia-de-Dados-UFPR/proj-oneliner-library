@@ -1726,81 +1726,80 @@ linux, gnu-linux
 
 2026-04-21
 
-# Git
+# R
 
-## Init Repo With Gitignore
+## Csv Stats
 
-## Initialize git repository, stage all files and create empty .gitignore {#initialize-git-repository-stage-all-files-and-create-empty-.gitignore .unnumbered}
+## Load CSV file and print dataset statistics using R {#load-csv-file-and-print-dataset-statistics-using-r .unnumbered}
 
-**Author:** Marcos de Carvalho **Date:** 2026-04-25
+**Author:** marcos **Date:** 2026-04-25
 
-Initializes a new git repository in current directory, stages all
-existing files, and creates an empty .gitignore file.
+Loads a CSV file using R's read.csv and prints rows, columns, total
+cells, file size, and object memory usage.
 
 ## Language {#language-13 .unnumbered}
 
-git
+rscript
 
 ## Category {#category-13 .unnumbered}
 
-version-control
+data-processing
 
 ## Command {#command-13 .unnumbered}
 
-    git init && git add . && touch .gitignore
+    Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop('Need filename');df<-read.csv(args[1]);cat('Rows:',nrow(df),'Cols:',ncol(df),'Cells:',nrow(df)*ncol(df),'File size:',file.size(args[1]),'Object size:',format(object.size(df),units='auto'),'\n')"
 
 ## Explanation {#explanation-13 .unnumbered}
 
-This command sequence creates a new git repository (git init), adds all
-files in the current directory to the staging area (git add .), and
-creates an empty .gitignore file (touch .gitignore) for future ignore
-patterns.
+The command uses Rscript to execute R code that reads a CSV file
+specified as argument, computes basic statistics (rows, columns, cells),
+gets file size via file.size(), and reports object memory usage via
+object.size().
 
 ## Tags {#tags-13 .unnumbered}
 
-git, version-control, repository, init, gitignore
+rscript, csv, statistics, data-analysis, memory
 
 ## Dependencies {#dependencies-13 .unnumbered}
 
-git
+r-base-core
 
 ## Arguments {#arguments-13 .unnumbered}
 
-1.  **DIRECTORY** (Optional): Directory where to initialize repository\
-    Default: .
+1.  **CSV_FILE** (Required): CSV file to analyze
 
 ## Examples {#examples-13 .unnumbered}
 
-1.  `git init && git add . && touch .gitignore` - Initialize repository
-    in current directory
+1.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.csv(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" data.csv` -
+    Analyze data.csv
 
-2.  `cd /path/to/project && git init && git add . && touch .gitignore` -
-    Initialize repository in specific directory
+2.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.csv(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" large_dataset.csv 2>/dev/null` -
+    Analyze suppressing warnings
 
 ## Output {#output-13 .unnumbered}
 
-    Initialized empty Git repository in /home/user/project/.git/
+    Rows: 100 Cols: 10 Cells: 1000 File size: 12345 Object size: 78.2 Kb
 
 ## Notes {#notes-13 .unnumbered}
 
--   The .gitignore file is empty after creation; you should add patterns
-    to ignore unnecessary files
+-   Uses read.csv with default settings (header=TRUE,
+    stringsAsFactors=FALSE in R\>=4.0)
 
--   If .gitignore already exists, touch command updates its timestamp
+-   File size reported in bytes
 
--   Use git status to verify files are staged
+-   Object size includes R overhead
+
+-   For large files, consider adding options(stringsAsFactors=FALSE)
 
 ## Warnings {#warnings-13 .unnumbered}
 
--   git add . stages all files including potentially sensitive data
+-   May load entire file into memory
 
--   Review staged files before committing
+-   Very large CSV files could exhaust memory
 
 ## See Also {#see-also-13 .unnumbered}
 
--   git-commit-initial
-
--   git-ignore-patterns
+-   tsv-stats
 
 ## Status {#status-13 .unnumbered}
 
@@ -1823,5 +1822,202 @@ linux, gnu-linux, freebsd, openbsd, netbsd
 2026-04-25
 
 ## Updated At {#updated-at-13 .unnumbered}
+
+2026-04-25
+
+## Tsv Stats
+
+## Load TSV file and print dataset statistics using R {#load-tsv-file-and-print-dataset-statistics-using-r .unnumbered}
+
+**Author:** marcos **Date:** 2026-04-25
+
+Loads a TSV (tab-separated) file using R's read.delim and prints rows,
+columns, total cells, file size, and object memory usage.
+
+## Language {#language-14 .unnumbered}
+
+rscript
+
+## Category {#category-14 .unnumbered}
+
+data-processing
+
+## Command {#command-14 .unnumbered}
+
+    Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop('Need filename');df<-read.delim(args[1]);cat('Rows:',nrow(df),'Cols:',ncol(df),'Cells:',nrow(df)*ncol(df),'File size:',file.size(args[1]),'Object size:',format(object.size(df),units='auto'),'\n')"
+
+## Explanation {#explanation-14 .unnumbered}
+
+The command uses Rscript to execute R code that reads a TSV file
+specified as argument, computes basic statistics (rows, columns, cells),
+gets file size via file.size(), and reports object memory usage via
+object.size(). read.delim uses tab as separator by default.
+
+## Tags {#tags-14 .unnumbered}
+
+rscript, tsv, statistics, data-analysis, memory
+
+## Dependencies {#dependencies-14 .unnumbered}
+
+r-base-core
+
+## Arguments {#arguments-14 .unnumbered}
+
+1.  **TSV_FILE** (Required): TSV (tab-separated) file to analyze
+
+## Examples {#examples-14 .unnumbered}
+
+1.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.delim(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" data.tsv` -
+    Analyze data.tsv
+
+2.  `Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop(’Need filename’);df<-read.delim(args[1]);cat(’Rows:’,nrow(df),’Cols:’,ncol(df),’Cells:’,nrow(df)*ncol(df),’File size:’,file.size(args[1]),’Object size:’,format(object.size(df),units=’auto’),’\{}n’)" large_dataset.tsv 2>/dev/null` -
+    Analyze suppressing warnings
+
+## Output {#output-14 .unnumbered}
+
+    Rows: 100 Cols: 10 Cells: 1000 File size: 12345 Object size: 78.2 Kb
+
+## Notes {#notes-14 .unnumbered}
+
+-   Uses read.delim with default settings (header=TRUE, sep='\\{}t',
+    stringsAsFactors=FALSE in R\>=4.0)
+
+-   File size reported in bytes
+
+-   Object size includes R overhead
+
+-   For large files, consider adding options(stringsAsFactors=FALSE)
+
+## Warnings {#warnings-14 .unnumbered}
+
+-   May load entire file into memory
+
+-   Very large TSV files could exhaust memory
+
+## See Also {#see-also-14 .unnumbered}
+
+-   csv-stats
+
+## Status {#status-14 .unnumbered}
+
+reviewed
+
+## Safety {#safety-14 .unnumbered}
+
+safe
+
+## Shell {#shell-14 .unnumbered}
+
+posix
+
+## Platforms {#platforms-14 .unnumbered}
+
+linux, gnu-linux, freebsd, openbsd, netbsd
+
+## Created At {#created-at-14 .unnumbered}
+
+2026-04-25
+
+## Updated At {#updated-at-14 .unnumbered}
+
+2026-04-25
+
+# Git
+
+## Init Repo With Gitignore
+
+## Initialize git repository, stage all files and create empty .gitignore {#initialize-git-repository-stage-all-files-and-create-empty-.gitignore .unnumbered}
+
+**Author:** Marcos de Carvalho **Date:** 2026-04-25
+
+Initializes a new git repository in current directory, stages all
+existing files, and creates an empty .gitignore file.
+
+## Language {#language-15 .unnumbered}
+
+git
+
+## Category {#category-15 .unnumbered}
+
+version-control
+
+## Command {#command-15 .unnumbered}
+
+    git init && git add . && touch .gitignore
+
+## Explanation {#explanation-15 .unnumbered}
+
+This command sequence creates a new git repository (git init), adds all
+files in the current directory to the staging area (git add .), and
+creates an empty .gitignore file (touch .gitignore) for future ignore
+patterns.
+
+## Tags {#tags-15 .unnumbered}
+
+git, version-control, repository, init, gitignore
+
+## Dependencies {#dependencies-15 .unnumbered}
+
+git
+
+## Arguments {#arguments-15 .unnumbered}
+
+1.  **DIRECTORY** (Optional): Directory where to initialize repository\
+    Default: .
+
+## Examples {#examples-15 .unnumbered}
+
+1.  `git init && git add . && touch .gitignore` - Initialize repository
+    in current directory
+
+2.  `cd /path/to/project && git init && git add . && touch .gitignore` -
+    Initialize repository in specific directory
+
+## Output {#output-15 .unnumbered}
+
+    Initialized empty Git repository in /home/user/project/.git/
+
+## Notes {#notes-15 .unnumbered}
+
+-   The .gitignore file is empty after creation; you should add patterns
+    to ignore unnecessary files
+
+-   If .gitignore already exists, touch command updates its timestamp
+
+-   Use git status to verify files are staged
+
+## Warnings {#warnings-15 .unnumbered}
+
+-   git add . stages all files including potentially sensitive data
+
+-   Review staged files before committing
+
+## See Also {#see-also-15 .unnumbered}
+
+-   git-commit-initial
+
+-   git-ignore-patterns
+
+## Status {#status-15 .unnumbered}
+
+reviewed
+
+## Safety {#safety-15 .unnumbered}
+
+safe
+
+## Shell {#shell-15 .unnumbered}
+
+posix
+
+## Platforms {#platforms-15 .unnumbered}
+
+linux, gnu-linux, freebsd, openbsd, netbsd
+
+## Created At {#created-at-15 .unnumbered}
+
+2026-04-25
+
+## Updated At {#updated-at-15 .unnumbered}
 
 2026-04-25

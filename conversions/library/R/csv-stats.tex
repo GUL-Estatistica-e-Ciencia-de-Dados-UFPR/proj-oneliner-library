@@ -1,0 +1,101 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+}
+
+\title{Load CSV file and print dataset statistics using R}
+\author{marcos}
+\date{2026-04-25}
+
+\begin{document}
+
+\section*{Load CSV file and print dataset statistics using R}
+\textbf{Author:} marcos \hfill \textbf{Date:} 2026-04-25
+
+\noindent Loads a CSV file using R's read.csv and prints rows, columns, total cells, file size, and object memory usage.
+
+\section*{Language}
+rscript
+
+\section*{Category}
+data-processing
+
+\section*{Command}
+\begin{lstlisting}
+Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop('Need filename');df<-read.csv(args[1]);cat('Rows:',nrow(df),'Cols:',ncol(df),'Cells:',nrow(df)*ncol(df),'File size:',file.size(args[1]),'Object size:',format(object.size(df),units='auto'),'\n')"
+\end{lstlisting}
+
+\section*{Explanation}
+The command uses Rscript to execute R code that reads a CSV file specified as argument, computes basic statistics (rows, columns, cells), gets file size via file.size(), and reports object memory usage via object.size().
+
+\section*{Tags}
+rscript, csv, statistics, data-analysis, memory
+
+\section*{Dependencies}
+r-base-core
+
+
+\section*{Arguments}
+\begin{enumerate}
+  \item \textbf{CSV\_FILE} (Required): CSV file to analyze
+\end{enumerate}
+
+\section*{Examples}
+\begin{enumerate}
+  \item \texttt{Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop('Need filename');df<-read.csv(args[1]);cat('Rows:',nrow(df),'Cols:',ncol(df),'Cells:',nrow(df)*ncol(df),'File size:',file.size(args[1]),'Object size:',format(object.size(df),units='auto'),'\textbackslash\{\}n')" data.csv} - Analyze data.csv
+  \item \texttt{Rscript -e "args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop('Need filename');df<-read.csv(args[1]);cat('Rows:',nrow(df),'Cols:',ncol(df),'Cells:',nrow(df)*ncol(df),'File size:',file.size(args[1]),'Object size:',format(object.size(df),units='auto'),'\textbackslash\{\}n')" large\_dataset.csv 2>/dev/null} - Analyze suppressing warnings
+\end{enumerate}
+
+\section*{Output}
+\begin{lstlisting}
+Rows: 100 Cols: 10 Cells: 1000 File size: 12345 Object size: 78.2 Kb
+
+\end{lstlisting}
+
+\section*{Notes}
+\begin{itemize}
+  \item Uses read.csv with default settings (header=TRUE, stringsAsFactors=FALSE in R>=4.0)
+  \item File size reported in bytes
+  \item Object size includes R overhead
+  \item For large files, consider adding options(stringsAsFactors=FALSE)
+\end{itemize}
+
+\section*{Warnings}
+\begin{itemize}
+  \item May load entire file into memory
+  \item Very large CSV files could exhaust memory
+\end{itemize}
+
+\section*{See Also}
+\begin{itemize}
+  \item tsv-stats
+\end{itemize}
+
+\section*{Status}
+reviewed
+
+\section*{Safety}
+safe
+
+\section*{Shell}
+posix
+
+\section*{Platforms}
+linux, gnu-linux, freebsd, openbsd, netbsd
+
+\section*{Created At}
+2026-04-25
+
+\section*{Updated At}
+2026-04-25
+
+\end{document}

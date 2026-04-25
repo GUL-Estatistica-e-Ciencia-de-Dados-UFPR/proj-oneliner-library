@@ -1,13 +1,13 @@
 {
   "id": "tsv-stats",
   "title": "Load TSV file and print dataset statistics using R",
-  "language": "R",
+  "language": "rscript",
   "category": "data-processing",
   "command": "Rscript -e \"args<-commandArgs(trailingOnly=TRUE);if(length(args)<1)stop('Need filename');df<-read.delim(args[1]);cat('Rows:',nrow(df),'Cols:',ncol(df),'Cells:',nrow(df)*ncol(df),'File size:',file.size(args[1]),'Object size:',format(object.size(df),units='auto'),'\\n')\"",
   "description": "Loads a TSV (tab-separated) file using R's read.delim and prints rows, columns, total cells, file size, and object memory usage.",
   "explanation": "The command uses Rscript to execute R code that reads a TSV file specified as argument, computes basic statistics (rows, columns, cells), gets file size via file.size(), and reports object memory usage via object.size(). read.delim uses tab as separator by default.",
   "tags": [
-    "r",
+    "rscript",
     "tsv",
     "statistics",
     "data-analysis",
@@ -23,8 +23,7 @@
     "gnu-linux",
     "freebsd",
     "openbsd",
-    "netbsd",
-    "macos"
+    "netbsd"
   ],
   "dependencies": [
     "r-base-core"
