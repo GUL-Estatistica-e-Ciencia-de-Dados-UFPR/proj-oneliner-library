@@ -212,9 +212,10 @@ Describe:
 - File name must match `id`  
 - JSON must be valid (no comments)  
 - Do not introduce new schema fields  
-- Prefer clarity over cleverness  
 - Avoid redundant entries  
 - Ensure command correctness  
+- Design commands to accept parameters as positional arguments ($1, $2, etc.) rather than hardcoded values  
+- Ensure commands work consistently when pasted directly or used in aliases/functions  
 
 ---
 

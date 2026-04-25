@@ -1,0 +1,112 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+}
+
+\title{Create multiple users from a CSV file containing username and password}
+\author{marcos}
+\date{2026-04-25}
+
+\begin{document}
+
+\section*{Create multiple users from a CSV file containing username and password}
+\textbf{Author:} marcos \hfill \textbf{Date:} 2026-04-25
+
+\noindent Creates multiple user accounts on a Linux system by reading username and password pairs from a CSV file passed as an argument.
+
+\section*{Language}
+bash
+
+\section*{Category}
+system-administration
+
+\section*{Command}
+\begin{lstlisting}
+sudo awk -F, 'NR>1 {print $1,$2}' "$1" | while read user pass; do sudo useradd -m "$user" && echo "$user:$pass" | sudo chpasswd; done
+\end{lstlisting}
+
+\section*{Explanation}
+The command reads a CSV file (passed as first argument) where each row contains a username and password. It skips the header row (NR>1), then for each subsequent row extracts the username and password fields. For each user, it creates a system account with a home directory (-m) and then uses chpasswd to set the plain text password from the CSV file.
+
+\section*{Tags}
+user-management, bulk-operations, system-administration, csv, automation
+
+\section*{Dependencies}
+coreutils, shadow-utils, openssl
+
+
+\section*{Arguments}
+\begin{enumerate}
+  \item \textbf{CSV\_FILE} (Required): Path to CSV file with username,password format
+\end{enumerate}
+
+\section*{Examples}
+\begin{enumerate}
+  \item \texttt{echo -e 'username,password\textbackslash\{\}nuser1,pass123\textbackslash\{\}nuser2,pass456' > users.csv \&\& sudo awk -F, 'NR>1 \{print \$1,\$2\}' "users.csv" | while read user pass; do sudo useradd -m -p \$(openssl passwd -1 "\$pass") "\$user"; done} - Create users from users.csv file with username,password format
+  \item \texttt{sudo awk -F, 'NR>1 \{print \$1,\$2\}' "/path/to/users.csv" | while read user pass; do sudo useradd -m -p \$(openssl passwd -1 "\$pass") "\$user"; done} - Create users from a specific CSV file path
+  \item \texttt{alias bulkaddusers='sudo awk -F, '"'"'NR>1 \{print \$1,\$2\}'"'"' "\$1" | while read user pass; do sudo useradd -m -p \$(openssl passwd -1 "\$pass") "\$user"; done'} - Create an alias for bulk user creation
+\end{enumerate}
+
+\section*{Output}
+\begin{lstlisting}
+Creating users from users.csv:
+user1: user created
+user2: user created
+\end{lstlisting}
+
+\section*{Notes}
+\begin{itemize}
+  \item The CSV file should have a header row and contain username,password in each subsequent row
+  \item Requires sudo privileges to create users
+  \item Uses openssl to properly hash passwords for useradd
+  \item The -m flag creates a home directory for each user
+  \item The command skips the first line (header) with NR>1
+  \item For better security, consider using a more robust password hashing method
+  \item The CSV file must be passed as the first argument to the command
+\end{itemize}
+
+\section*{Warnings}
+\begin{itemize}
+  \item This command requires sudo access and will modify system user accounts
+  \item Passwords are passed in cleartext in the CSV file which is a security risk
+  \item The default password hashing method (openssl passwd -1) uses MD5 which is not the most secure
+  \item Always backup your system before running bulk user creation
+  \item Ensure CSV file permissions are secured to prevent unauthorized access
+  \item Test with a single entry first before running on multiple users
+  \item Consider using a more secure method for password handling in production environments
+\end{itemize}
+
+\section*{See Also}
+\begin{itemize}
+  \item user-activity-and-quota-report
+  \item nonhuman-user-activity-and-quota-report
+\end{itemize}
+
+\section*{Status}
+draft
+
+\section*{Safety}
+caution
+
+\section*{Shell}
+bash
+
+\section*{Platforms}
+linux, gnu-linux
+
+\section*{Created At}
+2026-04-25
+
+\section*{Updated At}
+2026-04-25
+
+\end{document}

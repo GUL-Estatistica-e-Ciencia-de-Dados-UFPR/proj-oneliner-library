@@ -1,0 +1,90 @@
+<h1 class="unnumbered"
+id="create-multiple-users-from-a-csv-file-containing-username-and-password">Create
+multiple users from a CSV file containing username and password</h1>
+<p><strong>Author:</strong> marcos <strong>Date:</strong> 2026-04-25</p>
+<p>Creates multiple user accounts on a Linux system by reading username
+and password pairs from a CSV file passed as an argument.</p>
+<h1 class="unnumbered" id="language">Language</h1>
+<p>bash</p>
+<h1 class="unnumbered" id="category">Category</h1>
+<p>system-administration</p>
+<h1 class="unnumbered" id="command">Command</h1>
+<pre><code>sudo awk -F, &#39;NR&gt;1 {print $1,$2}&#39; &quot;$1&quot; | while read user pass; do sudo useradd -m &quot;$user&quot; &amp;&amp; echo &quot;$user:$pass&quot; | sudo chpasswd; done</code></pre>
+<h1 class="unnumbered" id="explanation">Explanation</h1>
+<p>The command reads a CSV file (passed as first argument) where each
+row contains a username and password. It skips the header row (NR&gt;1),
+then for each subsequent row extracts the username and password fields.
+For each user, it creates a system account with a home directory (-m)
+and then uses chpasswd to set the plain text password from the CSV
+file.</p>
+<h1 class="unnumbered" id="tags">Tags</h1>
+<p>user-management, bulk-operations, system-administration, csv,
+automation</p>
+<h1 class="unnumbered" id="dependencies">Dependencies</h1>
+<p>coreutils, shadow-utils, openssl</p>
+<h1 class="unnumbered" id="arguments">Arguments</h1>
+<ol>
+<li><p><strong>CSV_FILE</strong> (Required): Path to CSV file with
+username,password format</p></li>
+</ol>
+<h1 class="unnumbered" id="examples">Examples</h1>
+<ol>
+<li><p><code>echo -e ’username,password\{}nuser1,pass123\{}nuser2,pass456’ &gt; users.csv &amp;&amp; sudo awk -F, ’NR&gt;1 {print $1,$2}’ "users.csv" | while read user pass; do sudo useradd -m -p $(openssl passwd -1 "$pass") "$user"; done</code>
+- Create users from users.csv file with username,password
+format</p></li>
+<li><p><code>sudo awk -F, ’NR&gt;1 {print $1,$2}’ "/path/to/users.csv" | while read user pass; do sudo useradd -m -p $(openssl passwd -1 "$pass") "$user"; done</code>
+- Create users from a specific CSV file path</p></li>
+<li><p><code>alias bulkaddusers=’sudo awk -F, ’"’"’NR&gt;1 {print $1,$2}’"’"’ "$1" | while read user pass; do sudo useradd -m -p $(openssl passwd -1 "$pass") "$user"; done’</code>
+- Create an alias for bulk user creation</p></li>
+</ol>
+<h1 class="unnumbered" id="output">Output</h1>
+<pre><code>Creating users from users.csv:
+user1: user created
+user2: user created</code></pre>
+<h1 class="unnumbered" id="notes">Notes</h1>
+<ul>
+<li><p>The CSV file should have a header row and contain
+username,password in each subsequent row</p></li>
+<li><p>Requires sudo privileges to create users</p></li>
+<li><p>Uses openssl to properly hash passwords for useradd</p></li>
+<li><p>The -m flag creates a home directory for each user</p></li>
+<li><p>The command skips the first line (header) with NR&gt;1</p></li>
+<li><p>For better security, consider using a more robust password
+hashing method</p></li>
+<li><p>The CSV file must be passed as the first argument to the
+command</p></li>
+</ul>
+<h1 class="unnumbered" id="warnings">Warnings</h1>
+<ul>
+<li><p>This command requires sudo access and will modify system user
+accounts</p></li>
+<li><p>Passwords are passed in cleartext in the CSV file which is a
+security risk</p></li>
+<li><p>The default password hashing method (openssl passwd -1) uses MD5
+which is not the most secure</p></li>
+<li><p>Always backup your system before running bulk user
+creation</p></li>
+<li><p>Ensure CSV file permissions are secured to prevent unauthorized
+access</p></li>
+<li><p>Test with a single entry first before running on multiple
+users</p></li>
+<li><p>Consider using a more secure method for password handling in
+production environments</p></li>
+</ul>
+<h1 class="unnumbered" id="see-also">See Also</h1>
+<ul>
+<li><p>user-activity-and-quota-report</p></li>
+<li><p>nonhuman-user-activity-and-quota-report</p></li>
+</ul>
+<h1 class="unnumbered" id="status">Status</h1>
+<p>draft</p>
+<h1 class="unnumbered" id="safety">Safety</h1>
+<p>caution</p>
+<h1 class="unnumbered" id="shell">Shell</h1>
+<p>bash</p>
+<h1 class="unnumbered" id="platforms">Platforms</h1>
+<p>linux, gnu-linux</p>
+<h1 class="unnumbered" id="created-at">Created At</h1>
+<p>2026-04-25</p>
+<h1 class="unnumbered" id="updated-at">Updated At</h1>
+<p>2026-04-25</p>

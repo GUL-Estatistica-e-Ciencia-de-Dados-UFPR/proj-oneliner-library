@@ -84,5 +84,5 @@
     "postgresql-reindex",
     "postgresql-analyze-only"
   ],
-  "status": "reviewed"
+  "status": "draft"
 }

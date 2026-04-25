@@ -1,0 +1,75 @@
+{
+  "id": "bulk-create-users-from-csv",
+  "title": "Create multiple users from a CSV file containing username and password",
+  "language": "bash",
+  "category": "system-administration",
+  "command": "sudo awk -F, 'NR>1 {print $1,$2}' \"$1\" | while read user pass; do sudo useradd -m \"$user\" && echo \"$user:$pass\" | sudo chpasswd; done",
+  "description": "Creates multiple user accounts on a Linux system by reading username and password pairs from a CSV file passed as an argument.",
+  "explanation": "The command reads a CSV file (passed as first argument) where each row contains a username and password. It skips the header row (NR>1), then for each subsequent row extracts the username and password fields. For each user, it creates a system account with a home directory (-m) and then uses chpasswd to set the plain text password from the CSV file.",
+  "tags": [
+    "user-management",
+    "bulk-operations",
+    "system-administration",
+    "csv",
+    "automation"
+  ],
+  "author": "marcos",
+  "created_at": "2026-04-25",
+  "updated_at": "2026-04-25",
+  "safety": "caution",
+  "shell": "bash",
+  "platforms": [
+    "linux",
+    "gnu-linux"
+  ],
+  "dependencies": [
+    "coreutils",
+    "shadow-utils",
+    "openssl"
+  ],
+  "arguments": [
+    {
+      "name": "CSV_FILE",
+      "description": "Path to CSV file with username,password format",
+      "required": true
+    }
+  ],
+  "examples": [
+    {
+      "command": "echo -e 'username,password\\nuser1,pass123\\nuser2,pass456' > users.csv && sudo awk -F, 'NR>1 {print $1,$2}' \"users.csv\" | while read user pass; do sudo useradd -m -p $(openssl passwd -1 \"$pass\") \"$user\"; done",
+      "description": "Create users from users.csv file with username,password format"
+    },
+    {
+      "command": "sudo awk -F, 'NR>1 {print $1,$2}' \"/path/to/users.csv\" | while read user pass; do sudo useradd -m -p $(openssl passwd -1 \"$pass\") \"$user\"; done",
+      "description": "Create users from a specific CSV file path"
+    },
+    {
+      "command": "alias bulkaddusers='sudo awk -F, '\"'\"'NR>1 {print $1,$2}'\"'\"' \"$1\" | while read user pass; do sudo useradd -m -p $(openssl passwd -1 \"$pass\") \"$user\"; done'",
+      "description": "Create an alias for bulk user creation"
+    }
+  ],
+  "output": "Creating users from users.csv:\nuser1: user created\nuser2: user created",
+  "notes": [
+    "The CSV file should have a header row and contain username,password in each subsequent row",
+    "Requires sudo privileges to create users",
+    "Uses openssl to properly hash passwords for useradd",
+    "The -m flag creates a home directory for each user",
+    "The command skips the first line (header) with NR>1",
+    "For better security, consider using a more robust password hashing method",
+    "The CSV file must be passed as the first argument to the command"
+  ],
+  "warnings": [
+    "This command requires sudo access and will modify system user accounts",
+    "Passwords are passed in cleartext in the CSV file which is a security risk",
+    "The default password hashing method (openssl passwd -1) uses MD5 which is not the most secure",
+    "Always backup your system before running bulk user creation",
+    "Ensure CSV file permissions are secured to prevent unauthorized access",
+    "Test with a single entry first before running on multiple users",
+    "Consider using a more secure method for password handling in production environments"
+  ],
+  "see_also": [
+    "user-activity-and-quota-report",
+    "nonhuman-user-activity-and-quota-report"
+  ],
+  "status": "draft"
+}
