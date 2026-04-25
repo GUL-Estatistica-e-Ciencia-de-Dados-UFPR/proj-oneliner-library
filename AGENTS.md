@@ -10,6 +10,86 @@ GOLL entries are structured JSON files that represent one-liner commands with de
 3. Pass validation checks
 4. Be placed in the correct directory structure
 
+### Critical Command Design Rules
+
+Every command **MUST** satisfy these two requirements simultaneously:
+
+1. **Can be pasted directly on the terminal and executed** — the user copies the command string and runs it as-is
+2. **Can be wrapped in a shell alias** — the same command string must work inside `alias name='...'`
+
+To satisfy both requirements, follow these design patterns:
+
+#### Parameters Must Come AFTER the Command
+
+The user should NEVER need to edit or modify parameters embedded inside the command string. All variable inputs must be passed as arguments at the end. The expected invocation pattern is:
+
+```
+<command> <param1> <param2> <param3> ...
+```
+
+NOT:
+
+```
+<command> <param1> embedded-in-middle <param2>
+```
+
+**Good example** (parameters at end, using `bash -c` wrapper):
+```bash
+bash -c 'dir=$1; days=$2; shift 2; find "$dir" -type f -mtime +"$days" -delete "$@"' _ /var/log 30
+```
+
+**Good example** (simple positional args, tool natively supports trailing args):
+```bash
+psql -U "$1" -d "$2" -h "$3" -c "VACUUM (VERBOSE, ANALYZE);"
+```
+
+**Bad example** (user must edit path and days embedded in middle of command):
+```bash
+find /var/log -type f -mtime +30 -delete
+```
+
+#### Using `bash -c` for Complex Commands
+
+The `bash -c` pattern is the most flexible way to handle commands with multiple arguments:
+
+```bash
+bash -c 'old=$1; new=$2; shift 2; find "$@" -type f -exec sed -i "s#$old#$new#g" {} +' _ 'search' 'replace' file.txt
+```
+
+This can be turned into an alias:
+```bash
+alias repl="bash -c 'old=\$1; new=\$2; shift 2; find \"\$@\" -type f -exec sed -i \"s#\$old#\$new#g\" {} +' _"
+# Usage: repl 'old-text' 'new-text' *.txt
+```
+
+#### Using Shell Functions for Aliases
+
+For more complex commands, consider documenting them as functions:
+
+```bash
+# Define the function
+vacuum_pg() { PGPASSWORD="$2" psql -U "$1" -d "$3" -h "$4" -c "VACUUM (VERBOSE, ANALYZE);"; }
+
+# Usage
+vacuum_pg postgres secret123 mydb localhost
+```
+
+### Caution: JSON Escaping
+
+The `command` field is a JSON string, so special characters MUST be properly escaped or the file will fail JSON validation:
+
+| Character | JSON Escape Required |
+|-----------|---------------------|
+| Backslash `\` | `\\` → `\\\\` (double each backslash) |
+| Double quote `"` | `\"` |
+| Newline | `\n` |
+| Tab | `\t` |
+
+Always validate after writing:
+```bash
+python3 -m json.tool library/{language}/{id}.json
+```
+
 ## Entry Creation Process
 
 ### 1. Understanding the Schema
