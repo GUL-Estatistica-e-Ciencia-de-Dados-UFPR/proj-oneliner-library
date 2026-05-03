@@ -1,0 +1,119 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+}
+
+\title{Pretty-print SSH and PGP public keys with details}
+\author{Marcos de Carvalho}
+\date{2026-05-03}
+
+\begin{document}
+
+\section*{Pretty-print SSH and PGP public keys with details}
+\textbf{Author:} Marcos de Carvalho \hfill \textbf{Date:} 2026-05-03
+
+\noindent Reads SSH public key files and a GnuPG public keyring, then prints paths, SSH key text, PGP identities, long key IDs, fingerprints, and armored public key blocks in a formatted report.
+
+\section*{Language}
+bash
+
+\section*{Category}
+cryptography
+
+\section*{Command}
+\begin{lstlisting}
+bash -c 'sshdir=${1:-$HOME/.ssh}; gpghome=${2:-$HOME/.gnupg}; printf "\033[1m=== SSH PUBLIC KEYS (%s) ===\033[0m\n" "$sshdir"; mapfile -d "" s < <(find "$sshdir" -type f \( -name "*.pub" -o -name authorized_keys \) -print0 2>/dev/null); ((${#s[@]})) || echo "No SSH public key files found."; for f in "${s[@]}"; do printf "\n\033[1;34m%s\033[0m\n" "$f"; ssh-keygen -lf "$f" 2>/dev/null | sed "s/^/  details: /"; sed "s/^/  key: /" "$f"; done; printf "\n\033[1m=== PGP PUBLIC KEYS (%s) ===\033[0m\n" "$gpghome"; if [ -e "$gpghome/pubring.kbx" ] || [ -e "$gpghome/pubring.gpg" ]; then GNUPGHOME="$gpghome" gpg --batch --list-public-keys --with-fingerprint --with-subkey-fingerprint --keyid-format long 2>/dev/null | sed "s/^/  /"; printf "\n\033[1m=== ARMORED PGP PUBLIC KEY BLOCKS ===\033[0m\n"; GNUPGHOME="$gpghome" gpg --batch --armor --export 2>/dev/null; else echo "No GnuPG public keyring found."; fi' _
+\end{lstlisting}
+
+\section*{Explanation}
+The command uses a bash -c wrapper so both optional paths are supplied as trailing arguments. SSH\_DIR defaults to \textasciitilde{}/.ssh and is searched recursively for *.pub files and authorized\_keys files. Each matching SSH file is labeled, summarized with ssh-keygen -lf, and printed with indentation. GNUPG\_HOME defaults to \textasciitilde{}/.gnupg; when it contains pubring.kbx or pubring.gpg, GnuPG lists public keys with long key IDs, primary fingerprints, and subkey fingerprints, then exports all public keys as ASCII-armored blocks. The \_ placeholder acts as \$0 inside bash -c so \$1 and \$2 map cleanly to SSH\_DIR and GNUPG\_HOME.
+
+\section*{Tags}
+ssh, pgp, gpg, public-keys, fingerprints, cryptography, audit, pretty-print
+
+\section*{Dependencies}
+bash, find, ssh-keygen, sed, gpg
+
+
+\section*{Arguments}
+\begin{enumerate}
+  \item \textbf{SSH\_DIR} (Optional): Directory to search recursively for SSH public key files. Defaults to \textasciitilde{}/.ssh. \\ Default: \textasciitilde{}/.ssh
+  \item \textbf{GNUPG\_HOME} (Optional): GnuPG home directory whose public keyring will be listed and exported. Defaults to \textasciitilde{}/.gnupg. \\ Default: \textasciitilde{}/.gnupg
+\end{enumerate}
+
+\section*{Examples}
+\begin{enumerate}
+  \item \texttt{bash -c 'sshdir=\$\{1:-\$HOME/.ssh\}; gpghome=\$\{2:-\$HOME/.gnupg\}; printf "\textbackslash\{\}033[1m=== SSH PUBLIC KEYS (\%s) ===\textbackslash\{\}033[0m\textbackslash\{\}n" "\$sshdir"; mapfile -d "" s < <(find "\$sshdir" -type f \textbackslash\{\}( -name "*.pub" -o -name authorized\_keys \textbackslash\{\}) -print0 2>/dev/null); ((\$\{\#s[@]\})) || echo "No SSH public key files found."; for f in "\$\{s[@]\}"; do printf "\textbackslash\{\}n\textbackslash\{\}033[1;34m\%s\textbackslash\{\}033[0m\textbackslash\{\}n" "\$f"; ssh-keygen -lf "\$f" 2>/dev/null | sed "s/\textasciicircum{}/  details: /"; sed "s/\textasciicircum{}/  key: /" "\$f"; done; printf "\textbackslash\{\}n\textbackslash\{\}033[1m=== PGP PUBLIC KEYS (\%s) ===\textbackslash\{\}033[0m\textbackslash\{\}n" "\$gpghome"; if [ -e "\$gpghome/pubring.kbx" ] || [ -e "\$gpghome/pubring.gpg" ]; then GNUPGHOME="\$gpghome" gpg --batch --list-public-keys --with-fingerprint --with-subkey-fingerprint --keyid-format long 2>/dev/null | sed "s/\textasciicircum{}/  /"; printf "\textbackslash\{\}n\textbackslash\{\}033[1m=== ARMORED PGP PUBLIC KEY BLOCKS ===\textbackslash\{\}033[0m\textbackslash\{\}n"; GNUPGHOME="\$gpghome" gpg --batch --armor --export 2>/dev/null; else echo "No GnuPG public keyring found."; fi' \_} - Print SSH public keys from \textasciitilde{}/.ssh and PGP public keys from \textasciitilde{}/.gnupg
+  \item \texttt{bash -c 'sshdir=\$\{1:-\$HOME/.ssh\}; gpghome=\$\{2:-\$HOME/.gnupg\}; printf "\textbackslash\{\}033[1m=== SSH PUBLIC KEYS (\%s) ===\textbackslash\{\}033[0m\textbackslash\{\}n" "\$sshdir"; mapfile -d "" s < <(find "\$sshdir" -type f \textbackslash\{\}( -name "*.pub" -o -name authorized\_keys \textbackslash\{\}) -print0 2>/dev/null); ((\$\{\#s[@]\})) || echo "No SSH public key files found."; for f in "\$\{s[@]\}"; do printf "\textbackslash\{\}n\textbackslash\{\}033[1;34m\%s\textbackslash\{\}033[0m\textbackslash\{\}n" "\$f"; ssh-keygen -lf "\$f" 2>/dev/null | sed "s/\textasciicircum{}/  details: /"; sed "s/\textasciicircum{}/  key: /" "\$f"; done; printf "\textbackslash\{\}n\textbackslash\{\}033[1m=== PGP PUBLIC KEYS (\%s) ===\textbackslash\{\}033[0m\textbackslash\{\}n" "\$gpghome"; if [ -e "\$gpghome/pubring.kbx" ] || [ -e "\$gpghome/pubring.gpg" ]; then GNUPGHOME="\$gpghome" gpg --batch --list-public-keys --with-fingerprint --with-subkey-fingerprint --keyid-format long 2>/dev/null | sed "s/\textasciicircum{}/  /"; printf "\textbackslash\{\}n\textbackslash\{\}033[1m=== ARMORED PGP PUBLIC KEY BLOCKS ===\textbackslash\{\}033[0m\textbackslash\{\}n"; GNUPGHOME="\$gpghome" gpg --batch --armor --export 2>/dev/null; else echo "No GnuPG public keyring found."; fi' \_ /etc/ssh \textasciitilde{}/.gnupg} - Print system SSH host public keys from /etc/ssh and the current user's GnuPG public keyring
+\end{enumerate}
+
+\section*{Output}
+\begin{lstlisting}
+\u001b[1m=== SSH PUBLIC KEYS (/home/user/.ssh) ===\u001b[0m
+
+\u001b[1;34m/home/user/.ssh/id_ed25519.pub\u001b[0m
+  details: 256 SHA256:examplefingerprint user@example (ED25519)
+  key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExampleKey user@example
+
+\u001b[1m=== PGP PUBLIC KEYS (/home/user/.gnupg) ===\u001b[0m
+  pub   ed25519/0123456789ABCDEF 2026-05-03 [SC]
+        0123 4567 89AB CDEF 0123  4567 0123 4567 89AB CDEF
+  uid                 [ultimate] User Example <user@example>
+  sub   cv25519/FEDCBA9876543210 2026-05-03 [E]
+        FEDC BA98 7654 3210 FEDC  BA98 7654 3210 FEDC BA98
+
+\u001b[1m=== ARMORED PGP PUBLIC KEY BLOCKS ===\u001b[0m
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+...
+-----END PGP PUBLIC KEY BLOCK-----
+\end{lstlisting}
+
+\section*{Notes}
+\begin{itemize}
+  \item The SSH section includes *.pub files and authorized\_keys files under SSH\_DIR.
+  \item ssh-keygen -lf prints one fingerprint line per public key when a file contains multiple keys.
+  \item The PGP section uses the selected GnuPG home directory and requires pubring.kbx or pubring.gpg to exist.
+  \item Use a pager such as less -R when the exported PGP public key blocks are long.
+  \item This command is intended for Bash because it uses mapfile and process substitution.
+\end{itemize}
+
+\section*{Warnings}
+\begin{itemize}
+  \item Public keys are not secret, but they often include names, email addresses, hostnames, or comments that may be sensitive in shared logs or screenshots.
+  \item The command does not print private SSH or PGP key material.
+  \item GnuPG may create or refresh local keyring metadata such as trustdb.gpg when inspecting a GnuPG home that lacks it.
+\end{itemize}
+
+\section*{See Also}
+\begin{itemize}
+  \item bulk-pgp-detach-sign-files
+\end{itemize}
+
+\section*{Status}
+reviewed
+
+\section*{Safety}
+caution
+
+\section*{Shell}
+bash
+
+\section*{Platforms}
+linux, gnu-linux
+
+\section*{Created At}
+2026-05-03
+
+\section*{Updated At}
+2026-05-03
+
+\end{document}

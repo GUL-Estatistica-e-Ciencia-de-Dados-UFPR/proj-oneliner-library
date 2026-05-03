@@ -1,0 +1,108 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+}
+
+\title{Create detached PGP signatures for all files in a directory}
+\author{Marcos de Carvalho}
+\date{2026-04-28}
+
+\begin{document}
+
+\section*{Create detached PGP signatures for all files in a directory}
+\textbf{Author:} Marcos de Carvalho \hfill \textbf{Date:} 2026-04-28
+
+\noindent Iterates over every file in a given directory and creates a detached PGP signature (.sig) for each one using GnuPG.
+
+\section*{Language}
+bash
+
+\section*{Category}
+cryptography
+
+\section*{Command}
+\begin{lstlisting}
+bash -c 'dir=$1; shift; for f in "$dir"/*; do [ -f "$f" ] && gpg --detach-sign "$f"; done' _
+\end{lstlisting}
+
+\section*{Explanation}
+This oneliner uses a bash -c subshell to accept the target directory as a trailing argument. The variable dir receives \$1 (the directory path), then shift removes it so remaining arguments are available via \$@. A for loop iterates over all entries matching "\$dir"/*, and [ -f "\$f" ] ensures only regular files are processed (skipping subdirectories, symlinks, etc.). For each file, gpg --detach-sign creates a separate .sig file containing the PGP signature. The \_ placeholder serves as \$0 inside the subshell, ensuring \$1 maps to the first real argument.
+
+\section*{Tags}
+gpg, pgp, cryptography, signature, detach-sign, bulk, verification
+
+\section*{Dependencies}
+gnupg
+
+
+\section*{Arguments}
+\begin{enumerate}
+  \item \textbf{DIR} (Optional): Path to the directory whose files will be signed. \\ Default: .
+\end{enumerate}
+
+\section*{Examples}
+\begin{enumerate}
+  \item \texttt{bash -c 'dir=\$1; shift; for f in "\$dir"/*; do [ -f "\$f" ] \&\& gpg --detach-sign "\$f"; done' \_ /path/to/releases} - Sign all files in /path/to/releases
+  \item \texttt{bash -c 'dir=\$1; shift; for f in "\$dir"/*; do [ -f "\$f" ] \&\& gpg --detach-sign "\$f"; done' \_ .} - Sign all files in the current directory
+  \item \texttt{alias bsign="bash -c 'dir=\textbackslash\{\}\$1; shift; for f in \textbackslash\{\}"\textbackslash\{\}\$dir\textbackslash\{\}"/*; do [ -f \textbackslash\{\}"\textbackslash\{\}\$f\textbackslash\{\}" ] \&\& gpg --detach-sign \textbackslash\{\}"\textbackslash\{\}\$f\textbackslash\{\}"; done' \_"} - Create an alias named 'bsign' for easy bulk signing
+  \item \texttt{bsign /path/to/releases} - Use the alias to sign all files in a directory
+\end{enumerate}
+
+\section*{Output}
+\begin{lstlisting}
+file1.tar.gz.sig
+file2.iso.sig
+file3.deb.sig
+\end{lstlisting}
+
+\section*{Notes}
+\begin{itemize}
+  \item Each original file gets a corresponding .sig file in the same directory
+  \item GPG will prompt for passphrase if the private key is passphrase-protected
+  \item Uses the default signing key; set GPGKEY env var or use --default-key to specify another
+  \item The [ -f "\$f" ] check skips subdirectories and non-regular files
+  \item Hidden files (dotfiles) are not matched by the glob *; use .* as well if needed
+  \item For large numbers of files, consider using gpg --batch --yes to skip confirmation prompts
+\end{itemize}
+
+\section*{Warnings}
+\begin{itemize}
+  \item Existing .sig files will be silently overwritten without confirmation
+  \item Ensure you have sufficient disk space for the signature files
+  \item If GPG cannot access your private key, the loop will fail for every file
+  \item Signatures are created in the same directory as the source files
+\end{itemize}
+
+\section*{See Also}
+\begin{itemize}
+  \item find-large-files-recursive
+\end{itemize}
+
+\section*{Status}
+reviewed
+
+\section*{Safety}
+caution
+
+\section*{Shell}
+bash
+
+\section*{Platforms}
+linux, gnu-linux, freebsd, openbsd, netbsd
+
+\section*{Created At}
+2026-04-28
+
+\section*{Updated At}
+2026-04-28
+
+\end{document}

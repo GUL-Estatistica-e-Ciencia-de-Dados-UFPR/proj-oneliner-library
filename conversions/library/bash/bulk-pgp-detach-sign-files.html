@@ -1,0 +1,91 @@
+<h1 class="unnumbered"
+id="create-detached-pgp-signatures-for-all-files-in-a-directory">Create
+detached PGP signatures for all files in a directory</h1>
+<p><strong>Author:</strong> Marcos de Carvalho <strong>Date:</strong>
+2026-04-28</p>
+<p>Iterates over every file in a given directory and creates a detached
+PGP signature (.sig) for each one using GnuPG.</p>
+<h1 class="unnumbered" id="language">Language</h1>
+<p>bash</p>
+<h1 class="unnumbered" id="category">Category</h1>
+<p>cryptography</p>
+<h1 class="unnumbered" id="command">Command</h1>
+<pre><code>bash -c &#39;dir=$1; shift; for f in &quot;$dir&quot;/*; do [ -f &quot;$f&quot; ] &amp;&amp; gpg --detach-sign &quot;$f&quot;; done&#39; _</code></pre>
+<h1 class="unnumbered" id="explanation">Explanation</h1>
+<p>This oneliner uses a bash -c subshell to accept the target directory
+as a trailing argument. The variable dir receives $1 (the directory
+path), then shift removes it so remaining arguments are available via
+$@. A for loop iterates over all entries matching "$dir"/*, and [ -f
+"$f" ] ensures only regular files are processed (skipping
+subdirectories, symlinks, etc.). For each file, gpg –detach-sign creates
+a separate .sig file containing the PGP signature. The _ placeholder
+serves as $0 inside the subshell, ensuring $1 maps to the first real
+argument.</p>
+<h1 class="unnumbered" id="tags">Tags</h1>
+<p>gpg, pgp, cryptography, signature, detach-sign, bulk,
+verification</p>
+<h1 class="unnumbered" id="dependencies">Dependencies</h1>
+<p>gnupg</p>
+<h1 class="unnumbered" id="arguments">Arguments</h1>
+<ol>
+<li><p><strong>DIR</strong> (Optional): Path to the directory whose
+files will be signed.<br />
+Default: .</p></li>
+</ol>
+<h1 class="unnumbered" id="examples">Examples</h1>
+<ol>
+<li><p><code>bash -c ’dir=$1; shift; for f in "$dir"/*; do [ -f "$f" ] &amp;&amp; gpg –detach-sign "$f"; done’ _ /path/to/releases</code>
+- Sign all files in /path/to/releases</p></li>
+<li><p><code>bash -c ’dir=$1; shift; for f in "$dir"/*; do [ -f "$f" ] &amp;&amp; gpg –detach-sign "$f"; done’ _ .</code>
+- Sign all files in the current directory</p></li>
+<li><p><code>alias bsign="bash -c ’dir=\{}$1; shift; for f in \{}"\{}$dir\{}"/*; do [ -f \{}"\{}$f\{}" ] &amp;&amp; gpg –detach-sign \{}"\{}$f\{}"; done’ _"</code>
+- Create an alias named ’bsign’ for easy bulk signing</p></li>
+<li><p><code>bsign /path/to/releases</code> - Use the alias to sign all
+files in a directory</p></li>
+</ol>
+<h1 class="unnumbered" id="output">Output</h1>
+<pre><code>file1.tar.gz.sig
+file2.iso.sig
+file3.deb.sig</code></pre>
+<h1 class="unnumbered" id="notes">Notes</h1>
+<ul>
+<li><p>Each original file gets a corresponding .sig file in the same
+directory</p></li>
+<li><p>GPG will prompt for passphrase if the private key is
+passphrase-protected</p></li>
+<li><p>Uses the default signing key; set GPGKEY env var or use
+–default-key to specify another</p></li>
+<li><p>The [ -f "$f" ] check skips subdirectories and non-regular
+files</p></li>
+<li><p>Hidden files (dotfiles) are not matched by the glob *; use .* as
+well if needed</p></li>
+<li><p>For large numbers of files, consider using gpg –batch –yes to
+skip confirmation prompts</p></li>
+</ul>
+<h1 class="unnumbered" id="warnings">Warnings</h1>
+<ul>
+<li><p>Existing .sig files will be silently overwritten without
+confirmation</p></li>
+<li><p>Ensure you have sufficient disk space for the signature
+files</p></li>
+<li><p>If GPG cannot access your private key, the loop will fail for
+every file</p></li>
+<li><p>Signatures are created in the same directory as the source
+files</p></li>
+</ul>
+<h1 class="unnumbered" id="see-also">See Also</h1>
+<ul>
+<li><p>find-large-files-recursive</p></li>
+</ul>
+<h1 class="unnumbered" id="status">Status</h1>
+<p>reviewed</p>
+<h1 class="unnumbered" id="safety">Safety</h1>
+<p>caution</p>
+<h1 class="unnumbered" id="shell">Shell</h1>
+<p>bash</p>
+<h1 class="unnumbered" id="platforms">Platforms</h1>
+<p>linux, gnu-linux, freebsd, openbsd, netbsd</p>
+<h1 class="unnumbered" id="created-at">Created At</h1>
+<p>2026-04-28</p>
+<h1 class="unnumbered" id="updated-at">Updated At</h1>
+<p>2026-04-28</p>
